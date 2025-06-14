@@ -1,0 +1,257 @@
+.ibox-content {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    column-gap: 30px;
+}
+
+.ibox-content input {
+    font-size: 15px;
+    border: 1px solid #ddd;
+}
+
+.ibox-content input:focus {
+    border: 1px solid #2e86d8;
+    outline: none;
+}
+
+.ibox-content textarea {
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.ibox-content textarea:focus {
+    border: 1px solid #2e86d8;
+}
+
+textarea {
+    border-radius: 15px;
+    padding-left: 12px;
+}
+
+.tieude input {
+    height: 45px;
+    padding: 12px;
+}
+
+select {
+    width: 100%;
+    height: 40px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.tieude,
+.mota,
+.noidung {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+form {
+    background-color: white;
+    /* nền trắng */
+    padding: 20px;
+    /* khoảng cách bên trong form */
+    border-radius: 4px;
+    /* (tuỳ chọn) bo góc nhẹ cho đẹp */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    /* (tuỳ chọn) tạo bóng nhẹ */
+    border: 2px solid #ddd;
+    /* (tuỳ chọn) viền nhẹ */
+    margin-bottom: 40px;
+}
+
+.content-right {
+    margin-right: 7px;
+}
+
+.content-right input {
+    width: 100%;
+}
+
+form.thongtin input {
+    margin-bottom: 10px;
+}
+
+form.thongtin p {
+    margin-bottom: 5px;
+}
+
+form.thongtin input {
+    height: 45px;
+    padding: 12px;
+}
+
+.danhmuc span {
+    display: block;
+    /* Cho span thành block để xuống dòng */
+    margin-bottom: 10px;
+    /* Tạo khoảng cách bên dưới */
+}
+
+/* image */
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px dashed #ccc;
+    cursor: pointer;
+}
+
+/* album img */
+.album-container {
+    max-width: 800px;
+    margin: auto;
+    font-family: sans-serif;
+}
+
+.album-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#select-images-btn {
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.image-preview-container {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    /* Căn ngang */
+    align-items: center;
+    /* Căn dọc */
+    min-height: 250px;
+    /* Đảm bảo có không gian dọc để căn giữa */
+}
+
+.placeholder {
+    text-align: center;
+    cursor: pointer;
+}
+
+.placeholder img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+}
+
+.image-box {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    z-index: 1;
+}
+/* .attribute {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attribute p {
+    margin: 0;
+}
+.content-attribute {
+    margin-top: 20px;
+}
+.content-attribute-left {
+    display: flex;
+    gap: 20px;
+} */
+.attribute {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.content-attribute {
+    margin-top: 16px;
+}
+
+.content-attribute-left {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.content-attribute-left p {
+    margin: 0;
+    width: 30%;
+}
+
+.content-attribute-left p:last-child {
+    width: 65%;
+}
+
+.content-attribute-content select:last-child {
+    width: 65%;
+}
+
+.content-attribute-content i {
+    width: 5%;
+    text-align: center;
+    color: red;
+    cursor: pointer;
+}
+.content-attribute-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.content-attribute-content select:first-child {
+    width: 30%;
+}
+.danhsach table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.danhsach thead th {
+    background-color: #000; /* Nền đen */
+    color: #fff; /* Chữ trắng */
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.danhsach tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.danhsach tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}

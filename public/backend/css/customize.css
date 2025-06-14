@@ -1,0 +1,63 @@
+.mb20 {
+    margin-top: 20px;
+    margin-top: 20px;
+}
+table strong {
+    min-width: 88px;
+    display: inline-block;
+}
+thead {
+    background-color: rgb(214, 214, 209);
+}
+.uk-flex-space-between {
+    -ms-flex-pack: justify;
+    align-content: space-between;
+    justify-content: space-between;
+}
+.uk-flex-middle {
+    -ms-flex-align: center;
+    align-items: center;
+    align-items: center;
+}
+.uk-flex {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.filter {
+    margin-bottom: 10px;
+}
+.btn {
+    margin-bottom: 0 !important;
+    font-size: 13px;
+    border-radius: 0;
+    height: 32px;
+}
+.filter .form-control {
+    height: 32px;
+    max-width: 200px;
+    font-size: 13px;
+}
+.mr10 {
+    margin-right: 10px;
+}
+.mr5 {
+    margin-right: 5px;
+}
+.footer {
+    background: #f8f8f8;
+    padding: 15px 20px;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #e7eaec;
+    clear: both;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.footer .pull-right {
+    float: right;
+}

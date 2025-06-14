@@ -1,0 +1,337 @@
+.navigation .dropdown-menu li:hover a {
+    background: blue !important;
+    color: #fff;
+}
+/* Mặc định cho các kích thước lớn hơn laptop */
+.banner-custom-laptop {
+    height: 380px !important;
+    object-fit: cover;
+    /* Giữ hình ảnh cân đối */
+    width: 100%;
+    /* Phủ toàn bộ chiều rộng */
+}
+
+/* Responsive: Giảm chiều cao trên các thiết bị nhỏ hơn */
+@media (max-width: 1200px) {
+    /* Laptop */
+    .banner-custom-laptop {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Tablet */
+    .banner-custom-laptop {
+        height: 250px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile lớn */
+    .banner-custom-laptop {
+        height: 200px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Mobile nhỏ */
+    .banner-custom-laptop {
+        height: 150px !important;
+    }
+}
+/* Mặc định cho các kích thước lớn hơn laptop */
+.banner-custom-laptop {
+    height: 380px !important;
+    object-fit: cover;
+    /* Giữ hình ảnh cân đối */
+    width: 100%;
+    /* Phủ toàn bộ chiều rộng */
+}
+
+/* Responsive: Giảm chiều cao trên các thiết bị nhỏ hơn */
+@media (max-width: 1200px) {
+    /* Laptop */
+    .banner-custom-laptop {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Tablet */
+    .banner-custom-laptop {
+        height: 250px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile lớn */
+    .banner-custom-laptop {
+        height: 200px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Mobile nhỏ */
+    .banner-custom-laptop {
+        height: 150px !important;
+    }
+}
+/* Mặc định cho các kích thước lớn hơn laptop */
+.banner-custom-laptop {
+    height: 380px !important;
+    object-fit: cover;
+    /* Giữ hình ảnh cân đối */
+    width: 100%;
+    /* Phủ toàn bộ chiều rộng */
+}
+
+/* Responsive: Giảm chiều cao trên các thiết bị nhỏ hơn */
+@media (max-width: 1200px) {
+    /* Laptop */
+    .banner-custom-laptop {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Tablet */
+    .banner-custom-laptop {
+        height: 250px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile lớn */
+    .banner-custom-laptop {
+        height: 200px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Mobile nhỏ */
+    .banner-custom-laptop {
+        height: 150px !important;
+    }
+}
+.main-heading:before {
+    filter: brightness(96%);
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120px;
+    height: 40px;
+    background-size: 100% !important;
+    background-image: url("/frontend/img/NQH Shop.png");
+}
+.custom-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #cd242a;
+    /* đỏ đô */
+    color: white;
+    border-radius: 50%;
+    border: 1px solid #3f0508;
+    /* làm tròn */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    /* điều chỉnh kích thước icon nếu cần */
+}
+/* Login */
+.cart-section .row-grid {
+    grid-template-columns: 60% 40%;
+    column-gap: 30px;
+}
+
+.cart-section table {
+    width: 100%;
+    border-collapse: collapse;
+    /* gộp các đường viền lại với nhau */
+}
+
+.cart-section table,
+th,
+td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 6px;
+}
+
+.cart-section table th {
+    background-color: var(--main-bg);
+}
+
+.cart-section table tbody tr td:nth-child(2) h1 {
+    font-size: 20px;
+}
+
+.cart-section table tbody tr td:nth-child(4) {
+    cursor: pointer;
+}
+
+.cart-section table tbody tr td:nth-child(4):hover {
+    color: red;
+}
+
+.cart-section-right {
+    width: 100%;
+}
+
+.cart-section-right input {
+    height: 30px;
+    border: 1px solid #ddd;
+    background-color: var(--main-bg);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-radius: 15px;
+}
+
+.cart-section-right select {
+    height: 30px;
+    border: 1px solid #ddd;
+    background-color: var(--main-bg);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-radius: 15px;
+    width: 100%;
+}
+.password input {
+    margin-bottom: 20px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background-color: var(--main-bg);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-radius: 15px;
+}
+
+.password-change input {
+    height: 30px;
+    border: 1px solid #ddd;
+    background-color: var(--main-bg);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-radius: 15px;
+}
+.cart-section-right-select {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cart-section-right-input-name-phone {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-section-right-input-name-phone input {
+    width: 49%;
+}
+
+.cart-section-right button {
+    border-radius: 15px;
+}
+
+.cart-section-right-input-email input {
+    width: 100%;
+}
+
+.cart-section-right-input-adress textarea {
+    width: 100%;
+    border-radius: 15px;
+    padding-left: 12px;
+    padding-top: 12px;
+    border: 1px solid #ddd;
+}
+
+.cart-section-right-input-note input {
+    width: 100%;
+}
+
+.cart-section-right {
+    margin-bottom: 50px;
+}
+
+.container1 {
+    margin-bottom: 50px;
+    max-width: 1240px;
+    margin: auto;
+}
+
+.container1 > h2 {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.cart-section-right h2 {
+    text-align: center;
+}
+
+.button,
+.main-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    border-radius: 16px 0px;
+}
+
+.register-left {
+    width: 50%;
+}
+
+.register {
+    gap: 20px;
+}
+
+#header {
+    top: 0px;
+}
+
+.password,
+.password-change {
+    display: grid;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+.logout-wrapper {
+    text-transform: uppercase;
+    border-radius: 16px 0px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.logout-wrapper button {
+    padding: 10px 30px;
+    text-transform: uppercase;
+    border-radius: 16px 0px;
+    border: none;
+    background-color: #c75d5d;
+    color: white;
+    cursor: pointer;
+}
+
+.logout-wrapper form {
+    margin-right: 0;
+}
+.main-btn {
+    padding: 6px 12px;
+    border: none;
+    color: #ddd;
+    background-color: #da0909;
+    font-size: 15px;
+    cursor: pointer;
+    transition: var(--main-transition);
+}
+.main-btn:hover {
+    background-color: #ddd;
+    color: #da0909;
+    border: 1px solid #da0909;
+}
