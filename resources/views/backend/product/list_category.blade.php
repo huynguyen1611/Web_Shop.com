@@ -89,27 +89,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" value="" name="" class="input-checkbox checkBoxItem ">
-                            </td>
+                        @foreach ($categories->where('parent_id', null) as $parent)
+                            <tr>
+                                <td><input type="checkbox" class="input-checkbox checkBoxItem"></td>
+                                <td colspan="6">|--- {{ $parent->name }}</td>
+                                <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
+                                <td class="text-center">
+                                    <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                    <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
 
-                            <td colspan="6">
-                                Điện thoại
-                            </td>
-
-                            <td class="text-center">
-                                <input type="checkbox" class="js-switch" checked />
-                            </td>
-                            <td class="text-center">
-                                <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
+                            @foreach ($categories->where('parent_id', $parent->id) as $child)
+                                <tr>
+                                    <td><input type="checkbox" class="input-checkbox checkBoxItem"></td>
+                                    <td colspan="6">|-------- {{ $child->name }}</td>
+                                    <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
+                                    <td class="text-center">
+                                        <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                        <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
                     </tbody>
-                </table>
-                {{-- {{ $users->links('pagination::bootstrap-5') }} --}}
-
+                    {{-- {{ $users->links('pagination::bootstrap-5') }} --}}
             </div>
         </div>
     </div>

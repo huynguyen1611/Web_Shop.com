@@ -46,24 +46,29 @@
                             </select>
                             <div class="action">
                                 <div class="uk-flex ul-flex-middle">
-                                    <select name="user-catalogue_id" class="form-control mr10">
-                                        <option value="0" selected="selected">Chọn nhóm thuộc tính<main></main>
-                                        </option>
-                                        <option value="1">Dung lượng</option>
-                                        <option value="1">Màu sắc</option>
-                                    </select>
-                                    <div class="uk-search uk-flex uk-flex-middle mr10">
-                                        <div class="input-group">
-                                            <input type="text" name="keyword" value=""
-                                                placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control">
-                                            <span class="input-group-btn">
-                                                <button type="submit" name="search" value="search"
-                                                    class="btn btn-primary mb0 btn-sm">Tìm kiếm</button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <a href="" class="btn btn-danger"><i class="fa fa-plus mr5"></i>Thêm mới thuộc
-                                        tính</a>
+                                    <form method="GET" action="{{ route('attribute') }}" class="form-inline mb-3"
+                                        id="attribute-filter-form">
+                                        <select name="attribute_id" class="form-control mr-2" style="width: 200px;"
+                                            onchange="document.getElementById('attribute-filter-form').submit();">
+                                            <option value="0">Chọn nhóm thuộc tính</option>
+                                            @foreach ($attributes as $attribute)
+                                                <option value="{{ $attribute->id }}"
+                                                    {{ request('attribute_id') == $attribute->id ? 'selected' : '' }}>
+                                                    {{ $attribute->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                            placeholder="Tìm kiếm giá trị thuộc tính..." class="form-control mr-2"
+                                            style="width: 250px;">
+
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    </form>
+                                    <a href="{{ route('attribute_create') }}" class="btn btn-danger"><i
+                                            class="fa fa-plus mr5"></i>Thêm mới thuộc
+                                        tính
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -90,42 +95,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" value="" name="" class="input-checkbox checkBoxItem ">
-                            </td>
+                        @foreach ($attribute_value as $value)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" value="" name=""
+                                        class="input-checkbox checkBoxItem ">
+                                </td>
 
-                            <td colspan="6">
-                                <p style="font-size: 20px ; color: blue">Trắng</p>
-                                <p><span style="color: red;">Nguồn hiển thị:</span>Màu sắc</p>
-                            </td>
+                                <td colspan="6">
+                                    <p style="font-size: 20px ; color: blue">{{ $value->value }}</p>
+                                    <p><span style="color: red;">Nguồn hiển thị:</span>{{ $value->attribute->name }}
+                                    </p>
+                                </td>
 
-                            <td class="text-center">
-                                <input type="checkbox" class="js-switch" checked />
-                            </td>
-                            <td class="text-center">
-                                <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="checkbox" value="" name="" class="input-checkbox checkBoxItem ">
-                            </td>
-
-                            <td colspan="6">
-                                <p style="font-size: 20px ; color: blue">512GB</p>
-                                <p><span style="color: red;">Nguồn hiển thị:</span>Dung lượng</p>
-                            </td>
-
-                            <td class="text-center">
-                                <input type="checkbox" class="js-switch" checked />
-                            </td>
-                            <td class="text-center">
-                                <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
+                                <td class="text-center">
+                                    <input type="checkbox" class="js-switch" checked />
+                                </td>
+                                <td class="text-center">
+                                    <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                    <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 {{-- {{ $users->links('pagination::bootstrap-5') }} --}}

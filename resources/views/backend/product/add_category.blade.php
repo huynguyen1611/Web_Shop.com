@@ -14,101 +14,104 @@
         </div>
     </div>
     <div class="col-lg-12 mb20">
-        <div class="ibox float-e-margins">
-            <div class="ibox-content">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
 
-                <style>
-                    body {
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                        margin: 0;
-                        padding: 0;
-                    }
+            .container {
+                margin: 40px auto;
+                background: #ffffff;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            }
 
-                    .container {
-                        max-width: 700px;
-                        margin: 40px auto;
-                        background: #ffffff;
-                        padding: 30px;
-                        border-radius: 12px;
-                        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-                    }
+            h2 {
+                text-align: center;
+                color: #2c3e50;
+                margin-bottom: 30px;
+            }
 
-                    h2 {
-                        text-align: center;
-                        color: #2c3e50;
-                        margin-bottom: 30px;
-                    }
+            .form-group {
+                margin-bottom: 20px;
+            }
 
-                    .form-group {
-                        margin-bottom: 20px;
-                    }
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #34495e;
+            }
 
-                    label {
-                        display: block;
-                        margin-bottom: 8px;
-                        font-weight: 600;
-                        color: #34495e;
-                    }
+            input[type="text"],
+            select {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-size: 16px;
+                transition: 0.3s ease;
+            }
 
-                    input[type="text"],
-                    select {
-                        width: 100%;
-                        padding: 12px 15px;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        transition: 0.3s ease;
-                    }
+            input[type="text"]:focus,
+            select:focus {
+                border-color: #2980b9;
+                outline: none;
+            }
 
-                    input[type="text"]:focus,
-                    select:focus {
-                        border-color: #2980b9;
-                        outline: none;
-                    }
+            button {
+                width: 100%;
+                padding: 12px;
+                background-color: #3498db;
+                border: none;
+                color: white;
+                font-size: 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin-top: 20px
+            }
 
-                    button {
-                        width: 100%;
-                        padding: 12px;
-                        background-color: #3498db;
-                        border: none;
-                        color: white;
-                        font-size: 16px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        transition: background-color 0.3s ease;
-                    }
-
-                    button:hover {
-                        background-color: #2980b9;
-                    }
-                </style>
-                </head>
-
-                <body>
-
+            button:hover {
+                background-color: #2980b9;
+            }
+        </style>
+        <div class="col-lg-12 mb20">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Thêm mới danh mục sản phẩm </h5>
+                </div>
+                <div class="ibox-content">
                     <div class="container">
-                        <h2>Thêm danh mục sản phẩm</h2>
-                        <form>
-                            <div class="form-group">
-                                <label for="category_name">Tên danh mục sản phẩm</label>
-                                <input type="text" id="category_name"
-                                    placeholder="Nhập tên danh mục (ví dụ: Điện thoại, Laptop)">
-                            </div>
+                        <form action="{{ route('category_store') }}" method="POST">
+                            @csrf
 
-                            <div class="form-group">
-                                <label for="parent_category">Danh mục cha</label>
-                                <select id="parent_category">
-                                    <option value="">-- Không có --</option>
-                                    <option value="1">Điện tử</option>
-                                    <option value="2">Gia dụng</option>
-                                </select>
-                            </div>
-
+                            <label>Tên danh mục:</label>
+                            <input type="text" name="name">
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                            <label style="font-size: 15px">Chọn danh mục cha (nếu có):</label>
+                            <select name="parent_id">
+                                <option value="">-- Là danh mục cha --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('parent_id')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <button type="submit">Thêm danh mục</button>
                         </form>
                     </div>
+                </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     </div>
     <script src="backend/js/plugins/switchery/switchery.js"></script>

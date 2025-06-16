@@ -1,9 +1,14 @@
-.ibox-content {
+/* .ibox-content {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    column-gap: 30px;
+} */
+/* Thay vì .ibox-content, dùng form trực tiếp */
+.ibox-content form {
     display: grid;
     grid-template-columns: 75% 25%;
     column-gap: 30px;
 }
-
 .ibox-content input {
     font-size: 15px;
     border: 1px solid #ddd;
@@ -173,28 +178,15 @@ form.thongtin input {
     text-align: center;
     z-index: 1;
 }
-/* .attribute {
+.attribute {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    align-items: center; /* canh giữa theo chiều dọc nếu cần */
+    gap: 8px; /* khoảng cách giữa checkbox và đoạn văn */
 }
 
 .attribute p {
-    margin: 0;
+    margin: 0; /* bỏ margin mặc định để không bị lệch hàng */
 }
-.content-attribute {
-    margin-top: 20px;
-}
-.content-attribute-left {
-    display: flex;
-    gap: 20px;
-} */
-.attribute {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .content-attribute {
     margin-top: 16px;
 }
@@ -203,6 +195,8 @@ form.thongtin input {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
+    color: #2e86d8;
+    font-size: 15px;
 }
 
 .content-attribute-left p {
@@ -223,6 +217,7 @@ form.thongtin input {
     text-align: center;
     color: red;
     cursor: pointer;
+    font-size: 20px;
 }
 .content-attribute-content {
     display: flex;
@@ -254,4 +249,83 @@ form.thongtin input {
 
 .danhsach tbody tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+.grip {
+    display: grid;
+}
+.chitiet-botton {
+    display: flex;
+    justify-content: space-between;
+}
+.chitiet-top {
+    display: flex;
+    justify-content: space-between;
+}
+.button {
+    display: flex;
+    gap: 10px;
+}
+.button button:first-child {
+    background-color: red;
+    color: whitesmoke;
+    border: none;
+}
+.button button:first-child:hover {
+    background-color: whitesmoke;
+    color: red;
+    border: 1px solid red;
+}
+.button button:last-child {
+    background-color: #2e86d8;
+    color: whitesmoke;
+    border: none;
+}
+.button button:last-child:hover {
+    background-color: whitesmoke;
+    color: #2e86d8;
+    border: 1px solid #2e86d8;
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* đẩy nút về bên phải */
+    gap: 10px; /* khoảng cách giữa nút */
+    margin-top: 30px;
+}
+
+.btn-primary {
+    background-color: #2e86d8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: white;
+    color: #2e86d8;
+    border: 1px solid #2e86d8;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.anh {
+    margin-top: 20px;
+}
+.flex {
+    display: flex;
 }

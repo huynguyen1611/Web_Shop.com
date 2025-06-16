@@ -83,7 +83,6 @@ class CreateProductManagementTables extends Migration
             $table->foreignId('attribute_value_id')->constrained('attribute_values')->onDelete('cascade');
             // liên kết với giá trị thuộc tính (ví dụ: Trắng)
             $table->timestamps(); // created_at và updated_at
-
             // đảm bảo mỗi phiên bản chỉ có 1 giá trị thuộc tính cho mỗi thuộc tính
             $table->unique(['product_variant_id', 'attribute_id'], 'variant_attribute_unique');
         });
