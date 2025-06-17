@@ -21,13 +21,14 @@
                 <h5>Thêm mới thuộc tính </h5>
             </div>
             <div class="ibox-content">
-                <form id="product-form" action="{{ route('insert_attribute') }}" method="POST"
+                <form id="product-form" action="{{ route('attri_value_update', $attributeValue->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
-                            <input type="text" name="value" placeholder="Nhập tên thuộc tính...">
+                            <input type="text" name="value" value="{{ old('value', $attributeValue->value) }}"
+                                placeholder="Nhập tên thuộc tính...">
                         </div>
                         @error('value')
                             <div class="text-danger">{{ $message }}</div>
@@ -39,10 +40,10 @@
                             <label for="attribute_id">Nhóm thuộc tính <span class="text-danger">*</span></label>
                             <select name="attribute_id" id="attribute_id" class="form-control">
                                 <option value="">-- Chọn nhóm thuộc tính --</option>
-                                @foreach ($attributes as $attribute)
-                                    <option value="{{ $attribute->id }}"
-                                        {{ old('attribute_id') == $attribute->id ? 'selected' : '' }}>
-                                        {{ $attribute->name }}
+                                @foreach ($attributes as $attr)
+                                    <option value="{{ $attr->id }}"
+                                        {{ $attributeValue->attribute_id == $attr->id ? 'selected' : '' }}>
+                                        {{ $attr->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -53,7 +54,9 @@
                         <div class="anh">
                             <label for="image">CHỌN ẢNH ĐẠI DIỆN</label>
                             <div class="admin-content-main-content-right-imgs">
-                                <img id="preview" src="{{ asset('frontend/img/nophoto.jpg') }}" class="image-preview" />
+                                @if ($attributeValue->image)
+                                    <img src="{{ asset('storage/' . $attributeValue->image) }}" width="80">
+                                @endif
                                 <input id="image" type="file" name="image" accept="image/*"
                                     style="display: none;" />
                             </div>
@@ -61,7 +64,7 @@
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
-                        <button type="submit" class="btn-primary">Thêm loại thuộc tính</button>
+                        <button type="submit" class="btn-primary">Cập nhật loại thuộc tính</button>
                     </div>
                 </form>
             </div>

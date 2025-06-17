@@ -95,8 +95,13 @@
                                 <td colspan="6">|--- {{ $parent->name }}</td>
                                 <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                    <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    <a href="{{ route('edit_category', $parent->id) }}" class="btn btn-success"><i
+                                            class="fa fa-edit"></i></a>
+                                    <a href="{{ route('delete_category', $parent->id) }}"
+                                        onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này không?')"
+                                        class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
 
@@ -106,8 +111,14 @@
                                     <td colspan="6">|-------- {{ $child->name }}</td>
                                     <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
                                     <td class="text-center">
-                                        <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                        <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                        <a href="{{ route('edit_category', $child->id) }}" class="btn btn-success"><i
+                                                class="fa fa-edit"></i></a>
+                                        <a href="{{ route('delete_category', $child->id) }}"
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này không?')"
+                                            class="btn btn-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+
                                     </td>
                                 </tr>
                             @endforeach

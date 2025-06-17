@@ -9,7 +9,7 @@
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Quản lí bài viết</strong></li>
+                <li class="active"><strong>Danh mục sản phẩm</strong></li>
             </ol>
         </div>
     </div>
@@ -82,29 +82,34 @@
         <div class="col-lg-12 mb20">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Thêm mới danh mục sản phẩm </h5>
+                    <h5>Chỉnh sửa danh mục sản phẩm </h5>
                 </div>
                 <div class="ibox-content">
                     <div class="container">
-                        <form action="{{ route('category_store') }}" method="POST">
+                        <form action="{{ route('update_category', $category->id) }}" method="POST">
                             @csrf
 
                             <label>Tên danh mục:</label>
-                            <input type="text" name="name">
+                            <input type="text" name="name" class="form-control"
+                                value="{{ old('name', $category->name) }}">
                             @error('name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                             <label style="font-size: 15px">Chọn danh mục cha (nếu có):</label>
-                            <select name="parent_id">
+                            <select name="parent_id" class="form-control">
                                 <option value="">-- Là danh mục cha --</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @foreach ($parentCategories as $parent)
+                                    <option value="{{ $parent->id }}"
+                                        {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('parent_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <button type="submit">Thêm danh mục</button>
+                            <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
+                            <button type="submit">Cập nhật danh mục</button>
                         </form>
                     </div>
                 </div>

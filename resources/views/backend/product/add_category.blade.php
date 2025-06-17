@@ -104,6 +104,7 @@
                             @error('parent_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
+                            <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
                             <button type="submit">Thêm danh mục</button>
                         </form>
                     </div>

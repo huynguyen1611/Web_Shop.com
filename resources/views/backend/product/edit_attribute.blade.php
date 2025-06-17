@@ -21,13 +21,14 @@
                 <h5>Thêm mới loại thuộc tính </h5>
             </div>
             <div class="ibox-content">
-                <form id="product-form" action="{{ route('attribute_store') }}" method="POST"
+                <form id="product-form" action="{{ route('update_attribute', $attribute->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
-                            <input type="text" name="name" placeholder="Nhập nhóm sản phẩm">
+                            <input type="text" name="name" value="{{ old('name', $attribute->name) }}"
+                                placeholder="Nhập nhóm sản phẩm">
                         </div>
                         @error('name')
                             <div class="text-danger">{{ $message }}</div>
@@ -35,7 +36,7 @@
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
-                        <button type="submit" class="btn-primary">Thêm loại thuộc tính</button>
+                        <button type="submit" class="btn-primary">Chỉnh sửa loại thuộc tính</button>
                     </div>
                 </form>
             </div>

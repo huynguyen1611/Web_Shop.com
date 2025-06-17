@@ -197,6 +197,59 @@ class ProductController extends Controller
         return redirect()->route('list_category')->with('success', 'Thêm danh mục thành công!');
     }
 
+    public function edit_category($id)
+    {
+        $category = Category::findOrFail($id); // danh mục cần chỉnh sửa
+
+        // Danh sách danh mục cha (loại trừ chính nó)
+        $parentCategories = Category::whereNull('parent_id')
+            ->where('id', '!=', $id)
+            ->get();
+
+        return view('backend.product.edit_category', [
+            'category' => $category,
+            'parentCategories' => $parentCategories,
+        ]);
+    }
+    public function update_category(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            'parent_id' => 'nullable|exists:categories,id|not_in:' . $id,
+        ], [
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'name.string' => 'Tên danh mục phải là chuỗi ký tự.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
+            'name.unique' => 'Đã có danh mục này trong hệ thống. Vui lòng nhập lại.',
+            'parent_id.not_in' => 'Danh mục không thể là con của chính nó.',
+            'parent_id.exists' => 'Danh mục cha không hợp lệ.',
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id,
+        ]);
+
+        return redirect()->route('list_category')->with('success', 'Cập nhật danh mục thành công!');
+    }
+
+    public function delete_category($id)
+    {
+        $category = Category::findOrFail($id);
+
+        // Nếu có danh mục con, bạn có thể chọn xóa đệ quy hoặc ngăn xóa
+        if ($category->children()->count() > 0) {
+
+            return redirect()->back()->with('error', 'Không thể xóa danh mục có danh mục con.');
+        }
+
+        $category->delete();
+
+        return redirect()->route('list_category')->with('success', 'Xóa danh mục thành công!');
+    }
+
     //**ATTRIBUTE(nhóm thuộc tính)
     public function list_attribute()
     {
@@ -225,35 +278,52 @@ class ProductController extends Controller
         return redirect()->route('list_attribute')->with('success', 'Thêm nhóm thuộc tính thành công');
     }
     //Chỉnh sửa nhóm thuộc tính
-    public function edit($id)
+    public function attribute_edit($id)
     {
         $attribute = Attribute::findOrFail($id);
-        return view('admin.attributes.edit', compact('attribute'));
+        return view('backend.product.edit_attribute', compact('attribute'));
     }
-    public function update(Request $request, $id)
+    public function attribute_update(Request $request, $id)
     {
-        $attribute = Attribute::findOrFail($id);
+        try {
+            $attribute = Attribute::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:100|unique:attributes,name,' . $id
-        ], [
-            'name.required' => 'Tên nhóm thuộc tính không được để trống.',
-            'name.unique' => 'Tên nhóm này đã tồn tại.',
-        ]);
+            // Kiểm tra dữ liệu
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:attributes,name,' . $id,
+            ], [
+                'name.required' => 'Vui lòng nhập tên thuộc tính',
+                'name.string' => 'Tên thuộc tính phải là chuỗi',
+                'name.max' => 'Tên thuộc tính không quá 255 ký tự',
+                'name.unique' => 'Tên thuộc tính đã tồn tại',
+            ]);
 
-        $attribute->update([
-            'name' => $request->name
-        ]);
+            // Cập nhật
+            $attribute->update([
+                'name' => $validatedData['name'],
+            ]);
 
-        return redirect()->route('attributes.index')->with('success', 'Cập nhật nhóm thuộc tính thành công!');
+            return redirect()->route('list_attribute')->with('success', 'Cập nhật thuộc tính thành công!');
+        } catch (\Exception $e) {
+            // Ghi log nếu muốn: Log::error($e);
+            return redirect()->back()
+                ->withInput() // Giữ lại input đã nhập
+                ->with('error', 'Có lỗi xảy ra khi cập nhật: ' . $e->getMessage());
+        }
     }
     // Xóa nhóm thuộc tính
-    public function destroy($id)
+    public function attribute_delete($id)
     {
         $attribute = Attribute::findOrFail($id);
+
+        // Nếu có liên kết attribute_values thì xử lý tùy logic (ngăn xóa hoặc xóa kèm)
+        if ($attribute->values()->exists()) {
+            return redirect()->back()->with('error', 'Không thể xóa thuộc tính đang có giá trị.');
+        }
+
         $attribute->delete();
 
-        return redirect()->route('attributes.index')->with('success', 'Xoá nhóm thuộc tính thành công!');
+        return redirect()->route('list_attribute')->with('success', 'Xóa thuộc tính thành công');
     }
 
     //** ATTRIBUTE_VALUE(thuộc tính) */
@@ -325,6 +395,66 @@ class ProductController extends Controller
             Log::error('Lỗi khi thêm thuộc tính: ' . $e->getMessage());
 
             return redirect()->route('attribute')->with('error', 'Lỗi khi thêm thuộc tính!');
+        }
+    }
+    public function attri_value_edit($id)
+    {
+        $attributeValue = AttributeValue::findOrFail($id);
+        $attributes = Attribute::all();
+
+        return view('backend.product.edit_attri_value', [
+            'attributeValue' => $attributeValue,
+            'attributes' => $attributes,
+        ]);
+    }
+    public function attri_value_update(Request $request, $id)
+    {
+        $attributeValue = AttributeValue::findOrFail($id);
+
+        $request->validate([
+            'attribute_id' => 'required|exists:attributes,id',
+            'value' => 'required|string|max:100|unique:attribute_values,value,' . $id,
+            'image' => 'nullable|image|max:2048',
+        ], [
+            'attribute_id.required' => 'Bạn phải chọn nhóm thuộc tính.',
+            'value.required' => 'Giá trị thuộc tính không được để trống.',
+            'value.unique' => 'Tên thuộc tính đã tồn tại.',
+            'value.string' => 'Tên thuộc tính phải là chuỗi kí tự.',
+            'image.image' => 'File tải lên phải là hình ảnh.',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $attributeValue->update([
+                'attribute_id' => $request->input('attribute_id'),
+                'value' => $request->input('value'),
+            ]);
+
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('attribute_images', 'public');
+                $attributeValue->update([
+                    'image' => $imagePath
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('attribute')->with('success', 'Cập nhật thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi cập nhật thuộc tính: ' . $e->getMessage());
+            return redirect()->route('attribute')->with('error', 'Lỗi khi cập nhật thuộc tính!');
+        }
+    }
+    public function attri_value_delete($id)
+    {
+        $attributeValue = AttributeValue::findOrFail($id);
+
+        try {
+            $attributeValue->delete();
+            return redirect()->route('attribute')->with('success', 'Xóa thuộc tính thành công!');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi xóa thuộc tính: ' . $e->getMessage());
+            return redirect()->route('attribute')->with('error', 'Không thể xóa thuộc tính!');
         }
     }
 }

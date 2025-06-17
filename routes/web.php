@@ -63,6 +63,9 @@ Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashbo
 Route::get('category', [ProductController::class, 'list_category'])->name('list_category');
 Route::get('category/add', [ProductController::class, 'add_category'])->name('add_category');
 Route::post('category/create', [ProductController::class, 'category_store'])->name('category_store');
+Route::get('/category/edit/{id}', [ProductController::class, 'edit_category'])->name('edit_category');
+Route::post('/category/update/{id}', [ProductController::class, 'update_category'])->name('update_category');
+Route::get('/category/delete/{id}', [ProductController::class, 'delete_category'])->name('delete_category');
 
 //Product
 Route::get('product', [ProductController::class, 'list_product'])->name('list_product');
@@ -74,8 +77,14 @@ Route::post('product/edit', [ProductController::class, 'edit_product'])->name('e
 Route::get('attribute/list', [ProductController::class, 'attribute'])->name('attribute');
 Route::get('attribute/add', [ProductController::class, 'attribute_add'])->name('attribute_add');
 Route::post('attribute/store', [ProductController::class, 'attribute_store'])->name('attribute_store');
+Route::get('/attribute/edit/{id}', [ProductController::class, 'attribute_edit'])->name('edit_attribute');
+Route::post('/attribute/update/{id}', [ProductController::class, 'attribute_update'])->name('update_attribute');
+Route::get('/attribute/delete/{id}', [ProductController::class, 'attribute_delete'])->name('delete_attribute');
 
 //Attribute_value
 Route::get('attribute_value', [ProductController::class, 'list_attribute'])->name('list_attribute');
 Route::get('attribute_value/create', [ProductController::class, 'attribute_create'])->name('attribute_create');
 Route::post('attribute_value/store', [ProductController::class, 'insert_attribute'])->name('insert_attribute');
+Route::get('/attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
+Route::post('/attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
+Route::get('/attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');

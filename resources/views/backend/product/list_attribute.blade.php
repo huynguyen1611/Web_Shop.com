@@ -104,8 +104,11 @@
                                     <input type="checkbox" class="js-switch" checked />
                                 </td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                    <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    <a href="{{ route('edit_attribute', $attribute->id) }}" class="btn btn-success"><i
+                                            class="fa fa-edit"></i></a>
+                                    <a href="{{ route('delete_attribute', $attribute->id) }}"
+                                        onclick="return confirm('Bạn có muốn xóa nhóm thuộc tính này không?')"
+                                        class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach
