@@ -10,3 +10,4 @@
 <link href="backend/css/style.css" rel="stylesheet">
 <link href="backend/css/customize.css" rel="stylesheet">
 <script src="backend/js/jquery-3.1.1.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">

@@ -29,61 +29,76 @@ class ProductController extends Controller
     }
     public function list_product()
     {
-        return view('backend.product.list_product');
+        $products = Product::all();
+        return view('backend.product.list_product', [
+            'products' => $products,
+        ]);
     }
     public function product_store(Request $request)
     {
+        // 1. Validate dữ liệu
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'name' => 'required|string|max:255',
+            'short_description' => 'required|string',
             'content' => 'required|string',
             'parent_category' => 'required',
             'sub_categories' => 'nullable|array',
             'product_code' => 'required|string|max:50',
             'origin' => 'nullable|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'discount' => 'nullable|numeric|min:0',
+            'price' => 'required|string',
+            'sale_price' => 'nullable|string',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'album_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'title.required' => 'Vui lòng nhập tiêu đề sản phẩm.',
-            'description.required' => 'Vui lòng nhập mô tả sản phẩm.',
-            'content.required' => 'Vui lòng nhập nội dung sản phẩm.',
+            'name.required' => 'Vui lòng nhập tên sản phẩm.',
+            'short_description.required' => 'Vui lòng nhập mô tả ngắn.',
+            'content.required' => 'Vui lòng nhập nội dung.',
             'parent_category.required' => 'Vui lòng chọn danh mục cha.',
             'product_code.required' => 'Vui lòng nhập mã sản phẩm.',
             'price.required' => 'Vui lòng nhập giá bán sản phẩm.',
-            'price.numeric' => 'Giá bán phải là một số.',
-            'price.min' => 'Giá bán không được nhỏ hơn 0.',
-            'discount.numeric' => 'Số tiền tiết kiệm phải là số.',
             'thumbnail.required' => 'Vui lòng chọn ảnh đại diện.',
-            'thumbnail.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
-            'thumbnail.mimes' => 'Ảnh đại diện phải thuộc định dạng jpeg, png, jpg, gif.',
-            'thumbnail.max' => 'Ảnh đại diện không được vượt quá 2MB.',
-            'album_images.*.image' => 'Mỗi ảnh trong album phải là tệp hình ảnh.',
-            'album_images.*.mimes' => 'Ảnh trong album phải thuộc định dạng jpeg, png, jpg, gif.',
-            'album_images.*.max' => 'Mỗi ảnh trong album không được vượt quá 2MB.',
+            'thumbnail.image' => 'Ảnh đại diện phải là hình ảnh hợp lệ.',
+            'thumbnail.mimes' => 'Ảnh đại diện phải là jpeg, png, jpg, gif.',
+            'thumbnail.max' => 'Ảnh đại diện không quá 2MB.',
+            'album_images.*.image' => 'Mỗi ảnh trong album phải là hình ảnh.',
+            'album_images.*.mimes' => 'Định dạng ảnh album không hợp lệ.',
+            'album_images.*.max' => 'Mỗi ảnh trong album không quá 2MB.',
         ]);
+
         DB::beginTransaction();
+
         try {
-            // 1. Lưu sản phẩm chính
+            // 2. Chuẩn hóa giá tiền (loại dấu chấm nếu có)
+            $price = (int) str_replace('.', '', $request->input('price'));
+            $salePrice = (int) str_replace('.', '', $request->input('sale_price'));
+            $discount = $request->input('discount_percent') ?? 0;
+
+            // 3. Lấy danh mục con
+            $subCategories = $request->input('sub_categories');
+            $categoryId = is_array($subCategories) && count($subCategories) > 0 ? $subCategories[0] : null;
+
+            if (!$categoryId) {
+                return back()->withInput()->with('error', 'Vui lòng chọn ít nhất một danh mục phụ.');
+            }
+
+            // 4. Tạo sản phẩm
             $product = Product::create([
-                'category_id'       => $request->input('sub_categories')[0], // chỉ lấy 1 danh mục phụ
+                'category_id'       => $categoryId,
                 'name'              => $request->input('name'),
                 'short_description' => $request->input('short_description'),
                 'content'           => $request->input('content'),
                 'origin'            => $request->input('origin'),
                 'main_sku'          => $request->input('product_code'),
-                'price'             => $request->input('price'),
-                'sale_price'        => $request->input('sale_price'),
-                'discount_percent'  => $request->input('discount_percent'),
+                'price'             => $price,
+                'sale_price'        => $salePrice,
+                'discount_percent'  => $discount,
                 'has_variants'      => $request->has('has_variants')
             ]);
 
-            // 2. Tạo bản ghi ảnh đại diện, album sau khi sản phẩm đã lưu thành công
-            // a. Ảnh đại diện
+            // 5. Lưu ảnh đại diện
             if ($request->hasFile('thumbnail')) {
                 $thumbPath = $request->file('thumbnail')->store('products', 'public');
-
                 Image::create([
                     'product_id' => $product->id,
                     'file_path' => $thumbPath,
@@ -91,11 +106,10 @@ class ProductController extends Controller
                 ]);
             }
 
-            // b. Album ảnh
+            // 6. Lưu album ảnh
             if ($request->hasFile('album_images')) {
                 foreach ($request->file('album_images') as $img) {
                     $imgPath = $img->store('products', 'public');
-
                     Image::create([
                         'product_id' => $product->id,
                         'file_path' => $imgPath,
@@ -104,24 +118,31 @@ class ProductController extends Controller
                 }
             }
 
-            // 3. Xử lý biến thể nếu có
+            // 7. Lưu biến thể nếu có
             if ($product->has_variants && $request->filled('variants')) {
-                foreach ($request->input('variants') as $variantData) {
+                foreach ($request->input('variants') as $index => $variantData) {
+                    $imagePath = null;
+
+                    // Xử lý ảnh riêng của biến thể (nếu có)
+                    if ($request->hasFile("variants.$index.image")) {
+                        $imagePath = $request->file("variants.$index.image")->store('variants', 'public');
+                    }
+
                     $variant = ProductVariant::create([
-                        'product_id' => $product->id,
-                        'sku' => $variantData['sku'] ?? null,
-                        'price' => $variantData['price'] ?? 0,
-                        'stock_quantity' => $variantData['stock'] ?? 0,
-                        'variant_image' => $variantData['image'] ?? null, // nếu bạn xử lý ảnh riêng thì dùng cách lưu ảnh ở đây
+                        'product_id'      => $product->id,
+                        'sku'             => $variantData['sku'] ?? null,
+                        'price'           => isset($variantData['price']) ? (int) str_replace('.', '', $variantData['price']) : 0,
+                        'stock_quantity'  => $variantData['stock'] ?? 0,
+                        'variant_image'   => $imagePath,
                     ]);
 
                     // Gắn thuộc tính cho biến thể
-                    if (isset($variantData['attributes'])) {
+                    if (isset($variantData['attributes']) && is_array($variantData['attributes'])) {
                         foreach ($variantData['attributes'] as $attributeId => $valueId) {
                             ProductVariantAttribute::create([
-                                'product_variant_id' => $variant->id,
-                                'attribute_id' => $attributeId,
-                                'attribute_value_id' => $valueId,
+                                'product_variant_id'  => $variant->id,
+                                'attribute_id'        => $attributeId,
+                                'attribute_value_id'  => $valueId,
                             ]);
                         }
                     }
@@ -129,14 +150,11 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('product_index')->with('success', 'Thêm sản phẩm thành công!');
+            return redirect()->route('list_product')->with('success', 'Thêm sản phẩm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Ghi log nếu cần
             Log::error('Lỗi khi thêm sản phẩm: ' . $e->getMessage());
-
-            return redirect()->back()->withInput()->with('error', 'Đã có lỗi xảy ra: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Đã có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 

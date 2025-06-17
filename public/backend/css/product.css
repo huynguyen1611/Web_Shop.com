@@ -329,3 +329,11 @@ form.thongtin input {
 .flex {
     display: flex;
 }
+.button-attribute {
+    margin-bottom: 20px;
+}
+.button-attribute:hover {
+    background-color: #000;
+    color: whitesmoke;
+    border: 2px solid whitesmoke;
+}
