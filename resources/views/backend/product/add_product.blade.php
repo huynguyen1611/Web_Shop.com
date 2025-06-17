@@ -22,6 +22,7 @@
             </div>
             <div class="ibox-content">
                 <form id="product-form" action="{{ route('product_store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
@@ -71,7 +72,8 @@
                             </div>
                             <div id="attribute-wrapper"></div>
 
-                            <button type="button" id="add-version-btn">Thêm phiên bản mới</button>
+                            <button class="button-attribute" type="button" id="add-version-btn">Thêm phiên bản
+                                mới</button>
                             <template id="attribute-template">
                                 <div class="content-attribute-content">
                                     <select class="form-control attribute-group">
@@ -158,7 +160,7 @@
                                     <option value="{{ $parent->id }}">{{ $parent->name }}</option>
                                 @endforeach
                             </select>
-                            <span>Chọn danh mục phụ nếu có</span>
+                            <p class="flex">Chọn danh mục phụ nếu có <span style="color: red"> *</span></p>
                             <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
                                 @foreach ($subCategories as $sub)
                                     <option value="{{ $sub->id }}">{{ $sub->name }}</option>
@@ -281,46 +283,15 @@
             this.value = '';
         });
     </script>
-    {{-- Xử lí danh sách thuộc tính  --}}
-    {{-- <script>
-        // Toggle Hiện/Ẩn khối thuộc tính
-        document.getElementById('toggle-attribute').addEventListener('change', function() {
-            document.getElementById('content-attribute').style.display = this.checked ? 'block' : 'none';
+    <script>
+        // Thiết lập token cho tất cả các request Ajax
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
-
-        // Xử lý thêm phiên bản mới
-        document.getElementById('add-version-btn').addEventListener('click', function() {
-            const template = document.getElementById('attribute-template');
-            const clone = template.content.cloneNode(true);
-            const wrapper = document.getElementById('attribute-wrapper');
-
-            // Gắn xử lý xóa
-            const removeBtn = clone.querySelector('.remove-attribute');
-            removeBtn.addEventListener('click', function() {
-                this.closest('.content-attribute-content').remove();
-            });
-
-            // Gắn Select2 cho mỗi dòng mới
-            const select = clone.querySelector('.attribute-values');
-            $(select).select2({
-                tags: true,
-                width: '100%',
-                placeholder: "Chọn hoặc nhập giá trị"
-            });
-
-            wrapper.appendChild(clone);
-        });
-
-        // Khởi tạo select2 cho các dropdown hiện có (nếu có)
-        $(document).ready(function() {
-            $('.select2-multi').select2({
-                tags: true,
-                width: '100%',
-                placeholder: "Chọn hoặc nhập giá trị"
-            });
-        });
-    </script> --}}
-    {{-- Xử lí khi click và danh sách --}}
+    </script>
+    {{-- Xử lí khi click và danh sách thuộc tính --}}
     <script>
         // Gắn sự kiện click cho bảng, sử dụng event delegation
         document.querySelector('#productTable').addEventListener('click', function(e) {
@@ -334,42 +305,31 @@
         });
     </script>
     {{-- Xử lí danh sách khi chọn thuộc tính --}}
-    <script>
-        const allAttributes = @json($attributes);
 
+    <script>
         $(document).ready(function() {
+            const allAttributes = @json($attributes);
+
             $('.select2-multi').select2({
                 tags: true,
                 width: '100%',
                 placeholder: "Chọn hoặc nhập giá trị"
             });
 
-            $('#productTable').on('click', '.main-row', function() {
-                // Ẩn tất cả detail-row trước
-                $('.detail-row').hide();
-
-                // Hiện dòng chi tiết sau dòng hiện tại
-                const detailRow = $(this).next('.detail-row');
-                detailRow.show();
-
-                // Load dữ liệu vào form nếu cần ở đây
-            });
-
+            // Toggle khối thuộc tính
             $('#toggle-attribute').on('change', function() {
                 $('#content-attribute').toggle(this.checked);
             });
 
+            // Click "Thêm phiên bản"
             $('#add-version-btn').on('click', function() {
                 const selectedAttrIds = getSelectedAttributeIds();
-
                 const template = document.getElementById('attribute-template');
                 const clone = template.content.cloneNode(true);
                 const wrapper = document.getElementById('attribute-wrapper');
-
                 const selectGroup = clone.querySelector('.attribute-group');
                 const selectValues = clone.querySelector('.attribute-values');
 
-                // Chỉ hiển thị nhóm thuộc tính chưa chọn
                 selectGroup.innerHTML = '<option value="">-- Chọn nhóm --</option>';
                 allAttributes.forEach(attr => {
                     if (!selectedAttrIds.includes(attr.id.toString())) {
@@ -396,98 +356,153 @@
                         $(selectValues).trigger('change');
                     }
 
-                    checkHideAddButton(); // ẩn nút nếu hết thuộc tính
+                    checkHideAddButton();
                 });
 
                 $(selectValues).on('change', function() {
                     generateCombinations();
                 });
 
-                const removeBtn = clone.querySelector('.remove-attribute');
-                removeBtn.addEventListener('click', function() {
+                clone.querySelector('.remove-attribute').addEventListener('click', function() {
                     this.closest('.content-attribute-content').remove();
                     generateCombinations();
-                    checkHideAddButton(); // cập nhật lại trạng thái nút
+                    checkHideAddButton();
                 });
 
                 wrapper.appendChild(clone);
                 checkHideAddButton();
             });
-        });
 
-        // Lấy danh sách nhóm đã chọn
-        function getSelectedAttributeIds() {
-            const wrapper = document.getElementById('attribute-wrapper');
-            const selects = wrapper.querySelectorAll('.attribute-group');
-            return Array.from(selects).map(sel => sel.value).filter(val => val);
-        }
+            // Bắt toàn bộ click trong #productTable
+            $('#productTable').on('click', function(e) {
+                const target = e.target;
 
-        // Kiểm tra ẩn nút “Thêm phiên bản”
-        function checkHideAddButton() {
-            const selectedAttrIds = getSelectedAttributeIds();
-            const allAttrIds = allAttributes.map(a => a.id.toString());
-            const hidden = allAttrIds.every(id => selectedAttrIds.includes(id));
-            document.getElementById('add-version-btn').style.display = hidden ? 'none' : 'inline-block';
-        }
+                // Mở dòng chi tiết
+                if ($(target).closest('.main-row').length) {
+                    const clickedRow = $(target).closest('.main-row');
+                    const detailRow = clickedRow.next('.detail-row');
 
-        // Tạo tổ hợp và bảng sản phẩm
-        function generateCombinations() {
-            const wrapper = document.getElementById('attribute-wrapper');
-            const attributeGroups = wrapper.querySelectorAll('.content-attribute-content');
-            const selectedValues = [];
+                    $('.detail-row').hide(); // Ẩn hết trước
 
-            attributeGroups.forEach(group => {
-                const attrSelect = group.querySelector('.attribute-group');
-                const valueSelect = $(group.querySelector('.attribute-values'));
+                    if (detailRow.length) {
+                        const quantity = clickedRow.find('input[name$="[stock]"]').val() || '';
+                        const price = clickedRow.find('input[name$="[price]"]').val() || '';
+                        const sku = clickedRow.find('input[name$="[sku]"]').val() || '';
 
-                const attrId = attrSelect.value;
-                const attrName = attrSelect.options[attrSelect.selectedIndex]?.text;
-                const values = valueSelect.val() || [];
+                        detailRow.find('.soluong input').val(quantity);
+                        detailRow.find('.giatien input').val(price);
+                        detailRow.find('.sku input').val(sku);
 
-                if (attrId && values.length > 0) {
-                    selectedValues.push({
-                        id: attrId,
-                        name: attrName,
-                        values: values.map(valId => {
-                            const text = valueSelect.find(`option[value="${valId}"]`).text();
-                            return {
-                                id: valId,
-                                text
-                            };
-                        })
-                    });
+                        detailRow.show();
+                    }
+                }
+
+                // Lưu lại
+                if ($(target).hasClass('save-btn')) {
+                    const detailRow = $(target).closest('.detail-row');
+                    const mainRow = detailRow.prev('.main-row');
+
+                    const quantity = detailRow.find('.soluong input').val();
+                    const price = detailRow.find('.giatien input').val();
+                    const sku = detailRow.find('.sku input').val();
+
+                    mainRow.find('input[name$="[stock]"]').val(quantity);
+                    mainRow.find('input[name$="[price]"]').val(price);
+                    mainRow.find('input[name$="[sku]"]').val(sku);
+
+                    detailRow.hide();
+                }
+
+                // Hủy
+                if ($(target).hasClass('cancel-btn')) {
+                    $(target).closest('.detail-row').hide();
                 }
             });
 
-            const combinations = cartesian(selectedValues.map(g => g.values));
-            const tableHead = document.querySelector('#productTable thead tr');
-            const tableBody = document.querySelector('#productTable tbody');
-            tableHead.innerHTML = '<th>Ảnh</th>' + selectedValues.map(a => `<th>${a.name}</th>`).join('') +
-                '<th>Số lượng</th><th>Giá</th><th>SKU</th>';
-            tableBody.innerHTML = '';
+            // ===== Hàm hỗ trợ =====
+            function getSelectedAttributeIds() {
+                const selects = document.querySelectorAll('.attribute-group');
+                return Array.from(selects).map(sel => sel.value).filter(Boolean);
+            }
 
-            combinations.forEach((combo, index) => {
-                const skuParts = combo.map(c => c.id);
-                const attrTexts = combo.map(c => c.text);
-                const hiddenInputs = combo.map((c, i) =>
-                    `<input type="hidden" name="variants[${index}][attributes][${selectedValues[i].id}]" value="${c.id}">`
-                ).join('');
+            function checkHideAddButton() {
+                const selectedAttrIds = getSelectedAttributeIds();
+                const allAttrIds = allAttributes.map(a => a.id.toString());
+                const hidden = allAttrIds.every(id => selectedAttrIds.includes(id));
+                document.getElementById('add-version-btn').style.display = hidden ? 'none' : 'inline-block';
+            }
 
-                const mainRow = document.createElement('tr');
-                mainRow.classList.add('main-row');
-                mainRow.innerHTML = `
-                    <td><input type="file" name="variants[${index}][image]"></td>
-                    ${attrTexts.map((text) => `<td>${text}</td>`).join('')}
-                    <td><input type="number" value="0" readonly class="form-control"></td>
-                    <td><input type="text" value="100.000" readonly class="form-control"></td>
-                    <td><input type="text" value="SP-${skuParts.join('-')}" readonly class="form-control"></td>
-                    ${hiddenInputs}
-                `;
+            function cartesian(arr) {
+                return arr.reduce((a, b) =>
+                    a.flatMap(d => b.map(e => [...d, e])),
+                    [
+                        []
+                    ]
+                );
+            }
 
-                const detailRow = document.createElement('tr');
-                detailRow.classList.add('detail-row');
-                detailRow.style.display = 'none';
-                detailRow.innerHTML = `
+            function generateCombinations() {
+                const wrapper = document.getElementById('attribute-wrapper');
+                const attributeGroups = wrapper.querySelectorAll('.content-attribute-content');
+                const selectedValues = [];
+
+
+                attributeGroups.forEach(group => {
+                    const attrSelect = group.querySelector('.attribute-group');
+                    const valueSelect = $(group.querySelector('.attribute-values'));
+
+                    const attrId = attrSelect.value;
+                    const attrName = attrSelect.options[attrSelect.selectedIndex]?.text;
+                    const values = valueSelect.val() || [];
+
+                    if (attrId && values.length > 0) {
+                        selectedValues.push({
+                            id: attrId,
+                            name: attrName,
+                            values: values.map(valId => {
+                                const text = valueSelect.find(`option[value="${valId}"]`)
+                                    .text();
+                                return {
+                                    id: valId,
+                                    text
+                                };
+                            })
+                        });
+                    }
+                });
+
+                const combinations = cartesian(selectedValues.map(g => g.values));
+                const tableHead = document.querySelector('#productTable thead tr');
+                const tableBody = document.querySelector('#productTable tbody');
+
+                tableHead.innerHTML = '<th>Ảnh</th>' +
+                    selectedValues.map(a => `<th>${a.name}</th>`).join('') +
+                    '<th>Số lượng</th><th>Giá</th><th>SKU</th>';
+
+                tableBody.innerHTML = '';
+
+                combinations.forEach((combo, index) => {
+                    const skuParts = combo.map(c => c.id);
+                    const attrTexts = combo.map(c => c.text);
+                    const hiddenInputs = combo.map((c, i) =>
+                        `<input type="hidden" name="variants[${index}][attributes][${selectedValues[i].id}]" value="${c.id}">`
+                    ).join('');
+
+                    const mainRow = document.createElement('tr');
+                    mainRow.classList.add('main-row');
+                    mainRow.innerHTML = `
+                            <td><input type="file" name="variants[${index}][image]"></td>
+                            ${attrTexts.map((text) => `<td>${text}</td>`).join('')}
+                            <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0" ></td>
+                            <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000" ></td>
+                            <td><input type="text"  name="variants[${index}][sku]"  class="form-control" value="SP-${skuParts.join('-')}" ></td>
+                            ${hiddenInputs}
+                        `;
+                    const detailRow = document.createElement('tr');
+
+                    detailRow.classList.add('detail-row');
+                    detailRow.style.display = 'none';
+                    detailRow.innerHTML = `
                     <td colspan="${selectedValues.length + 4}">
                         <div class="chitiet">
                             <div class="chitiet-top">
@@ -504,84 +519,24 @@
                                 </div>
                                 <div class="soluong grip">
                                     <label>Số lượng</label>
-                                    <input type="text" name="variants[${index}][stock]">
+                                    <input type="text" name="">
                                 </div>
                                 <div class="giatien grip">
                                     <label>Giá tiền</label>
-                                    <input type="text" name="variants[${index}][price]">
+                                    <input type="text" name="">
                                 </div>
                                 <div class="sku grip">
                                     <label>SKU</label>
-                                    <input type="text" name="variants[${index}][sku]">
+                                    <input type="text" name="">
                                 </div>
                             </div>
                         </div>
                     </td>
                 `;
 
-                tableBody.appendChild(mainRow);
-                tableBody.appendChild(detailRow);
-            });
-        }
-
-        // Hàm tạo tổ hợp từ nhiều mảng
-        function cartesian(arr) {
-            return arr.reduce((a, b) =>
-                a.flatMap(d => b.map(e => [...d, e])),
-                [
-                    []
-                ]
-            );
-        }
-        // Sự kiện khi click vào nút "Hủy bỏ" trong detail-row
-        $('#productTable').on('click', '.cancel-detail', function() {
-            // Ẩn hàng chi tiết gần nhất
-            $(this).closest('tr.detail-row').hide();
-        });
-        // Event delegation cho nút "Lưu lại"
-        document.querySelector('#productTable tbody').addEventListener('click', function(e) {
-            if (e.target.classList.contains('save-btn')) {
-                const detailRow = e.target.closest('.detail-row');
-                const tbody = document.querySelector('#productTable tbody');
-                const allRows = [...tbody.children];
-                const targetIndex = [...allRows].indexOf(detailRow) - 1;
-
-                const mainRow = allRows[targetIndex];
-
-                const newQuantity = detailRow.querySelector('.soluong input').value;
-                const newPrice = detailRow.querySelector('.giatien input').value;
-                const newSKU = detailRow.querySelector('.sku input').value;
-
-                // Cập nhật lại input trong dòng chính
-                mainRow.querySelector('td input[name$="[stock]"]').value = newQuantity;
-                mainRow.querySelector('td input[name$="[price]"]').value = newPrice;
-                mainRow.querySelector('td input[name$="[sku]"]').value = newSKU;
-
-                detailRow.style.display = 'none';
-            }
-
-            if (e.target.classList.contains('cancel-btn')) {
-                const detailRow = e.target.closest('.detail-row');
-                detailRow.style.display = 'none';
-            }
-
-            // Mở detail khi click main-row
-            const clickedRow = e.target.closest('.main-row');
-            if (clickedRow) {
-                document.querySelectorAll('.detail-row').forEach(row => row.style.display = 'none');
-
-                const detailRow = clickedRow.nextElementSibling;
-                if (!detailRow || !detailRow.classList.contains('detail-row')) return;
-
-                const quantity = clickedRow.querySelector('input[name$="[stock]"]')?.value || 0;
-                const price = clickedRow.querySelector('input[name$="[price]"]')?.value || '';
-                const sku = clickedRow.querySelector('input[name$="[sku]"]')?.value || '';
-
-                detailRow.querySelector('.soluong input').value = quantity;
-                detailRow.querySelector('.giatien input').value = price;
-                detailRow.querySelector('.sku input').value = sku;
-
-                detailRow.style.display = 'table-row';
+                    tableBody.appendChild(mainRow);
+                    tableBody.appendChild(detailRow);
+                });
             }
         });
     </script>
