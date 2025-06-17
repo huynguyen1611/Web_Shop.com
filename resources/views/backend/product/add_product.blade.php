@@ -26,17 +26,17 @@
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
-                            <input type="text" name="name">
+                            <input type="text" name="name" value="{{ old('name') }}">
                         </div>
 
                         <div class="mota">
                             <label for="">Mô tả ngắn <span style="color: red">*</span></label>
-                            <textarea name="short_description" cols="30" rows="10"></textarea>
+                            <textarea name="short_description" cols="30" rows="10">{{ old('short_description') }}</textarea>
                         </div>
 
                         <div class="noidung">
                             <label for="">Nội dung <span style="color: red">*</span></label>
-                            <textarea name="content" cols="30" rows="10"></textarea>
+                            <textarea name="content" cols="30" rows="10">{{ old('content') }}</textarea>
                         </div>
 
                         <div class="album-container">
@@ -171,15 +171,15 @@
                         <div class="thongtin">
                             <span>THÔNG TIN CHUNG</span>
                             <p>Mã sản phẩm</p>
-                            <input type="text" name="product_code">
+                            <input type="text" name="product_code" value="{{ old('product_code') }}">
                             <p>Xuất xứ</p>
-                            <input type="text" name="origin">
+                            <input type="text" name="origin" value="{{ old('origin') }}">
                             <p>Giá gốc sản phẩm</p>
-                            <input type="number" name="price">
+                            <input type="number" name="price" value="{{ old('price') }}">
                             <p>Giá giảm sản phẩm</p>
-                            <input type="number" name="sale_price">
+                            <input type="number" name="sale_price" value="{{ old('sale_price') }}">
                             <p>Số tiết kiệm</p>
-                            <input type="number" name="discount_percent">
+                            <input type="number" name="discount_percent" value="{{ old('discount_percent') }}">
                         </div>
 
                         <div class="anh">
@@ -489,13 +489,19 @@
                     ).join('');
 
                     const mainRow = document.createElement('tr');
+                    const productCode = document.querySelector('input[name="product_code"]').value ?? 'SP';
                     mainRow.classList.add('main-row');
                     mainRow.innerHTML = `
-                            <td><input type="file" name="variants[${index}][image]"></td>
+                            <td>
+                                <div style="position: relative; width: 30px; height: 30px;">
+                                    <img src="{{ asset('frontend/img/nophoto.jpg') }}" class="preview-img" style="width:30px; height:30px; object-fit:cover; position:absolute; top:0; left:0;" />
+                                    <input type="file" name="variants[${index}][image]" class="image-input" style="opacity:0; width:30px; height:30px; position:absolute; top:0; left:0; cursor:pointer;">
+                                </div>
+                            </td>
                             ${attrTexts.map((text) => `<td>${text}</td>`).join('')}
                             <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0" ></td>
                             <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000" ></td>
-                            <td><input type="text"  name="variants[${index}][sku]"  class="form-control" value="SP-${skuParts.join('-')}" ></td>
+                            <td><input type="text"  name="variants[${index}][sku]"  class="form-control" value="${productCode}-${skuParts.join('-')}" ></td>
                             ${hiddenInputs}
                         `;
                     const detailRow = document.createElement('tr');
@@ -537,6 +543,22 @@
                     tableBody.appendChild(mainRow);
                     tableBody.appendChild(detailRow);
                 });
+            }
+        });
+    </script>
+    {{-- Xử lí thêm ảnh ở bản thuộc tính --}}
+    <script>
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('image-input')) {
+                const file = e.target.files[0];
+                const img = e.target.closest('td').querySelector('.preview-img');
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         });
     </script>

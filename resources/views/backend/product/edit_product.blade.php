@@ -21,7 +21,8 @@
                 <h5>Thêm mới sản phẩm </h5>
             </div>
             <div class="ibox-content">
-                <form id="product-form" action="{{ route('product_store') }}" method="POST" enctype="multipart/form-data">
+                <form id="product-form" action="{{ route('update_product', $product->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="content-left">
                         <div class="tieude">
@@ -103,49 +104,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- <!-- Ví dụ: -->
-                                        <tr class="main-row">
-                                            <td><img src="{{ asset('frontend/img/product/ip-16.jpg') }}"
-                                                    style="width: 30px; height: 30px;"></td>
-                                            <td>Titan</td>
-                                            <td>521GB</td>
-                                            <td>0</td>
-                                            <td>100.000</td>
-                                            <td>12426452-2-3</td>
-                                        </tr>
-                                        <tr class="detail-row" style="display: none;">
-                                            <td colspan="6">
-                                                <div class="chitiet">
-                                                    <div class="chitiet-top">
-                                                        <p>CẬP NHẬT THÔNG TIN CƠ BẢN</p>
-                                                        <div class="button">
-                                                            <button type="button">Hủy bỏ</button>
-                                                            <button type="submit">Lưu lại</button>
-                                                        </div>
-                                                    </div>
-                                                    <img src="{{ asset('frontend/img/product/ip-16.jpg') }}"
-                                                        style="width: 150px; height: 150px;">
-                                                    <div class="chitiet-botton">
-                                                        <div class="tonkho">
-                                                            <p>Tồn kho</p>
-                                                            <input type="checkbox" class="js-switch" checked />
-                                                        </div>
-                                                        <div class="soluong grip">
-                                                            <label>Số lượng</label>
-                                                            <input type="text">
-                                                        </div>
-                                                        <div class="giatien grip">
-                                                            <label>Giá tiền</label>
-                                                            <input type="text">
-                                                        </div>
-                                                        <div class="sku grip">
-                                                            <label>SKU</label>
-                                                            <input type="text">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
+
                                     </tbody>
                                 </table>
                             </div>

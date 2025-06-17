@@ -46,22 +46,25 @@
                             </select>
                             <div class="action">
                                 <div class="uk-flex ul-flex-middle">
-                                    <select name="user-catalogue_id" class="form-control mr10">
-                                        <option value="0" selected="selected">Chọn nhóm sản phẩm<main></main>
-                                        </option>
-                                        <option value="1">Điện thoại</option>
-                                        <option value="1">LapTop</option>
-                                    </select>
-                                    <div class="uk-search uk-flex uk-flex-middle mr10">
-                                        <div class="input-group">
-                                            <input type="text" name="keyword" value=""
-                                                placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control">
-                                            <span class="input-group-btn">
-                                                <button type="submit" name="search" value="search"
-                                                    class="btn btn-primary mb0 btn-sm">Tìm kiếm</button>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <form action="{{ route('list_product') }}" method="GET"
+                                        class="uk-flex uk-flex-middle mb-3">
+                                        <select name="category_id" class="form-control mr-2" style="width: 200px"
+                                            onchange="this.form.submit()">
+                                            <option value="0">-- Chọn danh mục phụ --</option>
+                                            @foreach ($categories as $cat)
+                                                <option value="{{ $cat->id }}"
+                                                    {{ $cat->id == $category_id ? 'selected' : '' }}>
+                                                    {{ $cat->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <input type="text" name="keyword" class="form-control mr-2"
+                                            placeholder="Nhập tên sản phẩm..." value="{{ $keyword }}"
+                                            style="width: 250px">
+
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    </form>
                                     <a href="{{ route('add_product') }}" class="btn btn-danger"><i
                                             class="fa fa-plus mr5"></i>Thêm mới sản
                                         phẩm</a>
@@ -91,24 +94,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" value="" name="" class="input-checkbox checkBoxItem ">
-                            </td>
+                        @foreach ($products as $product)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" value="" name=""
+                                        class="input-checkbox checkBoxItem ">
+                                </td>
 
-                            <td colspan="6">
-                                <p style="font-size: 20px ; color: blue">IPhone 16 | Chính hãng Apple</p>
-                                <p><span style="color: red;">Nguồn hiển thị:</span> Điện thoại - Sản phẩm</p>
-                            </td>
+                                <td colspan="6">
+                                    <p style="font-size: 20px ; color: blue">{{ $product->name }}</p>
+                                    <p><span style="color: red;">Nguồn hiển thị:</span>
+                                        {{ $product->category->parent->name ?? 'Không có danh mục cha' }} -
+                                        {{ $product->category->name ?? 'Không có danh mục phụ' }}</p>
 
-                            <td class="text-center">
-                                <input type="checkbox" class="js-switch" checked />
-                            </td>
-                            <td class="text-center">
-                                <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
+                                </td>
+
+                                <td class="text-center">
+                                    <input type="checkbox" class="js-switch" checked />
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('edit_product', $product->id) }}" class="btn btn-success"><i
+                                            class="fa fa-edit"></i></a>
+                                    <a href="{{ route('delete_product', $product->id) }}"
+                                        onclick="return confirm('Bạn có muốn xóa sản phẩm này không?')"
+                                        class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 {{-- {{ $users->links('pagination::bootstrap-5') }} --}}

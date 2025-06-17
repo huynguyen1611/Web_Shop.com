@@ -46,20 +46,23 @@
                             </select>
                             <div class="action">
                                 <div class="uk-flex ul-flex-middle">
-                                    <select name="user-catalogue_id" class="form-control mr10">
-                                        <option value="0" selected="selected">Chọn nhóm thành viên</option>
-                                        <option value="1">Quản trị viên</option>
-                                    </select>
-                                    <div class="uk-search uk-flex uk-flex-middle mr10">
-                                        <div class="input-group">
-                                            <input type="text" name="keyword" value=""
-                                                placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control">
-                                            <span class="input-group-btn">
-                                                <button type="submit" name="search" value="search"
-                                                    class="btn btn-primary mb0 btn-sm">Tìm kiếm</button>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <form method="GET" action="{{ route('list_category') }}" class="mb-3 form-inline">
+                                        <select name="group" class="form-control mr-2" onchange="this.form.submit()"
+                                            style="max-width: 200px;">
+                                            <option value="">Tất cả</option>
+                                            <option value="parent" {{ request('group') == 'parent' ? 'selected' : '' }}>Danh
+                                                mục cha</option>
+                                            <option value="child" {{ request('group') == 'child' ? 'selected' : '' }}>Danh
+                                                mục phụ</option>
+                                        </select>
+
+                                        <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                            placeholder="Nhập từ khóa tìm kiếm..." class="form-control mr-2"
+                                            style="max-width: 300px;">
+
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    </form>
+
                                     <a href="{{ route('add_category') }}" class="btn btn-danger"><i
                                             class="fa fa-plus mr5"></i>Thêm mới nhóm sản
                                         phẩm</a>
@@ -89,39 +92,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($categories->where('parent_id', null) as $parent)
+                        @foreach ($categories as $category)
                             <tr>
                                 <td><input type="checkbox" class="input-checkbox checkBoxItem"></td>
-                                <td colspan="6">|--- {{ $parent->name }}</td>
+                                <td colspan="6">
+                                    @if ($category->parent_id == null)
+                                        |--- {{ $category->name }}
+                                    @else
+                                        |-------- {{ $category->name }}
+                                    @endif
+                                </td>
                                 <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
                                 <td class="text-center">
-                                    <a href="{{ route('edit_category', $parent->id) }}" class="btn btn-success"><i
+                                    <a href="{{ route('edit_category', $category->id) }}" class="btn btn-success"><i
                                             class="fa fa-edit"></i></a>
-                                    <a href="{{ route('delete_category', $parent->id) }}"
+                                    <a href="{{ route('delete_category', $category->id) }}"
                                         onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này không?')"
-                                        class="btn btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
+                                        class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
-
-                            @foreach ($categories->where('parent_id', $parent->id) as $child)
-                                <tr>
-                                    <td><input type="checkbox" class="input-checkbox checkBoxItem"></td>
-                                    <td colspan="6">|-------- {{ $child->name }}</td>
-                                    <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
-                                    <td class="text-center">
-                                        <a href="{{ route('edit_category', $child->id) }}" class="btn btn-success"><i
-                                                class="fa fa-edit"></i></a>
-                                        <a href="{{ route('delete_category', $child->id) }}"
-                                            onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này không?')"
-                                            class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-
-                                    </td>
-                                </tr>
-                            @endforeach
                         @endforeach
                     </tbody>
                     {{-- {{ $users->links('pagination::bootstrap-5') }} --}}

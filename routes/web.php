@@ -71,7 +71,9 @@ Route::get('/category/delete/{id}', [ProductController::class, 'delete_category'
 Route::get('product', [ProductController::class, 'list_product'])->name('list_product');
 Route::get('product/add', [ProductController::class, 'add_product'])->name('add_product');
 Route::post('product/create', [ProductController::class, 'product_store'])->name('product_store');
-Route::post('product/edit', [ProductController::class, 'edit_product'])->name('edit_product');
+Route::get('/product/edit/{id}', [ProductController::class, 'edit_product'])->name('edit_product');
+Route::post('/product/update/{id}', [ProductController::class, 'update_product'])->name('update_product');
+Route::get('/product/delete/{id}', [ProductController::class, 'delete_product'])->name('delete_product');
 
 //Attribute
 Route::get('attribute/list', [ProductController::class, 'attribute'])->name('attribute');
@@ -85,6 +87,6 @@ Route::get('/attribute/delete/{id}', [ProductController::class, 'attribute_delet
 Route::get('attribute_value', [ProductController::class, 'list_attribute'])->name('list_attribute');
 Route::get('attribute_value/create', [ProductController::class, 'attribute_create'])->name('attribute_create');
 Route::post('attribute_value/store', [ProductController::class, 'insert_attribute'])->name('insert_attribute');
-Route::get('/attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
-Route::post('/attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
-Route::get('/attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');
+Route::get('attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
+Route::post('attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
+Route::get('attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');

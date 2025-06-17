@@ -22,7 +22,10 @@ class Product extends Model
         'warranty_months',
         'has_variants'
     ];
-
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
     public function category()
     {
         return $this->belongsTo(Category::class);

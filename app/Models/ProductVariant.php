@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
+
     use HasFactory;
 
     protected $fillable = [
@@ -22,7 +23,7 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function variantAttributes()
+    public function attributes()
     {
         return $this->hasMany(ProductVariantAttribute::class);
     }
