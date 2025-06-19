@@ -159,7 +159,7 @@
 
 <body>
     <div class="container-fluid">
-        <form class="register-wrapper" action="{{ route('auth.register_store') }}" method="POST"
+        <form class="register-wrapper" action="{{ route('auth.update', $user->id) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             <!-- Header -->
@@ -231,7 +231,8 @@
                     @enderror
                     <div class="form-group">
                         <label>Ngày sinh</label>
-                        <input type="date" name="birthday" class="form-control" value="{{ $user->birthday }}" />
+                        <input type="date" name="birthday" class="form-control"
+                            value="{{ \Carbon\Carbon::parse($user->birthday)->format('Y-m-d') }}" />
                     </div>
                     @error('birthday')
                         <div style="color: red" class="error-text">{{ $message }}</div>
@@ -256,18 +257,26 @@
                     @error('email')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
+                    <style>
+                        input[name="password"]::placeholder {
+                            color: red;
+                            font-style: italic;
+                            font-size: 14px;
+                        }
+                    </style>
                     <div class="form-group">
-                        <label>Mật khẩu</label>
-                        <input type="password" name="password" value="{{ $user->password }}" class="form-control"
-                            placeholder="Nhập mật khẩu..." />
+                        <label>Mật khẩu mới</label>
+                        <input type="password" name="password" class="form-control"
+                            placeholder="Để trống nếu không đổi mật khẩu">
                     </div>
                     @error('password')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
+
                     <div class="form-group">
-                        <label>Nhập lại mật khẩu</label>
-                        <input type="password" name="password_confirmation" value="{{ $user->password_confirmation }}"
-                            class="form-control" placeholder="Nhập lại mật khẩu..." />
+                        <label>Nhập lại mật khẩu mới</label>
+                        <input type="password" name="password_confirmation" class="form-control"
+                            placeholder="Nhập lại mật khẩu mới">
                     </div>
                     @error('password_confirmation')
                         <div style="color: red" class="error-text">{{ $message }}</div>
@@ -277,40 +286,44 @@
                         <select name="role_id" class="form-control" required>
                             <option value="">-- Chọn quyền --</option>
                             @foreach ($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->display_name ?? $role->name }}</option>
+                                <option value="{{ $role->id }}"
+                                    {{ $user->role_id == $role->id ? 'selected' : '' }}>
+                                    {{ $role->display_name ?? $role->name }}
+                                </option>
                             @endforeach
                         </select>
-                    </div>
-                    @error('role_id')
-                        <div style="color: red" class="error-text">{{ $message }}</div>
-                    @enderror
-                    <div class="form-group text-center">
-                        <label>Ảnh đại diện</label><br>
-                        <img id="avatarPreview" src="{{ asset('frontend/img/nophoto.jpg') }}" alt="Ảnh đại diện"
-                            style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc; cursor: pointer;">
-                        <input type="file" id="avatarInput" name="image" accept="image/*"
-                            style="display: none;" />
-                    </div>
-                    @error('image')
-                        <div style="color: red" class="error-text">{{ $message }}</div>
-                    @enderror
-                    <div class="register-footer">
-                        <div class="form-group form-check mt-4">
-                            <input type="checkbox" class="form-check-input" name="agree" id="agree"
-                                required />
-                            <label class="form-check-label" for="agree">Tôi đồng ý với điều khoản</label>
-                        </div>
-                        @error('agree')
+                        @error('role_id')
                             <div style="color: red" class="error-text">{{ $message }}</div>
                         @enderror
-                        <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Chỉnh sửa thành
-                            viên</button><br>
-                        <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
+                        <div class="form-group text-center">
+                            <label>Ảnh đại diện</label><br>
+                            <img id="avatarPreview"
+                                src="{{ $user->image ? asset('storage/' . $user->image) : asset('frontend/img/nophoto.jpg') }}"
+                                alt="Ảnh đại diện"
+                                style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc; cursor: pointer;">
+                            <input type="file" id="avatarInput" name="image" accept="image/*"
+                                style="display: none;" />
+                        </div>
+                        @error('image')
+                            <div style="color: red" class="error-text">{{ $message }}</div>
+                        @enderror
+                        <div class="register-footer">
+                            <div class="form-group form-check mt-4">
+                                <input type="checkbox" class="form-check-input" name="agree" id="agree"
+                                    required />
+                                <label class="form-check-label" for="agree">Tôi đồng ý với điều khoản</label>
+                            </div>
+                            @error('agree')
+                                <div style="color: red" class="error-text">{{ $message }}</div>
+                            @enderror
+                            <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Chỉnh sửa thành
+                                viên</button><br>
+                            <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Footer -->
+                <!-- Footer -->
 
         </form>
     </div>

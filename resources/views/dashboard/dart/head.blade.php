@@ -11,3 +11,4 @@
 <link href="backend/css/customize.css" rel="stylesheet">
 <script src="backend/js/jquery-3.1.1.min.js"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="icon" href="{{ asset('frontend/img/logoshop.png') }}" type="image/png">

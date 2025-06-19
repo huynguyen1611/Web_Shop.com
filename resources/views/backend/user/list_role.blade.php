@@ -76,7 +76,7 @@
                         </style>
                         <tr>
                             <th><input type="checkbox" value="" id="checkAll" class="input-checkbox"></th>
-                            <th>Tên nhóm thuộc tính</th>
+                            <th>Tên nhóm thành viên</th>
                             <th>Tên hiển thị</th>
                             <th class="text-center">Tình trạng</th>
                             <th class="text-center">Thao tác</th>

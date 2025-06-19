@@ -126,7 +126,7 @@
                             <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
                                 @foreach ($subCategories as $sub)
                                     <option value="{{ $sub->id }}"
-                                        {{ in_array($sub->id, [$selectedCategoryId]) ? 'selected' : '' }}>
+                                        {{ in_array($sub->id, $selectedSubCategoryIds) ? 'selected' : '' }}>
                                         {{ $sub->name }}
                                     </option>
                                 @endforeach

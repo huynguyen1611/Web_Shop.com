@@ -58,26 +58,30 @@ Route::middleware('login')->group(function () {
 // Route đăng xuất: bắt buộc đã đăng nhập
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('admin');
 
-Route::middleware('admin')->group(function () {
+Route::middleware('role:admin')->group(
+    function () {
+
+        // User
+        Route::get('user/index', [UserController::class, 'index'])->name('user.index');
+        Route::get('register', [AuthController::class, 'register'])->name('auth.register');
+        Route::post('register', [AuthController::class, 'register_store'])->name('auth.register_store');
+        Route::get('user/edit/{id}', [AuthController::class, 'edit_user'])->name('auth.edit');
+        Route::post('user/update/{id}', [AuthController::class, 'update_user'])->name('auth.update');
+        Route::get('user/delete/{id}', [AuthController::class, 'delete_user'])->name('auth.delete');
+
+        //Role
+        Route::get('role', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('role/create', [RoleController::class, 'create_role'])->name('roles.create');
+        Route::post('role', [RoleController::class, 'store_role'])->name('roles.store');
+        Route::get('role//edit/{id}', [RoleController::class, 'edit_role'])->name('roles.edit');
+        Route::post('role/update/{id}', [RoleController::class, 'update_role'])->name('roles.update');
+        Route::get('role/delete/{id}', [RoleController::class, 'delete_role'])->name('roles.delete');
+    }
+);
+Route::middleware(['role:sale,admin,marketing'])->group(function () {
 
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard.index');
-
-    // User
-    Route::get('user/index', [UserController::class, 'index'])->name('user.index');
-    Route::get('register', [AuthController::class, 'register'])->name('auth.register');
-    Route::post('register', [AuthController::class, 'register_store'])->name('auth.register_store');
-    Route::get('user//edit/{id}', [AuthController::class, 'edit_user'])->name('auth.edit');
-    Route::post('user/update/{id}', [AuthController::class, 'update_user'])->name('auth.update');
-    Route::get('user/delete/{id}', [AuthController::class, 'delete_user'])->name('auth.delete');
-
-    //Role
-    Route::get('role', [RoleController::class, 'index'])->name('roles.index');
-    Route::get('role/create', [RoleController::class, 'create_role'])->name('roles.create');
-    Route::post('role', [RoleController::class, 'store_role'])->name('roles.store');
-    Route::get('role//edit/{id}', [RoleController::class, 'edit_role'])->name('roles.edit');
-    Route::post('role/update/{id}', [RoleController::class, 'update_role'])->name('roles.update');
-    Route::get('role/delete/{id}', [RoleController::class, 'delete_role'])->name('roles.delete');
 
     // Category
     Route::get('category', [ProductController::class, 'list_category'])->name('list_category');

@@ -50,7 +50,7 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('auth.admin');
     }
-    public function register()
+    public function register(Request $request)
     {
         $roles = Role::all();
         return view('backend.user.add_user', compact('roles'));
@@ -68,7 +68,7 @@ class AuthController extends Controller
             'address'       => 'required|string|max:500',
             'birthday'      => 'required|date',
             'description'   => 'required|string',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'agree'         => 'accepted',
             'role_id' => 'required|exists:roles,id',
         ], [
@@ -90,7 +90,7 @@ class AuthController extends Controller
             'description.required'  => 'Vui lòng nhập mô tả bản thân.',
             'agree.accepted'        => 'Bạn phải đồng ý với điều khoản.',
             'image.image'           => 'Tệp tải lên phải là hình ảnh.',
-            'image.mimes'           => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
+            'image.mimes'           => 'Ảnh phải có định dạng jpeg, png, jpg ,webp hoặc gif.',
             'image.max'             => 'Kích thước ảnh không được vượt quá 2MB.',
             'role_id.required' => 'Vui lòng chọn quyền.',
             'role_id.exists'   => 'Quyền không hợp lệ.',
@@ -148,9 +148,9 @@ class AuthController extends Controller
     //Chỉnh sửa thành viên **
     public function edit_user($id)
     {
-
+        $roles = Role::all();
         $user = User::findOrFail($id);
-        return view('backend.user.edit_user', compact('user'));
+        return view('backend.user.edit_user', compact('user', 'roles'));
     }
     public function update_user(Request $request, $id)
     {
@@ -158,7 +158,9 @@ class AuthController extends Controller
 
         $request->validate([
             'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email,' . $user->id,
+            // 'email'       => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id . ',id',
+            'password' => 'nullable|string|min:3|confirmed',
             'phone'       => 'required|string|max:20',
             'province_id' => 'required|string|max:10',
             'district_id' => 'required|string|max:10',
@@ -166,7 +168,7 @@ class AuthController extends Controller
             'address'     => 'required|string|max:500',
             'birthday'    => 'required|date',
             'description' => 'required|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'role_id'     => 'required|exists:roles,id',
         ]);
 
@@ -175,7 +177,9 @@ class AuthController extends Controller
             $avatarPath = $request->file('image')->store('avatars', 'public');
             $user->image = $avatarPath;
         }
-
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
         // Cập nhật dữ liệu khác
         $user->update([
             'name'        => $request->name,

@@ -8,20 +8,25 @@
             </select>
             <div class="action">
                 <div class="uk-flex ul-flex-middle">
-                    <select name="user-catalogue_id" class="form-control mr10">
-                        <option value="0" selected="selected">Chọn nhóm thành viên</option>
-                        <option value="1">Quản trị viên</option>
-                    </select>
-                    <div class="uk-search uk-flex uk-flex-middle mr10">
-                        <div class="input-group">
-                            <input type="text" name="keyword" value=""
-                                placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control">
-                            <span class="input-group-btn">
-                                <button type="submit" name="search" value="search"
-                                    class="btn btn-primary mb0 btn-sm">Tìm kiếm</button>
-                            </span>
-                        </div>
-                    </div>
+                    <form action="{{ route('user.index') }}" method="get" class="form-inline mb-3"
+                        id="attribute-filter-form">
+                        <select name="role_id" class="form-control mr-2" style="width: 200px;"
+                            onchange="document.getElementById('attribute-filter-form').submit();">
+                            <option value="0">-- Chọn nhóm thành viên --</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}"
+                                    {{ request('role_id') == $role->id ? 'selected' : '' }}>
+                                    {{ $role->display_name ?? $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <input type="text" name="keyword" value="{{ request('keyword') }}"
+                            placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control mr-2">
+
+                        <button type="submit" name="search" value="search" class="btn btn-primary">Tìm kiếm</button>
+                    </form>
+
                     <a href="{{ route('auth.register') }}" class="btn btn-danger"><i class="fa fa-plus mr5"></i>Thêm mới
                         thành
                         viên</a>

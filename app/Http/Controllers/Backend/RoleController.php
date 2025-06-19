@@ -9,9 +9,15 @@ use Illuminate\Http\Request;
 class RoleController extends Controller
 {
     // Nhóm thành viên **
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::all();
+        $query = Role::query();
+        if ($request->keyword) {
+            $query->where('name', 'LIKE', '%' . $request->keyword . '%');
+        }
+
+        // $roles = Role::all();
+        $roles = $query->latest()->get();
         return view('backend.user.list_role', compact('roles'));
     }
     //Thêm nhóm thành viên **
