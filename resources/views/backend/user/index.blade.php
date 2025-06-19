@@ -9,7 +9,7 @@
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Quản lí bài viết</strong></li>
+                <li class="active"><strong>Quản lí thành viên</strong></li>
             </ol>
         </div>
     </div>

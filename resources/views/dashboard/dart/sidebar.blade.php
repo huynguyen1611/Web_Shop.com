@@ -26,7 +26,7 @@
                 <a href=""><i class="fa fa-user-circle"></i><span class="nav-label">QL Thành viên</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="">QL Nhóm thành viên</a></li>
+                    <li><a href="{{ route('roles.index') }}">QL Nhóm thành viên</a></li>
                     <li><a href="{{ route('user.index') }}">QL Thành viên</a></li>
                 </ul>
             </li>

@@ -135,6 +135,24 @@
                 color: #1AB394;
                 border: 1px solid #1AB394;
             }
+
+            .btn-back {
+                padding: 7px 24px;
+                border-radius: 16px 0px;
+                font-size: 16px;
+                line-height: 24px;
+                background-color: #ddd;
+                color: #1AB394;
+                border: 1px solid transparent;
+                border: 1px solid #1AB394;
+
+            }
+
+            .btn-back:hover {
+                background-color: #fff;
+                color: #1AB394;
+                border: 1px solid #1AB394;
+            }
         }
     </style>
 </head>
@@ -203,8 +221,8 @@
                     @error('ward_id')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
-                    <div class="form-group-address">
-                        <label>Địa chỉ</label>
+                    <div class="form-group-address ">
+                        <label style="font-weight: bold">Địa chỉ</label>
                         <textarea name="address" class="form-control" id="" cols="30" rows="10"
                             placeholder="Nhập địa chỉ...">{{ old('address') }}</textarea>
                     </div>
@@ -253,6 +271,18 @@
                     @error('password_confirmation')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
+                    <div class="form-group">
+                        <label>Chọn quyền của thành viên <span style="color: red">* (quan trọng)</span></label>
+                        <select name="role_id" class="form-control" required>
+                            <option value="">-- Chọn quyền --</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">{{ $role->display_name ?? $role->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('role_id')
+                        <div style="color: red" class="error-text">{{ $message }}</div>
+                    @enderror
                     <div class="form-group text-center">
                         <label>Ảnh đại diện</label><br>
                         <img id="avatarPreview" src="{{ asset('frontend/img/nophoto.jpg') }}" alt="Ảnh đại diện"
@@ -272,7 +302,9 @@
                         @error('agree')
                             <div style="color: red" class="error-text">{{ $message }}</div>
                         @enderror
-                        <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Đăng ký</button>
+                        <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Đăng
+                            ký</button><br>
+                        <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
                     </div>
                 </div>
             </div>

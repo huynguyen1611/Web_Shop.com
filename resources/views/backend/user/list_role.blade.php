@@ -4,19 +4,19 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>QUẢN LÍ NHÓM SẢN PHẨM</h2>
+            <h2>QUẢN LÍ NHÓM THÀNH VIÊN</h2>
             <ol class="breadcrumb" style="margin-bottom: 10px">
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Nhóm sản phẩm</strong></li>
+                <li class="active"><strong>Quản lí thành viên</strong></li>
             </ol>
         </div>
     </div>
     <div class="col-lg-12 mb20">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Danh sách nhóm sản phẩm</h5>
+                <h5>Danh sách nhóm thành viên </h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -46,26 +46,21 @@
                             </select>
                             <div class="action">
                                 <div class="uk-flex ul-flex-middle">
-                                    <form method="GET" action="{{ route('list_category') }}" class="mb-3 form-inline">
-                                        <select name="group" class="form-control mr-2" onchange="this.form.submit()"
-                                            style="max-width: 200px;">
-                                            <option value="">Tất cả</option>
-                                            <option value="parent" {{ request('group') == 'parent' ? 'selected' : '' }}>Danh
-                                                mục cha</option>
-                                            <option value="child" {{ request('group') == 'child' ? 'selected' : '' }}>Danh
-                                                mục phụ</option>
-                                        </select>
-
-                                        <input type="text" name="keyword" value="{{ request('keyword') }}"
-                                            placeholder="Nhập từ khóa tìm kiếm..." class="form-control mr-2"
-                                            style="max-width: 300px;">
-
-                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                                    </form>
-
-                                    <a href="{{ route('add_category') }}" class="btn btn-danger"><i
-                                            class="fa fa-plus mr5"></i>Thêm mới nhóm sản
-                                        phẩm</a>
+                                    <div class="uk-search uk-flex uk-flex-middle mr10">
+                                        <form action="{{ route('roles.index') }}" method="get" class="mb-3 form-inline">
+                                            <div class="input-group">
+                                                <input type="text" name="keyword" value="{{ request('keyword') }}"
+                                                    placeholder="Nhập từ khóa bạn muốn tìm kiếm..." class="form-control">
+                                                <span class="input-group-btn">
+                                                    <button type="submit" name="search" value="search"
+                                                        class="btn btn-primary mb0 btn-sm">Tìm kiếm</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <a href="{{ route('roles.create') }}" class="btn btn-danger"><i
+                                            class="fa fa-plus mr5"></i>Thêm mới nhóm
+                                        thành viên</a>
                                 </div>
                             </div>
                         </div>
@@ -78,42 +73,39 @@
                             table {
                                 table-layout: auto !important;
                             }
-
-                            th[colspan="6"] {
-                                width: 60%;
-                            }
                         </style>
                         <tr>
-                            <th><input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
-                            </th>
-                            <th colspan="6" style="width: 70%;">Tên nhóm sản phẩm</th>
+                            <th><input type="checkbox" value="" id="checkAll" class="input-checkbox"></th>
+                            <th>Tên nhóm thuộc tính</th>
+                            <th>Tên hiển thị</th>
                             <th class="text-center">Tình trạng</th>
                             <th class="text-center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($categories as $category)
+                        @foreach ($roles as $role)
                             <tr>
-                                <td><input type="checkbox" class="input-checkbox checkBoxItem"></td>
-                                <td colspan="6">
-                                    @if ($category->parent_id == null)
-                                        |--- {{ $category->name }}
-                                    @else
-                                        |-------- {{ $category->name }}
-                                    @endif
+                                <td>
+                                    <input type="checkbox" value="" class="input-checkbox checkBoxItem">
                                 </td>
-                                <td class="text-center"><input type="checkbox" class="js-switch" checked /></td>
+                                <td>{{ $role->name }}</td>
+                                <td>{{ $role->display_name }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('edit_category', $category->id) }}" class="btn btn-success"><i
+                                    <input type="checkbox" class="js-switch" checked />
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-success"><i
                                             class="fa fa-edit"></i></a>
-                                    <a href="{{ route('delete_category', $category->id) }}"
-                                        onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này không?')"
+                                    <a href="{{ route('roles.delete', $role->id) }}"
+                                        onclick="return confirm('Bạn có muốn xóa nhóm thành viên này không?')"
                                         class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
-                    {{-- {{ $users->links('pagination::bootstrap-5') }} --}}
+                </table>
+                {{-- {{ $attributes->links('pagination::bootstrap-4') }} --}}
+
             </div>
         </div>
     </div>

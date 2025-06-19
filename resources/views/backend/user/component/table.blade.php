@@ -35,9 +35,11 @@
                             <input type="checkbox" class="js-switch" checked />
                         </td>
                         <td class="text-center">
-                            <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                            <a href="{{ route('auth.delete', $user->id) }}" class="btn btn-danger"><i
-                                    class="fa fa-trash"></i></a>
+                            <a href="{{ route('auth.edit', $user->id) }}" class="btn btn-success"><i
+                                    class="fa fa-edit"></i></a>
+                            <a href="{{ route('auth.delete', $user->id) }}"
+                                onclick="return confirm('Bạn chắc chắn muốn xóa thành viên này không?') "
+                                class="btn btn-danger"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -51,7 +52,8 @@ class AuthController extends Controller
     }
     public function register()
     {
-        return view('backend.user.add_user');
+        $roles = Role::all();
+        return view('backend.user.add_user', compact('roles'));
     }
     public function register_store(Request $request)
     {
@@ -68,6 +70,7 @@ class AuthController extends Controller
             'description'   => 'required|string',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'agree'         => 'accepted',
+            'role_id' => 'required|exists:roles,id',
         ], [
 
             'name.required'         => 'Vui lòng nhập họ tên.',
@@ -89,7 +92,8 @@ class AuthController extends Controller
             'image.image'           => 'Tệp tải lên phải là hình ảnh.',
             'image.mimes'           => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
             'image.max'             => 'Kích thước ảnh không được vượt quá 2MB.',
-
+            'role_id.required' => 'Vui lòng chọn quyền.',
+            'role_id.exists'   => 'Quyền không hợp lệ.',
         ]);
 
         // Xử lý ảnh đại diện
@@ -113,21 +117,85 @@ class AuthController extends Controller
             'image'   => $avatarPath,
             'ip'            => $request->ip(),
             'user_agent'    => $request->userAgent(),
+            'role_id'       => $request->role_id, // bổ sung thêm role
+        ], [
+            'name.required'         => 'Vui lòng nhập họ tên.',
+            'email.required'        => 'Vui lòng nhập email.',
+            'email.email'           => 'Email không hợp lệ.',
+            'email.unique'          => 'Email đã tồn tại.',
+            'password.required'     => 'Vui lòng nhập mật khẩu.',
+            'password.min'          => 'Mật khẩu phải có ít nhất 3 ký tự.',
+            'password.confirmed'    => 'Mật khẩu xác nhận không khớp.',
+            'phone.required'        => 'Vui lòng nhập số điện thoại.',
+            'province_id.required'  => 'Vui lòng nhập tỉnh/thành phố.',
+            'district_id.required'  => 'Vui lòng nhập quận/huyện.',
+            'ward_id.required'      => 'Vui lòng nhập phường/xã.',
+            'address.required'      => 'Vui lòng nhập địa chỉ.',
+            'birthday.required'     => 'Vui lòng nhập ngày sinh.',
+            'birthday.date'         => 'Ngày sinh không hợp lệ.',
+            'description.required'  => 'Vui lòng nhập mô tả bản thân.',
+            'agree.accepted'        => 'Bạn phải đồng ý với điều khoản.',
+            'image.image'           => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes'           => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
+            'image.max'             => 'Kích thước ảnh không được vượt quá 2MB.',
+            'role_id.required' => 'Vui lòng chọn quyền.',
+            'role_id.exists'   => 'Quyền không hợp lệ.',
         ]);
 
         Auth::login($user); // Đăng nhập luôn sau khi tạo
-
         return redirect()->route('user.index')->with('success', 'Đăng ký và đăng nhập thành công!');
     }
     //Chỉnh sửa thành viên **
-    public function edit($id)
+    public function edit_user($id)
     {
+
         $user = User::findOrFail($id);
         return view('backend.user.edit_user', compact('user'));
     }
+    public function update_user(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email,' . $user->id,
+            'phone'       => 'required|string|max:20',
+            'province_id' => 'required|string|max:10',
+            'district_id' => 'required|string|max:10',
+            'ward_id'     => 'required|string|max:10',
+            'address'     => 'required|string|max:500',
+            'birthday'    => 'required|date',
+            'description' => 'required|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'role_id'     => 'required|exists:roles,id',
+        ]);
+
+        // Cập nhật ảnh nếu có
+        if ($request->hasFile('image')) {
+            $avatarPath = $request->file('image')->store('avatars', 'public');
+            $user->image = $avatarPath;
+        }
+
+        // Cập nhật dữ liệu khác
+        $user->update([
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'phone'       => $request->phone,
+            'province_id' => $request->province_id,
+            'district_id' => $request->district_id,
+            'ward_id'     => $request->ward_id,
+            'address'     => $request->address,
+            'birthday'    => $request->birthday,
+            'description' => $request->description,
+            'role_id'     => $request->role_id,
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'Cập nhật thành viên thành công!');
+    }
+
 
     //Xóa thành viên **
-    public function delete($id)
+    public function delete_user($id)
     {
         try {
             $user = User::findOrFail($id);

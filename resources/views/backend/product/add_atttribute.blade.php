@@ -6,19 +6,19 @@
     <link rel="stylesheet" href="{{ asset('backend/css/product.css') }}">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>QUẢN LÍ SẢN PHẨM</h2>
+            <h2>QUẢN LÍ NHÓM THUỘC TÍNH</h2>
             <ol class="breadcrumb" style="margin-bottom: 10px">
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Quản lí bài viết</strong></li>
+                <li class="active"><strong>Nhóm thuộc tính</strong></li>
             </ol>
         </div>
     </div>
     <div class="col-lg-12 mb20">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Thêm mới loại thuộc tính </h5>
+                <h5>Thêm mới nhóm thuộc tính </h5>
             </div>
             <div class="ibox-content">
                 <form id="product-form" action="{{ route('attribute_store') }}" method="POST"
@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
-                        <button type="submit" class="btn-primary">Thêm loại thuộc tính</button>
+                        <button type="submit" class="btn-primary">Thêm nhóm thuộc tính</button>
                     </div>
                 </form>
             </div>

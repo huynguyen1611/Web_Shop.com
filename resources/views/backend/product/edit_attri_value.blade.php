@@ -6,7 +6,7 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>QUẢN LÍ SẢN PHẨM</h2>
+            <h2>QUẢN LÍ THUỘC TÍNH</h2>
             <ol class="breadcrumb" style="margin-bottom: 10px">
                 <li><a href="{{ route('dashboard.index') }}">Dashboard</a></li>
                 <li class="active"><strong>Thuộc tính</strong></li>
@@ -17,7 +17,7 @@
     <div class="col-lg-12 mb20">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Cập nhật giá trị thuộc tính</h5>
+                <h5>Cập nhật thuộc tính</h5>
             </div>
             <div class="ibox-content">
                 <form id="product-form" action="{{ route('attri_value_update', $attributeValue->id) }}" method="POST"

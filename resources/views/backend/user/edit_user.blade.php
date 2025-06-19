@@ -135,6 +135,24 @@
                 color: #1AB394;
                 border: 1px solid #1AB394;
             }
+
+            .btn-back {
+                padding: 7px 24px;
+                border-radius: 16px 0px;
+                font-size: 16px;
+                line-height: 24px;
+                background-color: #ddd;
+                color: #1AB394;
+                border: 1px solid transparent;
+                border: 1px solid #1AB394;
+
+            }
+
+            .btn-back:hover {
+                background-color: #fff;
+                color: #1AB394;
+                border: 1px solid #1AB394;
+            }
         }
     </style>
 </head>
@@ -160,7 +178,7 @@
 
                     <div class="form-group">
                         <label>Họ tên</label>
-                        <input type="text" name="name" value="{{ old('name') }}" class="form-control"
+                        <input type="text" name="name" value="{{ $user->name }}" class="form-control"
                             placeholder="Nhập họ tên..." />
                     </div>
                     @error('name')
@@ -168,7 +186,7 @@
                     @enderror
                     <div class="form-group">
                         <label>Số điện thoại</label>
-                        <input type="text" name="phone" value="{{ old('phone') }}" class="form-control"
+                        <input type="text" name="phone" value="{{ $user->phone }}" class="form-control"
                             placeholder="Nhập số điện thoại..." />
                     </div>
                     @error('phone')
@@ -177,19 +195,19 @@
                     <div class="form-group-city">
                         <div class="form-group">
                             <label>Tỉnh / Thành phố</label>
-                            <input type="text" name="province_id" value="{{ old('province_id') }}"
+                            <input type="text" name="province_id" value="{{ $user->province_id }}"
                                 class="form-control" placeholder="Nhập tỉnh/tp..." />
                         </div>
 
                         <div class="form-group">
                             <label>Quận / Huyện</label>
-                            <input type="text" name="district_id" value="{{ old('district_id') }}"
+                            <input type="text" name="district_id" value="{{ $user->district_id }}"
                                 class="form-control" placeholder="Nhập quận/huyện..." />
                         </div>
 
                         <div class="form-group">
                             <label>Phường / Xã</label>
-                            <input type="text" name="ward_id" value="{{ old('ward_id') }}" class="form-control"
+                            <input type="text" name="ward_id" value="{{ $user->ward_id }}" class="form-control"
                                 placeholder="Nhập phường/xã..." />
                         </div>
 
@@ -206,21 +224,21 @@
                     <div class="form-group-address">
                         <label>Địa chỉ</label>
                         <textarea name="address" class="form-control" id="" cols="30" rows="10"
-                            placeholder="Nhập địa chỉ...">{{ old('address') }}</textarea>
+                            placeholder="Nhập địa chỉ..."> {{ $user->address }}"</textarea>
                     </div>
                     @error('address')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
                         <label>Ngày sinh</label>
-                        <input type="date" name="birthday" class="form-control" value="{{ old('birthday') }}" />
+                        <input type="date" name="birthday" class="form-control" value="{{ $user->birthday }}" />
                     </div>
                     @error('birthday')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
                         <label>Mô tả bản thân</label>
-                        <textarea name="description" class="form-control" rows="3" placeholder="Mô tả bạn thân...">{{ old('description') }}</textarea>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Mô tả bạn thân...">{{ $user->description }}"</textarea>
                     </div>
                     @error('description')
                         <div style="color: red" class="error-text">{{ $message }}</div>
@@ -232,7 +250,7 @@
                     <P>THÔNG TIN TÀI KHOẢN</P>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" value="{{ old('email') }}" class="form-control"
+                        <input type="email" name="email" value="{{ $user->email }}" class="form-control"
                             placeholder="Nhập email..." />
                     </div>
                     @error('email')
@@ -240,17 +258,30 @@
                     @enderror
                     <div class="form-group">
                         <label>Mật khẩu</label>
-                        <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." />
+                        <input type="password" name="password" value="{{ $user->password }}" class="form-control"
+                            placeholder="Nhập mật khẩu..." />
                     </div>
                     @error('password')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
                         <label>Nhập lại mật khẩu</label>
-                        <input type="password" name="password_confirmation" class="form-control"
-                            placeholder="Nhập lại mật khẩu..." />
+                        <input type="password" name="password_confirmation" value="{{ $user->password_confirmation }}"
+                            class="form-control" placeholder="Nhập lại mật khẩu..." />
                     </div>
                     @error('password_confirmation')
+                        <div style="color: red" class="error-text">{{ $message }}</div>
+                    @enderror
+                    <div class="form-group">
+                        <label>Chọn quyền của thành viên <span style="color: red">* (quan trọng)</span></label>
+                        <select name="role_id" class="form-control" required>
+                            <option value="">-- Chọn quyền --</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">{{ $role->display_name ?? $role->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('role_id')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group text-center">
@@ -272,7 +303,9 @@
                         @error('agree')
                             <div style="color: red" class="error-text">{{ $message }}</div>
                         @enderror
-                        <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Đăng ký</button>
+                        <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Chỉnh sửa thành
+                            viên</button><br>
+                        <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
                     </div>
                 </div>
             </div>

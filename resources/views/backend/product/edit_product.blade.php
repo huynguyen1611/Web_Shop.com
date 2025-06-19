@@ -11,14 +11,14 @@
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Quản lí bài viết</strong></li>
+                <li class="active"><strong>Sản phẩm</strong></li>
             </ol>
         </div>
     </div>
     <div class="col-lg-12 mb20">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Thêm mới sản phẩm </h5>
+                <h5>Chỉnh sửa sản phẩm </h5>
             </div>
             <div class="ibox-content">
                 <form id="product-form" action="{{ route('update_product', $product->id) }}" method="POST"
