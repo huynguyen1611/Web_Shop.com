@@ -337,3 +337,7 @@ form.thongtin input {
     color: whitesmoke;
     border: 2px solid whitesmoke;
 }
+.admin-content-main-content-right-imgs img {
+    width: 350px;
+    height: 350px;
+}

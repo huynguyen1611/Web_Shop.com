@@ -36,7 +36,8 @@
                         </td>
                         <td class="text-center">
                             <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                            <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                            <a href="{{ route('auth.delete', $user->id) }}" class="btn btn-danger"><i
+                                    class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

@@ -66,7 +66,8 @@
                         <p class="text-muted text-center">
                             <small>Bạn đã có tài khoản chưa ?</small>
                         </p>
-                        <a class="btn btn-sm btn-white btn-block" href="register.html">Đăng kí tài khản</a>
+                        <a class="btn btn-sm btn-white btn-block" href="{{ route('auth.register') }}">Đăng kí tài
+                            khản</a>
                     </form>
                     <p class="m-t">
                         <small>Cửa hàng NQH Shop : Luxury &copy; 2003</small>

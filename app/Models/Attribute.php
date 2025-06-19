@@ -13,6 +13,7 @@ class Attribute extends Model
         'attribute_id',
         'value',
         'image',
+        'name',
     ];
 
     public function values()

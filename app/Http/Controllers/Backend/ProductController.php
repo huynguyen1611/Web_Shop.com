@@ -64,25 +64,51 @@ class ProductController extends Controller
             'sub_categories' => 'nullable|array',
             'product_code' => 'required|string|max:50',
             'origin' => 'nullable|string|max:100',
-            'price' => 'required|string',
-            'sale_price' => 'nullable|string',
+            'price' => 'required|numeric',
+            'sale_price' => 'required|numeric',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'album_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'name.required' => 'Vui lòng nhập tên sản phẩm.',
+            'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
+            'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+
             'short_description.required' => 'Vui lòng nhập mô tả ngắn.',
-            'content.required' => 'Vui lòng nhập nội dung.',
+            'short_description.string' => 'Mô tả ngắn phải là chuỗi ký tự.',
+
+            'content.required' => 'Vui lòng nhập nội dung chi tiết.',
+            'content.string' => 'Nội dung phải là chuỗi ký tự.',
+
             'parent_category.required' => 'Vui lòng chọn danh mục cha.',
+
+            'sub_categories.array' => 'Danh mục phụ không hợp lệ.',
+
             'product_code.required' => 'Vui lòng nhập mã sản phẩm.',
-            'price.required' => 'Vui lòng nhập giá bán sản phẩm.',
+            'product_code.string' => 'Mã sản phẩm phải là chuỗi.',
+            'product_code.max' => 'Mã sản phẩm không được vượt quá 50 ký tự.',
+
+            'origin.string' => 'Xuất xứ phải là chuỗi ký tự.',
+            'origin.max' => 'Xuất xứ không được vượt quá 100 ký tự.',
+
+            'price.required' => 'Vui lòng nhập giá sản phẩm.',
+            'price.numeric' => 'Giá sản phẩm phải là số.',
+
+            'sale_price.numeric' => 'Giá khuyến mãi phải là số.',
+            'sale_price.required' => 'Vui lòng nhập giá khuyến mãi.',
+
+            'discount_percent.numeric' => 'Phần trăm giảm giá phải là số.',
+            'discount_percent.min' => 'Phần trăm giảm giá phải lớn hơn hoặc bằng 0.',
+            'discount_percent.max' => 'Phần trăm giảm giá không được vượt quá 100.',
+
             'thumbnail.required' => 'Vui lòng chọn ảnh đại diện.',
-            'thumbnail.image' => 'Ảnh đại diện phải là hình ảnh hợp lệ.',
-            'thumbnail.mimes' => 'Ảnh đại diện phải là jpeg, png, jpg, gif.',
-            'thumbnail.max' => 'Ảnh đại diện không quá 2MB.',
-            'album_images.*.image' => 'Mỗi ảnh trong album phải là hình ảnh.',
-            'album_images.*.mimes' => 'Định dạng ảnh album không hợp lệ.',
-            'album_images.*.max' => 'Mỗi ảnh trong album không quá 2MB.',
+            'thumbnail.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
+            'thumbnail.mimes' => 'Ảnh đại diện phải có định dạng jpeg, png, jpg hoặc gif.',
+            'thumbnail.max' => 'Ảnh đại diện không được vượt quá 2MB.',
+
+            'album_images.*.image' => 'Mỗi ảnh trong album phải là tệp hình ảnh.',
+            'album_images.*.mimes' => 'Mỗi ảnh album phải có định dạng jpeg, png, jpg hoặc gif.',
+            'album_images.*.max' => 'Mỗi ảnh album không được vượt quá 2MB.',
         ]);
 
         DB::beginTransaction();
@@ -125,7 +151,7 @@ class ProductController extends Controller
                 ]);
             }
 
-            // 6. Lưu album ảnh
+            // Lưu album ảnh
             if ($request->hasFile('album_images')) {
                 foreach ($request->file('album_images') as $img) {
                     $imgPath = $img->store('products', 'public');
@@ -187,17 +213,25 @@ class ProductController extends Controller
         $product = Product::with([
             'category.parent',
             'images',
-            'variants.attributes', // lấy thuộc tính (attribute) của biến thể
-            'variants.attributes.value' // lấy giá trị thuộc tính
+            'variants.attributes',
+            'variants.attributes.value',
+            'subCategories' // 👈 đảm bảo gọi quan hệ
         ])->findOrFail($id);
 
-        // Lấy danh mục cha và con
-        $categories = Category::with('children')->whereNull('parent_id')->get();
-
-        // Lấy toàn bộ thuộc tính và các giá trị của chúng
+        $parentCategories = Category::whereNull('parent_id')->get();
+        $selectedSubCategoryIds = $product->subCategories->pluck('id')->toArray(); // 👈 đã đúng
+        $selectedCategoryId = $product->category_id;
         $attributes = Attribute::with('values')->get();
+        $selectedSubCategoryId = $product->category_id;
 
-        return view('admin.product.edit', compact('product', 'categories', 'attributes'));
+        return view('backend.product.edit_product', compact(
+            'product',
+            'parentCategories',
+            'selectedSubCategoryIds',
+            'attributes',
+            'selectedCategoryId',
+            'selectedSubCategoryId'
+        ));
     }
 
     public function update_product(Request $request, $id)

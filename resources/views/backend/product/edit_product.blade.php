@@ -27,17 +27,17 @@
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
-                            <input type="text" name="name">
+                            <input type="text" name="name" value="{{ $product->name }}">
                         </div>
 
                         <div class="mota">
                             <label for="">Mô tả ngắn <span style="color: red">*</span></label>
-                            <textarea name="short_description" cols="30" rows="10"></textarea>
+                            <textarea name="short_description" cols="30" rows="10">{{ $product->short_description }}</textarea>
                         </div>
 
                         <div class="noidung">
                             <label for="">Nội dung <span style="color: red">*</span></label>
-                            <textarea name="content" cols="30" rows="10"></textarea>
+                            <textarea name="content" cols="30" rows="10">{{ $product->content }}</textarea>
                         </div>
 
                         <div class="album-container">
@@ -47,7 +47,10 @@
                             </div>
                             <div id="image-preview-container" class="image-preview-container">
                                 <div class="placeholder" id="placeholder">
-                                    <img src="{{ asset('frontend/img/chonanh.webp') }}" alt="Không có hình" />
+                                    {{-- <img src="{{ asset('frontend/img/chonanh.webp') }}" alt="Không có hình" /> --}}
+                                    @foreach ($product->images->where('is_thumbnail', false) as $img)
+                                        <img src="{{ asset('storage/' . $img->file_path) }}" alt="Ảnh album" />
+                                    @endforeach
                                     <p style="font-size: 15px; color: rgb(11, 125, 231)">
                                         Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh
                                     </p>
@@ -122,7 +125,10 @@
                             <p class="flex">Chọn danh mục phụ nếu có <span style="color: red"> *</span></p>
                             <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
                                 @foreach ($subCategories as $sub)
-                                    <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                                    <option value="{{ $sub->id }}"
+                                        {{ in_array($sub->id, [$selectedCategoryId]) ? 'selected' : '' }}>
+                                        {{ $sub->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -130,22 +136,28 @@
                         <div class="thongtin">
                             <span>THÔNG TIN CHUNG</span>
                             <p>Mã sản phẩm</p>
-                            <input type="text" name="product_code">
+                            <input type="text" name="product_code" value="{{ $product->main_sku }}">
                             <p>Xuất xứ</p>
-                            <input type="text" name="origin">
+                            <input type="text" name="origin" value="{{ $product->origin }}">
                             <p>Giá gốc sản phẩm</p>
-                            <input type="number" name="price">
+                            <input type="number" name="price" value="{{ $product->price }}">
                             <p>Giá giảm sản phẩm</p>
-                            <input type="number" name="sale_price">
+                            <input type="number" name="sale_price" value="{{ $product->sale_price }}">
                             <p>Số tiết kiệm</p>
-                            <input type="number" name="discount_percent">
+                            <input type="number" name="discount_percent" value="{{ $product->discount_percent }}">
                         </div>
 
                         <div class="anh">
                             <label for="image">CHỌN ẢNH ĐẠI DIỆN</label>
                             <div class="admin-content-main-content-right-imgs">
-                                <img id="preview" src="{{ asset('frontend/img/nophoto.jpg') }}"
-                                    class="image-preview" />
+                                {{-- <img id="preview" src="{{ asset('frontend/img/nophoto.jpg') }}"
+                                    class="image-preview" /> --}}
+                                @php
+                                    $thumbnail = $product->images->where('is_thumbnail', true)->first();
+                                @endphp
+                                <img id="preview"
+                                    src="{{ $thumbnail ? asset('storage/' . $thumbnail->file_path) : asset('frontend/img/nophoto.jpg') }}"
+                                    alt="Ảnh đại diện" style="cursor: pointer;" />
                                 <input id="image" type="file" name="thumbnail" accept="image/*"
                                     style="display: none;" />
                             </div>
@@ -153,7 +165,7 @@
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
-                        <button type="submit" class="btn-primary">Thêm sản phẩm</button>
+                        <button type="submit" class="btn-primary">Cập nhật sản phẩm</button>
                     </div>
                 </form>
             </div>

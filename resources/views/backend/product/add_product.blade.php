@@ -28,17 +28,23 @@
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
                             <input type="text" name="name" value="{{ old('name') }}">
                         </div>
-
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <div class="mota">
                             <label for="">Mô tả ngắn <span style="color: red">*</span></label>
                             <textarea name="short_description" cols="30" rows="10">{{ old('short_description') }}</textarea>
                         </div>
-
+                        @error('short_description')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <div class="noidung">
                             <label for="">Nội dung <span style="color: red">*</span></label>
                             <textarea name="content" cols="30" rows="10">{{ old('content') }}</textarea>
                         </div>
-
+                        @error('content')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <div class="album-container">
                             <div class="album-header">
                                 <span style="font-size: 15px ">ALBUM</span>
@@ -55,7 +61,9 @@
                             <input type="file" id="image-input" name="album_images[]" multiple accept="image/*"
                                 style="display: none;" />
                         </div>
-
+                        @error('album_images')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                         <span>SẢN PHẨM CÓ NHIỀU PHIÊN BẢN</span>
                         <p>Cho phép bạn bán các phiên bản khác nhau của sản phẩm ,ví dụ : như điện thoại có các màu sắc và
                             dung lượng khác nhau.</p>
@@ -172,14 +180,29 @@
                             <span>THÔNG TIN CHUNG</span>
                             <p>Mã sản phẩm</p>
                             <input type="text" name="product_code" value="{{ old('product_code') }}">
+                            @error('product_code')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <p>Xuất xứ</p>
                             <input type="text" name="origin" value="{{ old('origin') }}">
+                            @error('origin')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <p>Giá gốc sản phẩm</p>
                             <input type="number" name="price" value="{{ old('price') }}">
+                            @error('price')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <p>Giá giảm sản phẩm</p>
                             <input type="number" name="sale_price" value="{{ old('sale_price') }}">
+                            @error('sale_price')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <p>Số tiết kiệm</p>
                             <input type="number" name="discount_percent" value="{{ old('discount_percent') }}">
+                            @error('discount_percent')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="anh">
@@ -191,6 +214,9 @@
                                     style="display: none;" />
                             </div>
                         </div>
+                        @error('thumbnail')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="history.back()">Quay lại</button>
@@ -244,10 +270,8 @@
         fileInput.addEventListener('change', function() {
             const files = Array.from(this.files);
 
-            // Xóa placeholder nếu có
-            if (placeholder) {
-                placeholder.remove();
-            }
+            // Không reset this.value ở đây
+            if (placeholder) placeholder.remove();
 
             files.forEach(file => {
                 const reader = new FileReader();
@@ -266,8 +290,8 @@
                     deleteBtn.addEventListener('click', () => {
                         imageBox.remove();
 
-                        // Nếu không còn ảnh nào, hiển thị lại placeholder
-                        if (previewContainer.children.length === 0) {
+                        // Nếu không còn ảnh nào
+                        if (previewContainer.querySelectorAll('.image-box').length === 0) {
                             previewContainer.appendChild(placeholder);
                         }
                     });
@@ -279,8 +303,8 @@
                 reader.readAsDataURL(file);
             });
 
-            // Reset input để cho phép chọn lại cùng ảnh
-            this.value = '';
+            // ❌ KHÔNG reset input tại đây nếu muốn submit file
+            // this.value = '';
         });
     </script>
     <script>

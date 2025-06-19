@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthenticateMiddleware;
 use App\Http\Middleware\LoginMiddleware;
 
-//Frontend
+//Frontend**
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/san-pham', [FrontendController::class, 'product'])->name('product');
 Route::get('/dien-thoai', [FrontendController::class, 'mobile'])->name('mobile');
@@ -48,45 +48,55 @@ Route::get('/ve-chung-toi/lien-he-tu-van', [FrontendController::class, 'lienhetu
 
 
 
-//Backend**
-Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
+// Backend**
+Route::middleware('login')->group(function () {
+    Route::get('admin', [AuthController::class, 'index'])->name('auth.admin');
+    Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+});
 
-//User
-Route::get('user/index', [UserController::class, 'index'])->name('user.index')->middleware('admin');
-Route::post('login', [AuthController::class, 'login'])->name('auth.login');
-Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
+// Route đăng xuất: bắt buộc đã đăng nhập
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('admin');
 
-//Dashboard
-Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard.index')->middleware(AuthenticateMiddleware::class);
+Route::middleware('admin')->group(function () {
 
-//Category
-Route::get('category', [ProductController::class, 'list_category'])->name('list_category');
-Route::get('category/add', [ProductController::class, 'add_category'])->name('add_category');
-Route::post('category/create', [ProductController::class, 'category_store'])->name('category_store');
-Route::get('/category/edit/{id}', [ProductController::class, 'edit_category'])->name('edit_category');
-Route::post('/category/update/{id}', [ProductController::class, 'update_category'])->name('update_category');
-Route::get('/category/delete/{id}', [ProductController::class, 'delete_category'])->name('delete_category');
+    // Dashboard
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard.index');
 
-//Product
-Route::get('product', [ProductController::class, 'list_product'])->name('list_product');
-Route::get('product/add', [ProductController::class, 'add_product'])->name('add_product');
-Route::post('product/create', [ProductController::class, 'product_store'])->name('product_store');
-Route::get('/product/edit/{id}', [ProductController::class, 'edit_product'])->name('edit_product');
-Route::post('/product/update/{id}', [ProductController::class, 'update_product'])->name('update_product');
-Route::get('/product/delete/{id}', [ProductController::class, 'delete_product'])->name('delete_product');
+    // User
+    Route::get('user/index', [UserController::class, 'index'])->name('user.index');
+    Route::get('register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('register', [AuthController::class, 'register_store'])->name('auth.register_store');
+    Route::get('delete/{id}', [AuthController::class, 'delete'])->name('auth.delete');
 
-//Attribute
-Route::get('attribute/list', [ProductController::class, 'attribute'])->name('attribute');
-Route::get('attribute/add', [ProductController::class, 'attribute_add'])->name('attribute_add');
-Route::post('attribute/store', [ProductController::class, 'attribute_store'])->name('attribute_store');
-Route::get('/attribute/edit/{id}', [ProductController::class, 'attribute_edit'])->name('edit_attribute');
-Route::post('/attribute/update/{id}', [ProductController::class, 'attribute_update'])->name('update_attribute');
-Route::get('/attribute/delete/{id}', [ProductController::class, 'attribute_delete'])->name('delete_attribute');
+    // Category
+    Route::get('category', [ProductController::class, 'list_category'])->name('list_category');
+    Route::get('category/add', [ProductController::class, 'add_category'])->name('add_category');
+    Route::post('category/create', [ProductController::class, 'category_store'])->name('category_store');
+    Route::get('category/edit/{id}', [ProductController::class, 'edit_category'])->name('edit_category');
+    Route::post('category/update/{id}', [ProductController::class, 'update_category'])->name('update_category');
+    Route::get('category/delete/{id}', [ProductController::class, 'delete_category'])->name('delete_category');
 
-//Attribute_value
-Route::get('attribute_value', [ProductController::class, 'list_attribute'])->name('list_attribute');
-Route::get('attribute_value/create', [ProductController::class, 'attribute_create'])->name('attribute_create');
-Route::post('attribute_value/store', [ProductController::class, 'insert_attribute'])->name('insert_attribute');
-Route::get('attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
-Route::post('attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
-Route::get('attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');
+    // Product
+    Route::get('product', [ProductController::class, 'list_product'])->name('list_product');
+    Route::get('product/add', [ProductController::class, 'add_product'])->name('add_product');
+    Route::post('product/create', [ProductController::class, 'product_store'])->name('product_store');
+    Route::get('product/edit/{id}', [ProductController::class, 'edit_product'])->name('edit_product');
+    Route::post('product/update/{id}', [ProductController::class, 'update_product'])->name('update_product');
+    Route::get('product/delete/{id}', [ProductController::class, 'delete_product'])->name('delete_product');
+
+    // Attribute
+    Route::get('attribute/list', [ProductController::class, 'attribute'])->name('attribute');
+    Route::get('attribute/add', [ProductController::class, 'attribute_add'])->name('attribute_add');
+    Route::post('attribute/store', [ProductController::class, 'attribute_store'])->name('attribute_store');
+    Route::get('attribute/edit/{id}', [ProductController::class, 'attribute_edit'])->name('edit_attribute');
+    Route::post('attribute/update/{id}', [ProductController::class, 'attribute_update'])->name('update_attribute');
+    Route::get('attribute/delete/{id}', [ProductController::class, 'attribute_delete'])->name('delete_attribute');
+
+    // Attribute_value
+    Route::get('attribute_value', [ProductController::class, 'list_attribute'])->name('list_attribute');
+    Route::get('attribute_value/create', [ProductController::class, 'attribute_create'])->name('attribute_create');
+    Route::post('attribute_value/store', [ProductController::class, 'insert_attribute'])->name('insert_attribute');
+    Route::get('attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
+    Route::post('attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
+    Route::get('attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');
+});

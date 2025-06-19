@@ -27,7 +27,7 @@
                     <div class="content-left">
                         <div class="tieude">
                             <label for="">Tiêu đề <span style="color: red">*</span></label>
-                            <input type="text" name="name" placeholder="Nhập nhóm sản phẩm">
+                            <input type="text" name="name" placeholder="Nhập nhóm sản phẩm...">
                         </div>
                         @error('name')
                             <div class="text-danger">{{ $message }}</div>
@@ -39,7 +39,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
     </div>

@@ -28,9 +28,8 @@ class Product extends Model
     }
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
-
     public function images()
     {
         return $this->hasMany(Image::class);
@@ -39,5 +38,9 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+    public function subCategories()
+    {
+        return $this->belongsToMany(Category::class, 'product_sub_category', 'product_id', 'category_id');
     }
 }

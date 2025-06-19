@@ -60,7 +60,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@iconscout/unicons@4.0.8/css/line.css">
 <!-- Font Awesome 4 (nếu dùng mã Unicode như \f09a) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-1
 <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
 
 <link href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" rel="stylesheet">
