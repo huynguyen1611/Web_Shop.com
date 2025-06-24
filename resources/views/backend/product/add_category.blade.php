@@ -58,7 +58,7 @@
 
             input[type="text"]:focus,
             select:focus {
-                border-color: #2980b9;
+                border-color: #042b46;
                 outline: none;
             }
 
@@ -104,8 +104,8 @@
                             @error('parent_id')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <button type="button" class="btn" onclick="history.back()">Quay lại</button>
                             <button type="submit">Thêm danh mục</button>
+                            <button type="button" class="btn" onclick="history.back()">Quay lại</button>
                         </form>
                     </div>
                 </div>

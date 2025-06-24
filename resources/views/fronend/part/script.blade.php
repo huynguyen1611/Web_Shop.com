@@ -16,3 +16,6 @@
 </script>
 <script src="{{ asset('frontend/js/filter.js') }}"></script>
 <script src="{{ asset('frontend/js/swiper-bundle.min.js') }}"></script>
+
+
+<script src="{{ asset('frontend/js/jquery.nice-select.min.js') }}"></script>

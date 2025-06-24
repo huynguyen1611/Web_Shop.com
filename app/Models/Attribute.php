@@ -10,9 +10,6 @@ class Attribute extends Model
     use HasFactory;
 
     protected $fillable = [
-        'attribute_id',
-        'value',
-        'image',
         'name',
     ];
 

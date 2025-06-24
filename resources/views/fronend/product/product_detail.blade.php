@@ -54,7 +54,7 @@
                         <div class="uk-width-large-1-2">
                             <div class="popup-product">
                                 <h2 class="title product-main-title" style="line-height: 1.4">
-                                    Xiaomi Redmi Note 14 Pro Plus
+                                    {{ $product->name }}
                                     <span></span>
                                 </h2>
                                 <div class="rating">
@@ -73,14 +73,17 @@
                                     <div class="uk-width-large-1-2">
                                         <div class="a-left">
                                             <div class="price uk-flex uk-flex-middle mt10">
-                                                <div class="price-sale">135.000đ</div>
-                                                <div class="price-old uk-flex uk-flex-middle">150.000đ <div class="percent">
+                                                <div class="price-sale">
+                                                    {{ number_format($product->sale_price, 0, ',', '.') }}</div>
+                                                <div class="price-old uk-flex uk-flex-middle">
+                                                    {{ number_format($product->price, 0, ',', '.') }} <div class="percent">
                                                         <div class="percent-value">-10%</div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="price-save">
-                                                Tiết kiệm: <strong>15.000</strong> (<span style="color:red">-10%</span>)
+                                                Tiết kiệm: <strong>15.000</strong> (<span
+                                                    style="color:red">-{{ $product->discount_percent }}%</span>)
                                             </div>
                                             <input type="hidden" name="product_id" value="83">
                                             <input type="hidden" name="language_id" value="1">
@@ -143,13 +146,7 @@
                                 <div class="panel-product-detail mt30">
                                     <h2 class="heading-4 mb20"><span>Thông tin chi tiết</span></h2>
                                     <div class="productContent">
-                                        <p>Sơ mi nano vẫn lu&ocirc;n l&agrave; 1 trong những lựa chọn h&agrave;ng đầu
-                                            tại YODY v&igrave; sự thoải m&aacute;i v&agrave; c&ocirc;ng dụng tuyệt vời.
-                                            Đ&acirc;y l&agrave; mẫu sơ mi d&agrave;i tay d&agrave;nh cho ph&aacute;i nữ
-                                            với trọng lượng nhẹ, c&oacute; khả năng chống nắng tốt đồng thời th&ocirc;ng
-                                            tho&aacute;ng do kh&ocirc; nhanh hiệu quả. Thiết kế t&ocirc;n d&aacute;ng,
-                                            tỉ mỉ trong từng đường may gi&uacute;p c&aacute;c chị em tự tin diện đẹp đi
-                                            l&agrave;m.</p>
+                                        {{ $product->content }}
                                     </div>
                                 </div>
                                 <div class="review-container">
@@ -258,7 +255,7 @@
                                 <div id="review" class="uk-modal">
                                     <div class="uk-modal-dialog">
                                         <a class="uk-modal-close uk-close"></a>
-                                        <div class="review-popup-wrapper">
+                                        <div cl ass="review-popup-wrapper">
                                             <div class="panel-head">Đánh giá sản phẩm</div>
                                             <div class="panel-body">
                                                 <div class="product-preview">
@@ -383,60 +380,6 @@
                                                         <div class="price-sale">150.000</div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
-                                            <div class="product-item product">
-                                                <a href="apple-macbook-air-13-m4-10cpu-8gpu-16gb-256gb-2025.html"
-                                                    class="image img-scaledown img-zoomin"><img
-                                                        src="/userfiles/image/phone/macbook_11_1.jpg"
-                                                        alt="MacBook Air M4 13 inch 2025 10CPU 8GPU 16GB 256GB | Chính hãng Apple Việt Nam"></a>
-                                                <div class="info">
-                                                    <h3 class="title"><a
-                                                            href="apple-macbook-air-13-m4-10cpu-8gpu-16gb-256gb-2025.html"
-                                                            title="MacBook Air M4 13 inch 2025 10CPU 8GPU 16GB 256GB | Chính hãng Apple Việt Nam">MacBook
-                                                            Air M4 13 inch 2025 10CPU 8GPU 16GB 256GB | Chính hãng Apple
-                                                            Việt Nam</a></h3>
-                                                    <div class="price">
-                                                        <div class="price-sale">290.000</div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
-                                            <div class="product-item product">
-                                                <a href="iphone-16-pro-max.html"
-                                                    class="image img-scaledown img-zoomin"><img
-                                                        src="/userfiles/image/phone/iphone-16-pro-max.jpg"
-                                                        alt="iPhone 16 | Chính hãng VN/A"></a>
-                                                <div class="info">
-                                                    <h3 class="title"><a href="iphone-16-pro-max.html"
-                                                            title="iPhone 16 | Chính hãng VN/A">iPhone 16 | Chính hãng
-                                                            VN/A</a></h3>
-                                                    <div class="price">
-                                                        <div class="price-sale">3.069.000</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
-                                            <div class="product-item product">
-                                                <a href="oppo-reno10-pro-plus.html"
-                                                    class="image img-scaledown img-zoomin"><img
-                                                        src="/userfiles/image/phone/oppo-reno10-pro-plus-tim.png"
-                                                        alt="OPPO Reno10 Pro+ 5G"></a>
-                                                <div class="info">
-                                                    <h3 class="title"><a href="oppo-reno10-pro-plus.html"
-                                                            title="OPPO Reno10 Pro+ 5G">OPPO Reno10 Pro+ 5G</a></h3>
-                                                    <div class="price">
-                                                        <div class="price-sale">375.000</div>
-                                                    </div>
-                                                </div>
-
                                             </div>
                                         </div>
                                     </div>

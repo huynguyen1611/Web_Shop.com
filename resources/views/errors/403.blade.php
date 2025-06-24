@@ -69,6 +69,13 @@
         .back-btn:hover {
             background-color: #e04352;
         }
+
+        .error {
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -78,7 +85,10 @@
         <div class="gif">
             <img src="{{ asset('frontend/img/error/error-403.webp') }}" alt="403 Forbidden" style="width:100%;">
         </div>
-        <h2>Bạn không có quyền truy cập trang này</h2>
+        <div class="error">
+            <h2>Bạn không có quyền truy cập trang này</h2><img style="width: 100px; height: 100px;"
+                src="{{ asset('frontend/img/error/chamthan.png!c1024wm0') }}" alt="">
+        </div>
         <p>Vui lòng liên hệ quản trị viên nếu bạn nghĩ đây là nhầm lẫn.</p>
         <a href="{{ route('dashboard.index') }}" class="back-btn">Quay về trang chủ</a>
     </div>

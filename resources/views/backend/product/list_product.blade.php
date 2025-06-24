@@ -48,8 +48,7 @@
                                 <div class="uk-flex ul-flex-middle">
                                     <form action="{{ route('list_product') }}" method="GET"
                                         class="uk-flex uk-flex-middle mb-3">
-                                        <select name="category_id" class="form-control mr-2" style="width: 200px"
-                                            onchange="this.form.submit()">
+                                        <select name="category_id" class="form-control mr-2" onchange="this.form.submit()">
                                             <option value="0">-- Chọn danh mục phụ --</option>
                                             @foreach ($categories as $cat)
                                                 <option value="{{ $cat->id }}"
@@ -104,9 +103,9 @@
                                 <td colspan="6">
                                     <p style="font-size: 20px ; color: blue">{{ $product->name }}</p>
                                     <p><span style="color: red;">Nguồn hiển thị:</span>
-                                        {{ $product->category->parent->name ?? 'Không có danh mục cha' }} -
-                                        {{ $product->category->name ?? 'Không có danh mục phụ' }}</p>
-
+                                        {{ $product->category->name ?? 'Không có danh mục cha' }} -
+                                        {{ $product->subCategories->pluck('name')->implode(', ') ?? 'Không có danh mục phụ' }}
+                                    </p>
                                 </td>
 
                                 <td class="text-center">

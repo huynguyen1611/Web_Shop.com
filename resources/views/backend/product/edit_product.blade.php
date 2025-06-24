@@ -61,23 +61,19 @@
                         </div>
 
                         <span>SẢN PHẨM CÓ NHIỀU PHIÊN BẢN</span>
-                        <p>Cho phép bạn bán các phiên bản khác nhau của sản phẩm ,ví dụ : như điện thoại có các màu sắc và
-                            dung lượng khác nhau.</p>
+                        <p>Cho phép bạn bán các phiên bản khác nhau của sản phẩm.</p>
 
-                        <div class="attribute">
-                            <input type="checkbox" id="toggle-attribute" name="has_variants">
-                            <p>Sản phẩm này có nhiều biến thể. Ví dụ như khác nhau về màu sắc , kích thước</p>
-                        </div>
+                        {{-- Bỏ toggle checkbox, bảng luôn hiển thị --}}
+                        <div class="content-attribute" id="content-attribute">
 
-                        <div class="content-attribute" id="content-attribute" style="display: none;">
                             <div class="content-attribute-left">
                                 <p>Chọn thuộc tính</p>
                                 <p>Chọn giá trị của thuộc tính</p>
                             </div>
                             <div id="attribute-wrapper"></div>
 
-                            <button class="button-attribute" type="button" id="add-version-btn">Thêm phiên bản
-                                mới</button>
+                            <button class="button-attribute" type="button" id="add-version-btn">Thêm phiên bản mới</button>
+
                             <template id="attribute-template">
                                 <div class="content-attribute-content">
                                     <select class="form-control attribute-group">
@@ -86,14 +82,11 @@
                                             <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
                                         @endforeach
                                     </select>
-
-                                    <select class="form-control attribute-values" multiple>
-                                        {{-- option sẽ được JS gán động --}}
-                                    </select>
-
+                                    <select class="form-control attribute-values" multiple></select>
                                     <i class="fa fa-trash remove-attribute"></i>
                                 </div>
                             </template>
+
                             <div class="danhsach">
                                 <table id="productTable">
                                     <thead>
@@ -106,24 +99,43 @@
                                             <th>SKU</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
+
                         </div>
                     </div>
 
                     <div class="content-right">
                         <div class="danhmuc">
                             <span>CHỌN DANH MỤC CHA</span>
-                            <select class="form-control" id="parent-category" name="parent_category">
+                            {{-- <select name="parent_category" class="form-control">
                                 @foreach ($parentCategories as $parent)
-                                    <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                                    <option value="{{ $parent->id }}"
+                                        {{ $parent->id == $selectedCategoryId ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
+                                @endforeach
+                            </select> --}}
+                            <select name="parent_category" id="parent-category" class="form-control">
+                                <option value="0">-- Chọn danh mục cha --</option>
+                                @foreach ($parentCategories as $parent)
+                                    <option value="{{ $parent->id }}"
+                                        {{ $parent->id == $selectedCategoryId ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             <p class="flex">Chọn danh mục phụ nếu có <span style="color: red"> *</span></p>
-                            <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
+                            {{-- <select name="sub_categories[]" id="sub-category" multiple class="form-control">
+                                @foreach ($subCategories as $sub)
+                                    <option value="{{ $sub->id }}"
+                                        {{ in_array($sub->id, $selectedSubCategoryIds) ? 'selected' : '' }}>
+                                        {{ $sub->name }}
+                                    </option>
+                                @endforeach
+                            </select> --}}
+                            <select name="sub_categories[]" id="sub-category" class="form-control" multiple>
                                 @foreach ($subCategories as $sub)
                                     <option value="{{ $sub->id }}"
                                         {{ in_array($sub->id, $selectedSubCategoryIds) ? 'selected' : '' }}>
@@ -140,9 +152,11 @@
                             <p>Xuất xứ</p>
                             <input type="text" name="origin" value="{{ $product->origin }}">
                             <p>Giá gốc sản phẩm</p>
-                            <input type="number" name="price" value="{{ $product->price }}">
+                            <input type="text" name="price" id="price"
+                                value=" {{ number_format($product->price, 0, ',', '.') }}">
                             <p>Giá giảm sản phẩm</p>
-                            <input type="number" name="sale_price" value="{{ $product->sale_price }}">
+                            <input type="text" name="sale_price" id="sale_price"
+                                value=" {{ number_format($product->sale_price, 0, ',', '.') }}">
                             <p>Số tiết kiệm</p>
                             <input type="number" name="discount_percent" value="{{ $product->discount_percent }}">
                         </div>
@@ -209,18 +223,27 @@
         const previewContainer = document.getElementById('image-preview-container');
         const placeholder = document.getElementById('placeholder');
 
+        let selectedFiles = [];
+
+        // Khi click vào nút chọn hình
         selectBtn.addEventListener('click', () => fileInput.click());
         placeholder.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', function() {
             const files = Array.from(this.files);
+            selectedFiles = selectedFiles.concat(files);
+            renderPreviews();
+            this.value = ''; // Cho phép chọn lại cùng file
+        });
 
-            // Xóa placeholder nếu có
-            if (placeholder) {
-                placeholder.remove();
+        function renderPreviews() {
+            previewContainer.innerHTML = '';
+
+            if (selectedFiles.length === 0) {
+                previewContainer.appendChild(placeholder);
             }
 
-            files.forEach(file => {
+            selectedFiles.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const imageBox = document.createElement('div');
@@ -235,12 +258,8 @@
                     deleteBtn.textContent = '×';
 
                     deleteBtn.addEventListener('click', () => {
-                        imageBox.remove();
-
-                        // Nếu không còn ảnh nào, hiển thị lại placeholder
-                        if (previewContainer.children.length === 0) {
-                            previewContainer.appendChild(placeholder);
-                        }
+                        selectedFiles.splice(index, 1);
+                        renderPreviews();
                     });
 
                     imageBox.appendChild(deleteBtn);
@@ -249,13 +268,17 @@
                 };
                 reader.readAsDataURL(file);
             });
+        }
 
-            // Reset input để cho phép chọn lại cùng ảnh
-            this.value = '';
+        // Trước khi submit form, gán lại files vào input
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
         });
     </script>
+    {{-- Thiết lập token cho tất cả các request Ajax --}}
     <script>
-        // Thiết lập token cho tất cả các request Ajax
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -276,58 +299,91 @@
         });
     </script>
     {{-- Xử lí danh sách khi chọn thuộc tính --}}
-
+    <script>
+        const existingVariants = @json($variantData);
+        const allAttributes = @json($attributes);
+    </script>
     <script>
         $(document).ready(function() {
+            const existingVariants = @json($variantData);
             const allAttributes = @json($attributes);
 
-            $('.select2-multi').select2({
-                tags: true,
-                width: '100%',
-                placeholder: "Chọn hoặc nhập giá trị"
-            });
-
-            // Toggle khối thuộc tính
-            $('#toggle-attribute').on('change', function() {
-                $('#content-attribute').toggle(this.checked);
-            });
-
-            // Click "Thêm phiên bản"
+            // Thêm nhóm thuộc tính
             $('#add-version-btn').on('click', function() {
-                const selectedAttrIds = getSelectedAttributeIds();
+                addAttributeGroup();
+            });
+
+            // Khi edit: tự load thuộc tính + giá trị
+            if (existingVariants.length > 0) {
+                const addedAttr = {};
+
+                existingVariants.forEach(variant => {
+                    variant.attributes.forEach(attr => {
+                        if (!addedAttr[attr.attribute_id]) {
+                            addedAttr[attr.attribute_id] = [];
+                        }
+                        if (!addedAttr[attr.attribute_id].includes(attr.attribute_value_id)) {
+                            addedAttr[attr.attribute_id].push(attr.attribute_value_id);
+                        }
+                    });
+                });
+
+                Object.keys(addedAttr).forEach(attrId => {
+                    addAttributeGroup(attrId, addedAttr[attrId]);
+                });
+
+                setTimeout(() => {
+                    generateCombinations();
+
+                    existingVariants.forEach((variant, index) => {
+                        const row = document.querySelector(
+                            `#productTable tbody tr:nth-child(${index + 1})`);
+                        if (row) {
+                            row.querySelector(`input[name="variants[${index}][stock]"]`).value =
+                                variant.stock_quantity || 0;
+                            row.querySelector(`input[name="variants[${index}][price]"]`).value = (
+                                variant.price || 0).toLocaleString('vi-VN');
+                            row.querySelector(`input[name="variants[${index}][sku]"]`).value =
+                                variant.sku || '';
+                        }
+                    });
+                }, 300);
+            }
+
+            function addAttributeGroup(selectedAttrId = null, selectedValueIds = []) {
                 const template = document.getElementById('attribute-template');
                 const clone = template.content.cloneNode(true);
                 const wrapper = document.getElementById('attribute-wrapper');
                 const selectGroup = clone.querySelector('.attribute-group');
                 const selectValues = clone.querySelector('.attribute-values');
 
+                // Đổ nhóm thuộc tính
                 selectGroup.innerHTML = '<option value="">-- Chọn nhóm --</option>';
                 allAttributes.forEach(attr => {
-                    if (!selectedAttrIds.includes(attr.id.toString())) {
-                        const option = new Option(attr.name, attr.id);
-                        selectGroup.appendChild(option);
-                    }
+                    const option = new Option(attr.name, attr.id, false, false);
+                    selectGroup.appendChild(option);
                 });
 
                 $(selectValues).select2({
-                    tags: true,
+                    tags: false,
                     width: '100%',
-                    placeholder: "Chọn hoặc nhập giá trị"
+                    placeholder: "Chọn giá trị"
                 });
 
                 selectGroup.addEventListener('change', function() {
                     const attrId = this.value;
                     const attribute = allAttributes.find(a => a.id == attrId);
                     $(selectValues).empty();
-                    if (attribute?.values) {
+
+                    if (attribute && attribute.values) {
                         attribute.values.forEach(val => {
                             const option = new Option(val.value, val.id, false, false);
                             $(selectValues).append(option);
                         });
-                        $(selectValues).trigger('change');
                     }
 
-                    checkHideAddButton();
+                    $(selectValues).trigger('change');
+                    generateCombinations();
                 });
 
                 $(selectValues).on('change', function() {
@@ -337,79 +393,27 @@
                 clone.querySelector('.remove-attribute').addEventListener('click', function() {
                     this.closest('.content-attribute-content').remove();
                     generateCombinations();
-                    checkHideAddButton();
                 });
 
                 wrapper.appendChild(clone);
-                checkHideAddButton();
-            });
 
-            // Bắt toàn bộ click trong #productTable
-            $('#productTable').on('click', function(e) {
-                const target = e.target;
+                if (selectedAttrId) {
+                    $(selectGroup).val(selectedAttrId).trigger('change');
 
-                // Mở dòng chi tiết
-                if ($(target).closest('.main-row').length) {
-                    const clickedRow = $(target).closest('.main-row');
-                    const detailRow = clickedRow.next('.detail-row');
-
-                    $('.detail-row').hide(); // Ẩn hết trước
-
-                    if (detailRow.length) {
-                        const quantity = clickedRow.find('input[name$="[stock]"]').val() || '';
-                        const price = clickedRow.find('input[name$="[price]"]').val() || '';
-                        const sku = clickedRow.find('input[name$="[sku]"]').val() || '';
-
-                        detailRow.find('.soluong input').val(quantity);
-                        detailRow.find('.giatien input').val(price);
-                        detailRow.find('.sku input').val(sku);
-
-                        detailRow.show();
+                    // Append option value trước khi set value
+                    const attribute = allAttributes.find(a => a.id == selectedAttrId);
+                    if (attribute && attribute.values) {
+                        attribute.values.forEach(val => {
+                            if ($(selectValues).find(`option[value="${val.id}"]`).length === 0) {
+                                const option = new Option(val.value, val.id, false, false);
+                                $(selectValues).append(option);
+                            }
+                        });
                     }
+
+                    $(selectValues).val(selectedValueIds).trigger('change');
+                    generateCombinations();
                 }
-
-                // Lưu lại
-                if ($(target).hasClass('save-btn')) {
-                    const detailRow = $(target).closest('.detail-row');
-                    const mainRow = detailRow.prev('.main-row');
-
-                    const quantity = detailRow.find('.soluong input').val();
-                    const price = detailRow.find('.giatien input').val();
-                    const sku = detailRow.find('.sku input').val();
-
-                    mainRow.find('input[name$="[stock]"]').val(quantity);
-                    mainRow.find('input[name$="[price]"]').val(price);
-                    mainRow.find('input[name$="[sku]"]').val(sku);
-
-                    detailRow.hide();
-                }
-
-                // Hủy
-                if ($(target).hasClass('cancel-btn')) {
-                    $(target).closest('.detail-row').hide();
-                }
-            });
-
-            // ===== Hàm hỗ trợ =====
-            function getSelectedAttributeIds() {
-                const selects = document.querySelectorAll('.attribute-group');
-                return Array.from(selects).map(sel => sel.value).filter(Boolean);
-            }
-
-            function checkHideAddButton() {
-                const selectedAttrIds = getSelectedAttributeIds();
-                const allAttrIds = allAttributes.map(a => a.id.toString());
-                const hidden = allAttrIds.every(id => selectedAttrIds.includes(id));
-                document.getElementById('add-version-btn').style.display = hidden ? 'none' : 'inline-block';
-            }
-
-            function cartesian(arr) {
-                return arr.reduce((a, b) =>
-                    a.flatMap(d => b.map(e => [...d, e])),
-                    [
-                        []
-                    ]
-                );
             }
 
             function generateCombinations() {
@@ -417,11 +421,9 @@
                 const attributeGroups = wrapper.querySelectorAll('.content-attribute-content');
                 const selectedValues = [];
 
-
                 attributeGroups.forEach(group => {
                     const attrSelect = group.querySelector('.attribute-group');
                     const valueSelect = $(group.querySelector('.attribute-values'));
-
                     const attrId = attrSelect.value;
                     const attrName = attrSelect.options[attrSelect.selectedIndex]?.text;
                     const values = valueSelect.val() || [];
@@ -462,53 +464,79 @@
                     const mainRow = document.createElement('tr');
                     mainRow.classList.add('main-row');
                     mainRow.innerHTML = `
-                            <td><input type="file" name="variants[${index}][image]"></td>
-                            ${attrTexts.map((text) => `<td>${text}</td>`).join('')}
-                            <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0" ></td>
-                            <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000" ></td>
-                            <td><input type="text"  name="variants[${index}][sku]"  class="form-control" value="SP-${skuParts.join('-')}" ></td>
-                            ${hiddenInputs}
-                        `;
-                    const detailRow = document.createElement('tr');
-
-                    detailRow.classList.add('detail-row');
-                    detailRow.style.display = 'none';
-                    detailRow.innerHTML = `
-                    <td colspan="${selectedValues.length + 4}">
-                        <div class="chitiet">
-                            <div class="chitiet-top">
-                                <p>CẬP NHẬT THÔNG TIN CƠ BẢN</p>
-                                <div class="button">
-                                    <button type="button" class="save-btn">Lưu</button>
-                                    <button type="button" class="cancel-btn">Hủy</button>
-                                </div>
-                            </div>
-                            <div class="chitiet-botton">
-                                <div class="tonkho">
-                                    <p>Tồn kho</p>
-                                    <input type="checkbox" class="js-switch" checked />
-                                </div>
-                                <div class="soluong grip">
-                                    <label>Số lượng</label>
-                                    <input type="text" name="">
-                                </div>
-                                <div class="giatien grip">
-                                    <label>Giá tiền</label>
-                                    <input type="text" name="">
-                                </div>
-                                <div class="sku grip">
-                                    <label>SKU</label>
-                                    <input type="text" name="">
-                                </div>
-                            </div>
-                        </div>
-                    </td>
+                    <td><input type="file" name="variants[${index}][image]"></td>
+                    ${attrTexts.map(text => `<td>${text}</td>`).join('')}
+                    <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0"></td>
+                    <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000"></td>
+                    <td><input type="text" name="variants[${index}][sku]" class="form-control" value="SP-${skuParts.join('-')}"></td>
+                    ${hiddenInputs}
                 `;
 
                     tableBody.appendChild(mainRow);
-                    tableBody.appendChild(detailRow);
                 });
             }
+
+            function cartesian(arr) {
+                return arr.reduce((a, b) => a.flatMap(d => b.map(e => [...d, e])), [
+                    []
+                ]);
+            }
+        });
+    </script>
+    {{-- Xử lí nhập giá --}}
+    <script>
+        function formatNumber(input) {
+            let selectionStart = input.selectionStart;
+
+            // Lấy số thuần (bỏ dấu chấm)
+            let rawValue = input.value.replace(/\./g, '').replace(/\D/g, '');
+
+            // Tạo chuỗi format mới
+            let formattedValue = '';
+            for (let i = rawValue.length - 1, j = 1; i >= 0; i--, j++) {
+                formattedValue = rawValue[i] + formattedValue;
+                if (j % 3 === 0 && i !== 0) {
+                    formattedValue = '.' + formattedValue;
+                }
+            }
+            // Đếm dấu chấm trước và sau vị trí con trỏ
+            let oldDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+            input.value = formattedValue;
+            let newDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+
+            // Cập nhật con trỏ
+            let newPos = selectionStart + (newDots - oldDots);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // Gắn cho cả price và sale_price
+        document.getElementById('price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+        document.getElementById('sale_price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        // Khi submit: loại dấu chấm
+        document.getElementById('product-form')?.addEventListener('submit', function() {
+            document.getElementById('price').value = document.getElementById('price').value.replace(/\./g, '');
+            document.getElementById('sale_price').value = document.getElementById('sale_price').value.replace(/\./g,
+                '');
+        });
+    </script>
+    {{-- Xử lí chọn danh mục  --}}
+    <script>
+        const allSubCategories = @json(\App\Models\Category::whereNotNull('parent_id')->get());
+
+        $('#parent-category').on('change', function() {
+            const parentId = $(this).val();
+            $('#sub-category').empty();
+
+            allSubCategories.forEach(sub => {
+                if (sub.parent_id == parentId) {
+                    $('#sub-category').append(`<option value="${sub.id}">${sub.name}</option>`);
+                }
+            });
         });
     </script>
 @endsection

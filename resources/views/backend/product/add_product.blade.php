@@ -163,17 +163,30 @@
                     <div class="content-right">
                         <div class="danhmuc">
                             <span>CHỌN DANH MỤC CHA</span>
-                            <select class="form-control" id="parent-category" name="parent_category">
+                            {{-- <select class="form-control" id="parent-category" name="parent_category">
                                 @foreach ($parentCategories as $parent)
                                     <option value="{{ $parent->id }}">{{ $parent->name }}</option>
                                 @endforeach
+                            </select> --}}
+                            <select class="form-control" id="parent-category" name="parent_category">
+                                <option value="0">-- Chọn danh mục cha --</option>
+                                @foreach ($parentCategories as $parent)
+                                    <option value="{{ $parent->id }}"
+                                        {{ old('parent_category') == $parent->id || $parent->id == ($selectedCategoryId ?? 0) ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <p class="flex">Chọn danh mục phụ nếu có <span style="color: red"> *</span></p>
-                            <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
+                            {{-- <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
                                 @foreach ($subCategories as $sub)
                                     <option value="{{ $sub->id }}">{{ $sub->name }}</option>
                                 @endforeach
+                            </select> --}}
+                            <select class="form-control" id="sub-category" name="sub_categories[]" multiple="multiple">
+                                <!-- JS sẽ fill danh mục phụ tương ứng -->
                             </select>
+
                         </div>
 
                         <div class="thongtin">
@@ -189,12 +202,13 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                             <p>Giá gốc sản phẩm</p>
-                            <input type="number" name="price" value="{{ old('price') }}">
+                            <input type="text" name="price" id="price" value="{{ old('price') }}">
                             @error('price')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
+
                             <p>Giá giảm sản phẩm</p>
-                            <input type="number" name="sale_price" value="{{ old('sale_price') }}">
+                            <input type="text" name="sale_price" id="sale_price" value="{{ old('sale_price') }}">
                             @error('sale_price')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -584,6 +598,112 @@
                     reader.readAsDataURL(file);
                 }
             }
+        });
+    </script>
+    {{-- Xử lí nhập giá --}}
+    <script>
+        function formatNumber(input) {
+            let selectionStart = input.selectionStart;
+            let selectionEnd = input.selectionEnd;
+
+            // Lấy giá trị hiện tại và loại dấu chấm
+            let rawValue = input.value.replace(/\./g, '').replace(/\D/g, '');
+
+            // Format lại thành chuỗi có dấu chấm
+            let formattedValue = '';
+            for (let i = rawValue.length - 1, j = 1; i >= 0; i--, j++) {
+                formattedValue = rawValue[i] + formattedValue;
+                if (j % 3 === 0 && i !== 0) {
+                    formattedValue = '.' + formattedValue;
+                }
+            }
+
+            // Đếm số chấm trước khi format và sau khi format
+            let oldDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+            let newDots = (formattedValue.substr(0, selectionStart).match(/\./g) || []).length;
+
+            input.value = formattedValue;
+
+            // Cập nhật vị trí con trỏ
+            let newPos = selectionStart + (newDots - oldDots);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // Gắn sự kiện
+        document.getElementById('price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        document.getElementById('sale_price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        // Xử lý khi submit form: loại dấu chấm
+        document.getElementById('product-form')?.addEventListener('submit', function(e) {
+            let priceInput = document.getElementById('price');
+            let salePriceInput = document.getElementById('sale_price');
+            priceInput.value = priceInput.value.replace(/\./g, '');
+            salePriceInput.value = salePriceInput.value.replace(/\./g, '');
+        });
+    </script>
+    {{-- Xử lí nhập giá --}}
+    <script>
+        function formatNumber(input) {
+            let selectionStart = input.selectionStart;
+
+            // Lấy số thuần (bỏ dấu chấm)
+            let rawValue = input.value.replace(/\./g, '').replace(/\D/g, '');
+
+            // Tạo chuỗi format mới
+            let formattedValue = '';
+            for (let i = rawValue.length - 1, j = 1; i >= 0; i--, j++) {
+                formattedValue = rawValue[i] + formattedValue;
+                if (j % 3 === 0 && i !== 0) {
+                    formattedValue = '.' + formattedValue;
+                }
+            }
+
+            // Đếm dấu chấm trước và sau vị trí con trỏ
+            let oldDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+            input.value = formattedValue;
+            let newDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+
+            // Cập nhật con trỏ
+            let newPos = selectionStart + (newDots - oldDots);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // Gắn cho cả price và sale_price
+        document.getElementById('price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+        document.getElementById('sale_price').addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        // Khi submit: loại dấu chấm
+        document.getElementById('product-form')?.addEventListener('submit', function() {
+            document.getElementById('price').value = document.getElementById('price').value.replace(/\./g, '');
+            document.getElementById('sale_price').value = document.getElementById('sale_price').value.replace(/\./g,
+                '');
+        });
+    </script>
+    {{-- Xử lí chọn danh mụcs --}}
+    <script>
+        const allSubs = @json($subCategories);
+        $(document).ready(function() {
+            $('#parent-category').on('change', function() {
+                const parentId = $(this).val();
+                $('#sub-category').empty();
+                if (parentId == 0) return;
+
+                allSubs.filter(s => s.parent_id == parentId).forEach(s => {
+                    $('#sub-category').append(`<option value="${s.id}">${s.name}</option>`);
+                });
+            });
+
+            // Auto trigger khi edit load lại
+            $('#parent-category').trigger('change');
         });
     </script>
 @endsection

@@ -8,26 +8,89 @@ use Illuminate\Http\Request;
 
 class FrontendController extends Controller
 {
+
     public function index()
     {
+        // Lấy sản phẩm từng danh mục
+        $manHinh = Product::with('images')
+            ->where('category_id', 9)
+            ->get();
+
+        $dienThoai = Product::with('images')
+            ->where('category_id', 1)
+            ->get();
+
+        $laptop = Product::with('images')
+            ->where('category_id', 6)
+            ->get();
+
+        $products = Product::with('thumbnail')->get();
         $products = Product::all();
-        return view('fronend.home');
+        return view('fronend.home', [
+            'products' => $products,
+            'manhinhs' => $manHinh,
+            'dienthoais' => $dienThoai,
+            'laptops' => $laptop,
+        ]);
     }
     public function product()
     {
-        return view('fronend.product.index');
+        $products = Product::with('thumbnail')->get();
+        $products = Product::all();
+        return view('fronend.product.index', [
+            'products' => $products,
+        ]);
+    }
+
+    public function show($id)
+    {
+        // Eager load các quan hệ cần thiết:
+        $product = Product::with([
+            'category',
+            'images',
+            'variants.variantAttributes.attribute',
+            'variants.variantAttributes.value',
+        ])->findOrFail($id);
+
+        return view('fronend.product.product_detail', compact('product'));
     }
     public function mobile()
     {
-        return view('fronend.product.didong');
+        // lấy danh sách sản phẩm nổi bật
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $mobiles = Product::with('images')->where('category_id', 1)->get();
+        return view('fronend.product.didong', [
+            'mobiles' => $mobiles,
+            'products' => $products,
+        ]);
     }
     public function computer()
     {
-        return view('fronend.product.maytinh');
+        // lấy danh sách sản phẩm nổi bật
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $computers = Product::with('images')->where('category_id', 6)->get();
+        return view('fronend.product.maytinh', [
+            'computers' => $computers,
+            'products' => $products,
+        ]);
     }
     public function screen()
     {
-        return view('fronend.product.manhinh');
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $screens = Product::with('images')->where('category_id', 9)->get();
+        return view('fronend.product.manhinh', [
+            'screens' => $screens,
+            'products' => $products,
+        ]);
     }
     public function news_technology()
     {
@@ -61,10 +124,7 @@ class FrontendController extends Controller
     {
         return view('fronend.pay');
     }
-    public function edit_user()
-    {
-        return view('fronend.account.edit_user');
-    }
+
     public function lienhetuvan()
     {
         return view('fronend.header.article.vechungtoi.lienhetuvan');

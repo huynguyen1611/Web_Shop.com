@@ -26,10 +26,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
         ], [
             'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email phải đúng định dạng @',
             'password.required' => 'Mật khẩu không được để trống.',
         ]);
         if (Auth::attempt([

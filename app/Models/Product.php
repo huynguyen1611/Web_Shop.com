@@ -34,7 +34,10 @@ class Product extends Model
     {
         return $this->hasMany(Image::class);
     }
-
+    public function thumbnail()
+    {
+        return $this->hasOne(Image::class)->where('is_thumbnail', true);
+    }
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
@@ -42,5 +45,10 @@ class Product extends Model
     public function subCategories()
     {
         return $this->belongsToMany(Category::class, 'product_sub_category', 'product_id', 'category_id');
+    }
+    // Nếu Product có nhiều Attribute qua bảng trung gian
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attribute', 'product_id', 'attribute_id');
     }
 }

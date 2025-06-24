@@ -50,7 +50,7 @@
                         </div>
                         <div class="">
                             <div class="uk-flex uk-flex-middle">
-                                <a style="color: #000;font-weight: 700;" href="{{ route('edit_user') }}"
+                                <a style="color: #000;font-weight: 700;" href="{{ route('edit_customer') }}"
                                     class="cart-text">
                                     <i class="fa fa-user custom-icon"></i>
                                 </a>
