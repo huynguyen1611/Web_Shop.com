@@ -821,7 +821,8 @@
 .img-scaledown {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 96px;
+    margin-bottom: 50px;
 }
 .img-scaledown img {
     display: block;

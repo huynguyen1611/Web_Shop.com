@@ -2334,14 +2334,24 @@ a.ui-button:active,
 }
 
 .attribute .color-item {
-    border: 1px solid #8c9ec5;
     width: 50px;
+    height: 50px;
+    border: 1px solid #8c9ec5;
+    border-radius: 50%;
+    display: flex; /* bật flexbox */
+    justify-content: center; /* căn giữa ngang */
+    align-items: center; /* căn giữa dọc */
+    overflow: hidden; /* tránh tràn hình */
+    padding: 0; /* không padding dư thừa */
+    box-sizing: border-box; /* để border không đội kích thước */
 }
 
 .attribute .color-item img {
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
+    object-fit: cover; /* không méo hình */
 }
-
 .quantity .quantitybox {
     position: relative;
     margin-right: 20px;
@@ -3779,7 +3789,12 @@ bottom-support-online .animated.infinite {
     border: 1px dashed #d92329;
     background-color: #fefe;
 }
-
+.review-star {
+    font-size: 30px;
+    border: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
 @media (max-width: 600px) {
     .product-catalogue .wrapper > .uk-flex {
         display: block;

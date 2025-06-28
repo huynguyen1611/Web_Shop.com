@@ -109,14 +109,6 @@
                     <div class="content-right">
                         <div class="danhmuc">
                             <span>CHỌN DANH MỤC CHA</span>
-                            {{-- <select name="parent_category" class="form-control">
-                                @foreach ($parentCategories as $parent)
-                                    <option value="{{ $parent->id }}"
-                                        {{ $parent->id == $selectedCategoryId ? 'selected' : '' }}>
-                                        {{ $parent->name }}
-                                    </option>
-                                @endforeach
-                            </select> --}}
                             <select name="parent_category" id="parent-category" class="form-control">
                                 <option value="0">-- Chọn danh mục cha --</option>
                                 @foreach ($parentCategories as $parent)
@@ -127,14 +119,6 @@
                                 @endforeach
                             </select>
                             <p class="flex">Chọn danh mục phụ nếu có <span style="color: red"> *</span></p>
-                            {{-- <select name="sub_categories[]" id="sub-category" multiple class="form-control">
-                                @foreach ($subCategories as $sub)
-                                    <option value="{{ $sub->id }}"
-                                        {{ in_array($sub->id, $selectedSubCategoryIds) ? 'selected' : '' }}>
-                                        {{ $sub->name }}
-                                    </option>
-                                @endforeach
-                            </select> --}}
                             <select name="sub_categories[]" id="sub-category" class="form-control" multiple>
                                 @foreach ($subCategories as $sub)
                                     <option value="{{ $sub->id }}"
@@ -164,16 +148,17 @@
                         <div class="anh">
                             <label for="image">CHỌN ẢNH ĐẠI DIỆN</label>
                             <div class="admin-content-main-content-right-imgs">
-                                {{-- <img id="preview" src="{{ asset('frontend/img/nophoto.jpg') }}"
-                                    class="image-preview" /> --}}
                                 @php
                                     $thumbnail = $product->images->where('is_thumbnail', true)->first();
                                 @endphp
+
                                 <img id="preview"
                                     src="{{ $thumbnail ? asset('storage/' . $thumbnail->file_path) : asset('frontend/img/nophoto.jpg') }}"
                                     alt="Ảnh đại diện" style="cursor: pointer;" />
-                                <input id="image" type="file" name="thumbnail" accept="image/*"
+
+                                <input id="thumbnail" type="file" name="thumbnail" accept="image/*"
                                     style="display: none;" />
+
                             </div>
                         </div>
                     </div>
@@ -203,14 +188,15 @@
     {{-- Xử lí ảnh đại diện --}}
     <script>
         document.getElementById('preview').addEventListener('click', function() {
-            document.getElementById('image').click();
+            document.getElementById('thumbnail').click(); // mở dialog file input
         });
-        document.getElementById('image').addEventListener('change', function(e) {
+
+        document.getElementById('thumbnail').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    document.getElementById('preview').src = event.target.result;
+                    document.getElementById('preview').src = event.target.result; // preview ảnh
                 };
                 reader.readAsDataURL(file);
             }
@@ -464,17 +450,69 @@
                     const mainRow = document.createElement('tr');
                     mainRow.classList.add('main-row');
                     mainRow.innerHTML = `
-                    <td><input type="file" name="variants[${index}][image]"></td>
-                    ${attrTexts.map(text => `<td>${text}</td>`).join('')}
-                    <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0"></td>
-                    <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000"></td>
-                    <td><input type="text" name="variants[${index}][sku]" class="form-control" value="SP-${skuParts.join('-')}"></td>
-                    ${hiddenInputs}
-                `;
+                        <td>
+                            <div style="position: relative; width: 50px; height: 50px;">
+                                <img src="{{ asset('frontend/img/nophoto.jpg') }}" class="preview-img"
+                                    style="width:50px; height:50px; object-fit:cover;" />
+                                <input type="file" name="variants[${index}][image]"
+                                    class="image-input" style="opacity:0; width:50px; height:50px; position:absolute; top:0; left:0; cursor:pointer;">
+                            </div>
+                        </td>
+                        ${attrTexts.map(text => `<td>${text}</td>`).join('')}
+                        <td><input type="text" name="variants[${index}][stock]" class="form-control" value="0"></td>
+                        <td><input type="text" name="variants[${index}][price]" class="form-control" value="100.000"></td>
+                        <td><input type="text" name="variants[${index}][sku]" class="form-control" value="SP-${skuParts.join('-')}"></td>
+                        ${hiddenInputs}
+                    `;
 
                     tableBody.appendChild(mainRow);
+                    // 🟢 Gán preview ảnh khi chọn ảnh mới
+                    const fileInput = mainRow.querySelector('input[type="file"]');
+                    const previewImg = mainRow.querySelector('img.preview-img');
+
+                    fileInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                previewImg.src = event.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
                 });
+
+                // 🟢 Nếu đang edit thì gán ảnh & thông tin
+                if (existingVariants.length > 0) {
+                    existingVariants.forEach((variant, index) => {
+                        const row = document.querySelector(
+                            `#productTable tbody tr:nth-of-type(${index + 1})`);
+                        if (row) {
+                            // Gán preview ảnh
+                            const img = row.querySelector('img.preview-img');
+                            if (variant.variant_image) {
+                                img.src = `/storage/${variant.variant_image}`;
+                            }
+
+                            // Gán thông tin
+                            row.querySelector(`input[name="variants[${index}][stock]"]`).value = variant
+                                .stock_quantity || 0;
+                            row.querySelector(`input[name="variants[${index}][price]"]`).value = (variant
+                                .price || 0).toLocaleString('vi-VN');
+                            row.querySelector(`input[name="variants[${index}][sku]"]`).value = variant
+                                .sku || '';
+
+                            // Thêm ID variant để controller update
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = `variants[${index}][id]`;
+                            input.value = variant.id;
+                            row.appendChild(input);
+                        }
+                    });
+                }
             }
+
 
             function cartesian(arr) {
                 return arr.reduce((a, b) => a.flatMap(d => b.map(e => [...d, e])), [
@@ -536,6 +574,58 @@
                 if (sub.parent_id == parentId) {
                     $('#sub-category').append(`<option value="${sub.id}">${sub.name}</option>`);
                 }
+            });
+        });
+    </script>
+    {{-- Xử lí nhập giá thuộc tính --}}
+    <script>
+        function formatNumber(input) {
+            let selectionStart = input.selectionStart;
+
+            let rawValue = input.value.replace(/\./g, '').replace(/\D/g, '');
+
+            let formattedValue = '';
+            for (let i = rawValue.length - 1, j = 1; i >= 0; i--, j++) {
+                formattedValue = rawValue[i] + formattedValue;
+                if (j % 3 === 0 && i !== 0) {
+                    formattedValue = '.' + formattedValue;
+                }
+            }
+
+            let oldDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+            input.value = formattedValue;
+            let newDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+
+            let newPos = selectionStart + (newDots - oldDots);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // Gắn sự kiện cho các trường cụ thể (giá chính)
+        document.getElementById('price')?.addEventListener('input', function() {
+            formatNumber(this);
+        });
+        document.getElementById('sale_price')?.addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        // Gắn cho tất cả input price khi nhập (bao gồm variant)
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('input[name^="variants"][name$="[price]"]')) {
+                formatNumber(e.target);
+            }
+        });
+
+        // Khi submit: loại dấu chấm
+        document.getElementById('product-form')?.addEventListener('submit', function() {
+            // Giá chính
+            ['price', 'sale_price'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = input.value.replace(/\./g, '');
+            });
+
+            // Variant prices
+            document.querySelectorAll('input[name$="[price]"]').forEach(input => {
+                input.value = input.value.replace(/\./g, '');
             });
         });
     </script>

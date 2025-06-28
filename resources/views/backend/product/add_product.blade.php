@@ -111,49 +111,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- <!-- Ví dụ: -->
-                                        <tr class="main-row">
-                                            <td><img src="{{ asset('frontend/img/product/ip-16.jpg') }}"
-                                                    style="width: 30px; height: 30px;"></td>
-                                            <td>Titan</td>
-                                            <td>521GB</td>
-                                            <td>0</td>
-                                            <td>100.000</td>
-                                            <td>12426452-2-3</td>
-                                        </tr>
-                                        <tr class="detail-row" style="display: none;">
-                                            <td colspan="6">
-                                                <div class="chitiet">
-                                                    <div class="chitiet-top">
-                                                        <p>CẬP NHẬT THÔNG TIN CƠ BẢN</p>
-                                                        <div class="button">
-                                                            <button type="button">Hủy bỏ</button>
-                                                            <button type="submit">Lưu lại</button>
-                                                        </div>
-                                                    </div>
-                                                    <img src="{{ asset('frontend/img/product/ip-16.jpg') }}"
-                                                        style="width: 150px; height: 150px;">
-                                                    <div class="chitiet-botton">
-                                                        <div class="tonkho">
-                                                            <p>Tồn kho</p>
-                                                            <input type="checkbox" class="js-switch" checked />
-                                                        </div>
-                                                        <div class="soluong grip">
-                                                            <label>Số lượng</label>
-                                                            <input type="text">
-                                                        </div>
-                                                        <div class="giatien grip">
-                                                            <label>Giá tiền</label>
-                                                            <input type="text">
-                                                        </div>
-                                                        <div class="sku grip">
-                                                            <label>SKU</label>
-                                                            <input type="text">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -532,7 +489,7 @@
                     mainRow.innerHTML = `
                             <td>
                                 <div style="position: relative; width: 30px; height: 30px;">
-                                    <img src="{{ asset('frontend/img/nophoto.jpg') }}" class="preview-img" style="width:30px; height:30px; object-fit:cover; position:absolute; top:0; left:0;" />
+                                    <img src="{{ asset('frontend/img/nophoto.jpg') }}" class="preview-img" style="width:30px; height:30px; object-fit:cover;" />
                                     <input type="file" name="variants[${index}][image]" class="image-input" style="opacity:0; width:30px; height:30px; position:absolute; top:0; left:0; cursor:pointer;">
                                 </div>
                             </td>
@@ -546,37 +503,37 @@
 
                     detailRow.classList.add('detail-row');
                     detailRow.style.display = 'none';
-                    detailRow.innerHTML = `
-                    <td colspan="${selectedValues.length + 4}">
-                        <div class="chitiet">
-                            <div class="chitiet-top">
-                                <p>CẬP NHẬT THÔNG TIN CƠ BẢN</p>
-                                <div class="button">
-                                    <button type="button" class="save-btn">Lưu</button>
-                                    <button type="button" class="cancel-btn">Hủy</button>
-                                </div>
-                            </div>
-                            <div class="chitiet-botton">
-                                <div class="tonkho">
-                                    <p>Tồn kho</p>
-                                    <input type="checkbox" class="js-switch" checked />
-                                </div>
-                                <div class="soluong grip">
-                                    <label>Số lượng</label>
-                                    <input type="text" name="">
-                                </div>
-                                <div class="giatien grip">
-                                    <label>Giá tiền</label>
-                                    <input type="text" name="">
-                                </div>
-                                <div class="sku grip">
-                                    <label>SKU</label>
-                                    <input type="text" name="">
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                `;
+                    //     detailRow.innerHTML = `
+                //     <td colspan="${selectedValues.length + 4}">
+                //         <div class="chitiet">
+                //             <div class="chitiet-top">
+                //                 <p>CẬP NHẬT THÔNG TIN CƠ BẢN</p>
+                //                 <div class="button">
+                //                     <button type="button" class="save-btn">Lưu</button>
+                //                     <button type="button" class="cancel-btn">Hủy</button>
+                //                 </div>
+                //             </div>
+                //             <div class="chitiet-botton">
+                //                 <div class="tonkho">
+                //                     <p>Tồn kho</p>
+                //                     <input type="checkbox" class="js-switch" checked />
+                //                 </div>
+                //                 <div class="soluong grip">
+                //                     <label>Số lượng</label>
+                //                     <input type="text" name="">
+                //                 </div>
+                //                 <div class="giatien grip">
+                //                     <label>Giá tiền</label>
+                //                     <input type="text" name="">
+                //                 </div>
+                //                 <div class="sku grip">
+                //                     <label>SKU</label>
+                //                     <input type="text" name="">
+                //                 </div>
+                //             </div>
+                //         </div>
+                //     </td>
+                // `;
 
                     tableBody.appendChild(mainRow);
                     tableBody.appendChild(detailRow);
@@ -688,7 +645,7 @@
                 '');
         });
     </script>
-    {{-- Xử lí chọn danh mụcs --}}
+    {{-- Xử lí chọn danh mục --}}
     <script>
         const allSubs = @json($subCategories);
         $(document).ready(function() {
@@ -704,6 +661,58 @@
 
             // Auto trigger khi edit load lại
             $('#parent-category').trigger('change');
+        });
+    </script>
+    {{-- Xử lí nhập giá thuộc tính --}}
+    <script>
+        function formatNumber(input) {
+            let selectionStart = input.selectionStart;
+
+            let rawValue = input.value.replace(/\./g, '').replace(/\D/g, '');
+
+            let formattedValue = '';
+            for (let i = rawValue.length - 1, j = 1; i >= 0; i--, j++) {
+                formattedValue = rawValue[i] + formattedValue;
+                if (j % 3 === 0 && i !== 0) {
+                    formattedValue = '.' + formattedValue;
+                }
+            }
+
+            let oldDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+            input.value = formattedValue;
+            let newDots = (input.value.substr(0, selectionStart).match(/\./g) || []).length;
+
+            let newPos = selectionStart + (newDots - oldDots);
+            input.setSelectionRange(newPos, newPos);
+        }
+
+        // Gắn sự kiện cho các trường cụ thể (giá chính)
+        document.getElementById('price')?.addEventListener('input', function() {
+            formatNumber(this);
+        });
+        document.getElementById('sale_price')?.addEventListener('input', function() {
+            formatNumber(this);
+        });
+
+        // Gắn cho tất cả input price khi nhập (bao gồm variant)
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('input[name^="variants"][name$="[price]"]')) {
+                formatNumber(e.target);
+            }
+        });
+
+        // Khi submit: loại dấu chấm
+        document.getElementById('product-form')?.addEventListener('submit', function() {
+            // Giá chính
+            ['price', 'sale_price'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = input.value.replace(/\./g, '');
+            });
+
+            // Variant prices
+            document.querySelectorAll('input[name$="[price]"]').forEach(input => {
+                input.value = input.value.replace(/\./g, '');
+            });
         });
     </script>
 @endsection

@@ -8,11 +8,11 @@
         <div class="aside-body">
             @foreach ($products as $product)
                 <div class="aside-product uk-clearfix">
-                    <a href="" class="image img-cover"><img
+                    <a href="{{ route('product.show', $product->id) }}" class="image img-cover"><img
                             src="{{ asset('storage/' . $product->thumbnail->file_path) }}"
                             alt="Laptop Gaming Acer Nitro V ANV15-51-58AN"></a>
                     <div class="info">
-                        <h3 class="title"><a href="{{ route('product_store', $product->id) }}"
+                        <h3 class="title"><a href="{{ route('product.show', $product->id) }}"
                                 title="{{ $product->name }}">{{ $product->name }}</a></h3>
                         <div class="price uk-flex uk-flex-middle mt10">
                             <div class="price-sale">{{ number_format($product->sale_price, 0, ',', '.') }}</div>

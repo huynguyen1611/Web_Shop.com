@@ -113,7 +113,6 @@ class ProductController extends Controller
             'album_images.*.mimes' => 'Mỗi ảnh album phải có định dạng jpeg, png,webp, jpg hoặc gif.',
             'album_images.*.max' => 'Mỗi ảnh album không được vượt quá 2MB.',
         ]);
-
         DB::beginTransaction();
 
         try {
@@ -193,7 +192,7 @@ class ProductController extends Controller
                     $variant = ProductVariant::create([
                         'product_id'      => $product->id,
                         'sku'             => $sku,
-                        'price'           => isset($variantData['price']) ? (int) str_replace('.', '', $variantData['price']) : 0,
+                        'price' => (int) str_replace('.', '', $variantData['price'] ?? '0'),
                         'stock_quantity'  => $variantData['stock'] ?? 0,
                         'variant_image'   => $imagePath,
                     ]);
@@ -270,13 +269,8 @@ class ProductController extends Controller
     //Chỉnh sửa sản phẩm **
     public function update_product(Request $request, $id)
     {
-        // dd(
-        //     $request->hasFile('thumbnail'),
-        //     $request->file('thumbnail'),
-        //     $request->hasFile('album_images'),
-        //     $request->file('album_images')
-        // );
-        DB::beginTransaction();
+
+
         $request->validate(
             [
                 'name' => 'required|string|max:255',
@@ -289,7 +283,7 @@ class ProductController extends Controller
                 'price' => 'required|string',
                 'sale_price' => 'nullable|string',
                 'discount_percent' => 'nullable|numeric|min:0|max:100',
-                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
                 'album_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ],
             [
@@ -330,11 +324,12 @@ class ProductController extends Controller
                 'thumbnail.max' => 'Ảnh đại diện không được vượt quá 2MB.',
 
                 'album_images.*.image' => 'Mỗi ảnh trong album phải là tệp hình ảnh.',
-                'album_images.*.mimes' => 'Mỗi ảnh album phải có định dạng jpeg, png, jpg hoặc gif.',
+                'album_images.*.mimes' => 'Mỗi ảnh album phải có định dạng jpeg, png, jpg,webp hoặc gif.',
                 'album_images.*.max' => 'Mỗi ảnh album không được vượt quá 2MB.',
 
             ]
         );
+        DB::beginTransaction();
         try {
             Log::info('Dữ liệu update gửi lên:', $request->all());
 
@@ -364,79 +359,86 @@ class ProductController extends Controller
             ]);
 
             $product->subCategories()->sync($subCategories);
+            // dd($request->file('thumbnail'));
 
-            // Thumbnail
             if ($request->hasFile('thumbnail')) {
-                // Xóa thumbnail cũ
-                $product->images()->where('is_thumbnail', true)->delete();
+                Log::info('✅ Có file thumbnail:', [
+                    'original' => $request->file('thumbnail')->getClientOriginalName(),
+                    'size' => $request->file('thumbnail')->getSize(),
+                    'type' => $request->file('thumbnail')->getMimeType()
+                ]);
+
+                $oldThumbnail = $product->images()->where('is_thumbnail', true)->first();
+                if ($oldThumbnail && Storage::disk('public')->exists($oldThumbnail->file_path)) {
+                    Storage::disk('public')->delete($oldThumbnail->file_path);
+                    $oldThumbnail->delete();
+                }
 
                 $thumbPath = $request->file('thumbnail')->store('products', 'public');
                 $product->images()->create([
                     'file_path' => $thumbPath,
                     'is_thumbnail' => true,
                 ]);
+            } else {
+                Log::warning('⚠️ Không nhận được ảnh thumbnail trong request');
             }
 
-            // Album
-            if ($request->hasFile('album_images')) {
-                // Xóa toàn bộ album cũ (is_thumbnail = false)
-                $product->images()->where('is_thumbnail', false)->delete();
 
+            // Album ảnh
+            if ($request->hasFile('album_images')) {
+                $product->images()->where('is_thumbnail', false)->delete();
                 foreach ($request->file('album_images') as $img) {
                     $imgPath = $img->store('products', 'public');
-                    $product->images()->create([
-                        'file_path' => $imgPath,
-                        'is_thumbnail' => false,
-                    ]);
+                    $product->images()->create(['file_path' => $imgPath, 'is_thumbnail' => false]);
                 }
             }
 
-            // Xóa variant cũ
-            foreach ($product->variants as $oldVar) {
-                $oldVar->variantAttributes()->delete();
-                $oldVar->delete();
-            }
 
-            // Tạo variant mới
-            if ($request->filled('variants')) {
-                foreach ($request->input('variants') as $index => $variantData) {
-                    Log::info("Đang tạo variant:", $variantData);
+            // Xử lý variants
+            $incomingVariants = collect($request->input('variants', []));
+            $incomingIds = $incomingVariants->pluck('id')->filter()->all();
 
-                    $imagePath = null;
-                    if ($request->hasFile("variants.$index.image")) {
-                        $imagePath = $request->file("variants.$index.image")->store('variants', 'public');
+            // Xóa variant không còn
+            $product->variants()->whereNotIn('id', $incomingIds)->get()->each(function ($old) {
+                $old->variantAttributes()->delete();
+                $old->delete();
+            });
+
+            // Thêm hoặc cập nhật variant
+            foreach ($incomingVariants as $index => $data) {
+                $variant = isset($data['id']) ? ProductVariant::find($data['id']) : new ProductVariant();
+                $variant->product_id = $product->id;
+
+                // Ảnh mới
+                $imagePath = $variant->variant_image ?? null;
+                if ($request->hasFile("variants.$index.image")) {
+                    if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                        Storage::disk('public')->delete($imagePath);
                     }
+                    $imagePath = $request->file("variants.$index.image")->store('variants', 'public');
+                }
 
-                    $variant = ProductVariant::create([
-                        'product_id' => $product->id,
-                        'sku'        => $variantData['sku'] ?? null,
-                        'price'      => (int) str_replace('.', '', $variantData['price'] ?? '0'),
-                        'stock_quantity' => (int) ($variantData['stock'] ?? 0),
-                        'variant_image'  => $imagePath
+                $variant->sku = $data['sku'] ?? null;
+                $variant->price = isset($data['price']) ? (int) preg_replace('/\D/', '', $data['price']) : 0;
+                $variant->stock_quantity = $data['stock'] ?? 0;
+                $variant->variant_image = $imagePath;
+                $variant->save();
+
+                // Thuộc tính
+                $variant->variantAttributes()->delete();
+                foreach ($data['attributes'] ?? [] as $attrId => $valueId) {
+                    $variant->variantAttributes()->create([
+                        'attribute_id' => $attrId,
+                        'attribute_value_id' => $valueId,
                     ]);
-
-                    if (!empty($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attrId => $valueId) {
-                            ProductVariantAttribute::create([
-                                'product_variant_id' => $variant->id,
-                                'attribute_id' => $attrId,
-                                'attribute_value_id' => $valueId,
-                            ]);
-                        }
-                    } else {
-                        Log::warning("Variant không có thuộc tính!", ['variant' => $variantData]);
-                    }
                 }
             }
-
             DB::commit();
             return redirect()->route('list_product')->with('success', 'Cập nhật sản phẩm thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Lỗi khi update product: " . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->withInput()->with('error', 'Lỗi: ' . $e->getMessage());
+            Log::error('Lỗi khi update sản phẩm: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Đã có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attribute as ModelsAttribute;
 use App\Models\Product;
+use App\Models\Attribute;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -44,15 +46,74 @@ class FrontendController extends Controller
 
     public function show($id)
     {
-        // Eager load các quan hệ cần thiết:
+        // 1. Lấy sản phẩm và eager load
         $product = Product::with([
             'category',
             'images',
             'variants.variantAttributes.attribute',
             'variants.variantAttributes.value',
+            'variants.variantAttributes.attributeValue',
         ])->findOrFail($id);
+        // 2. Lấy màu sắc và dung lượng
+        $colorValues = $product->variants->flatMap->variantAttributes
+            ->where(fn($va) => $va->attributeValue->attribute->name === 'Màu sắc')
+            ->unique('attribute_value_id');
 
-        return view('fronend.product.product_detail', compact('product'));
+        $capacityValues = $product->variants->flatMap->variantAttributes
+            ->where(fn($va) => $va->attributeValue->attribute->name === 'Dung lượng')
+            ->unique('attribute_value_id');
+
+        // 3. Sản phẩm cùng danh mục cha
+        $relatedProducts = Product::with('images')
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->get();
+
+        // 4. Danh sách thuộc tính
+        $attributes = Attribute::with('values')->get();
+
+        // 5. Cập nhật sản phẩm đã xem
+        $viewed = session('viewed_products', []);
+        if (!in_array($id, $viewed)) {
+            array_unshift($viewed, $id); // thêm vào đầu
+            $viewed = array_slice($viewed, 0, 10); // tối đa 10
+            session(['viewed_products' => $viewed]);
+        }
+
+        // 6. Lấy danh sách sản phẩm đã xem
+        $viewedIds = session('viewed_products', []);
+        $viewedProducts = Product::with('images')
+            ->whereIn('id', $viewedIds)
+            ->get();
+
+        $firstVariant = $product->variants->first();
+        return view(
+            'fronend.product.product_detail',
+            compact(
+                'product',
+                'attributes',
+                'colorValues',
+                'capacityValues',
+                'relatedProducts',
+                'viewedProducts',
+                'firstVariant'
+            )
+        );
+    }
+
+    // //Xóa từng sản phẩm đã xem **
+    public function removeViewedProduct($id)
+    {
+        $viewed = session('viewed_products', []);
+        $viewed = array_filter($viewed, fn($pid) => $pid != $id);
+        session(['viewed_products' => $viewed]);
+        return response()->json(['status' => 'ok']);
+    }
+    // //Xóa tất cả sản phẩm đã xem **
+    public function clearViewedProducts()
+    {
+        session()->forget('viewed_products');
+        return response()->json(['status' => 'ok']);
     }
     public function mobile()
     {

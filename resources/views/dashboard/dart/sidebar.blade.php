@@ -22,8 +22,8 @@
                     IN+
                 </div>
             </li>
-            <li class="active">
-                <a href=""><i class="fa fa-user-circle"></i><span class="nav-label">QL Thành viên</span>
+            <li class="">
+                <a href="#"><i class="fa fa-user-circle"></i><span class="nav-label">QL Thành viên</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="{{ route('roles.index') }}">QL Nhóm thành viên</a></li>
@@ -31,7 +31,7 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-suitcase"></i> <span class="nav-label">QL Sản phẩm</span>
+                <a href="#"><i class="fa fa-suitcase"></i> <span class="nav-label">QL Sản phẩm</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="{{ route('list_category') }}">Nhóm sản phẩm</a></li>
@@ -41,14 +41,14 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-calendar"></i> <span class="nav-label">QL Đơn hàng</span>
+                <a href="#"><i class="fa fa-calendar"></i> <span class="nav-label">QL Đơn hàng</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Danh sách đơn hàng</a></li>
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-user-o" aria-hidden="true"></i><span class="nav-label">QL Khách
+                <a href="#"><i class="fa fa-user-o" aria-hidden="true"></i><span class="nav-label">QL Khách
                         hàng</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
@@ -57,7 +57,7 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-th-large"></i> <span class="nav-label">QL Marketing</span>
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">QL Marketing</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Khuyến mãi</a></li>
@@ -65,7 +65,7 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-th-large"></i> <span class="nav-label">QL Bài viết</span>
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">QL Bài viết</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Nhóm bài viết</a></li>
@@ -73,7 +73,7 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-commenting"></i> <span class="nav-label">QL Bình luận</span>
+                <a href="#"><i class="fa fa-commenting"></i> <span class="nav-label">QL Bình luận</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Nhóm bình luận</a></li>
@@ -81,21 +81,21 @@
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-th-large"></i> <span class="nav-label">QL Banner & Slide</span>
+                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">QL Banner & Slide</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Cài đặt slide</a></li>
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-calendar-minus-o"></i> <span class="nav-label">QL Menu</span>
+                <a href="#"><i class="fa fa-calendar-minus-o"></i> <span class="nav-label">QL Menu</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">Cài đặt menu</a></li>
                 </ul>
             </li>
             <li class="">
-                <a href=""><i class="fa fa-cogs"></i> <span class="nav-label">Cấu hình chung</span>
+                <a href="#"><i class="fa fa-cogs"></i> <span class="nav-label">Cấu hình chung</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin">QL Ngôn ngũ</a></li>
@@ -106,3 +106,27 @@
         </ul>
     </div>
 </nav>
+<script>
+    $(document).ready(function() {
+        // Khởi tạo metisMenu với toggle: true
+        $('#side-menu').metisMenu({
+            toggle: true
+        });
+
+        // Lấy URL hiện tại
+        var currentUrl = window.location.href;
+
+        // Duyệt qua từng link trong menu
+        $('#side-menu a').each(function() {
+            if (this.href === currentUrl) {
+                // Thêm active vào li con
+                $(this).parent('li').addClass('active');
+                // Mở ul cha
+                $(this).closest('ul.nav-second-level')
+                    .addClass('in')
+                    .parent('li')
+                    .addClass('active'); // active luôn menu cha
+            }
+        });
+    });
+</script>

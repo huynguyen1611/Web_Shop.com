@@ -19,13 +19,11 @@ Route::get('/dien-thoai', [FrontendController::class, 'mobile'])->name('mobile')
 Route::get('/may-tinh', [FrontendController::class, 'computer'])->name('computer');
 Route::get('/man-hinh', [FrontendController::class, 'screen'])->name('screen');
 Route::get('/san-pham/{id}', [FrontendController::class, 'show'])->name('product.show');
-// // Danh sách sản phẩm theo danh mục
-// Route::get('/san-pham/{slug}', [FrontendController::class, 'category'])->name('category.show');
+// Xóa 1 sản phẩm đã xem
+Route::delete('/viewed-products/{id}', [FrontendController::class, 'removeViewedProduct'])->name('viewed.remove');
+// // Xóa tất cả đã xem
+Route::delete('/viewed-products', [FrontendController::class, 'clearViewedProducts'])->name('viewed.clear');
 
-// // Chi tiết sản phẩm
-// Route::get('/san-pham/chi-tiet/{id}', [FrontendController::class, 'show'])->name('product.show');
-// Route::get('/danh-muc/{categorySlug}', [FrontendController::class, 'productListByCategory'])->name('category.products');
-// Route::get('/san-pham/{slug}', [FrontendController::class, 'showProduct'])->name('product.show');
 
 Route::get('/tin-cong-nghe', [FrontendController::class, 'news_technology'])->name('news_technology');
 Route::get('/lien-he', [FrontendController::class, 'contact'])->name('contact');

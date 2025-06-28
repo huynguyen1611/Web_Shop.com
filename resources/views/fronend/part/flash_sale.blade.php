@@ -10,8 +10,7 @@
                 @foreach ($products as $product)
                     <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                         <div class="product-item product">
-                            <a href="https://laptop.themedemo.site/iphone-16-pro-max.html"
-                                class="image img-scaledown img-zoomin">
+                            <a href="{{ route('product.show', $product->id) }}" class="image img-scaledown img-zoomin">
                                 @if ($product->thumbnail)
                                     <img src="{{ asset('storage/' . $product->thumbnail->file_path) }}"
                                         alt="{{ $product->name }}" width="200">
@@ -20,7 +19,7 @@
                                 @endif
                             </a>
                             <div class="info">
-                                <h3 class="title"><a href="https://laptop.themedemo.site/iphone-16-pro-max.html"
+                                <h3 class="title"><a href="{{ route('product.show', $product->id) }}"
                                         title="{{ $product->name }}">{{ $product->name }}</a></h3>
                                 <div class="product-group">
                                     <div class="price uk-flex uk-flex-middle mt10">

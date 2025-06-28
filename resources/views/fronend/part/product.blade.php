@@ -17,14 +17,13 @@
                         <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                             <div class="product-item product">
 
-                                <a href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                <a href="{{ route('product.show', $manhinh->id) }}"
                                     class="image img-scaledown img-zoomin"><img
                                         src="{{ asset('storage/' . $manhinh->thumbnail->file_path) }}"
                                         alt="{{ $manhinh->name }}"></a>
                                 <div class="info">
 
-                                    <h3 class="title"><a
-                                            href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                    <h3 class="title"><a href="{{ route('product.show', $manhinh->id) }}"
                                             title="{{ $manhinh->name }}">{{ $manhinh->name }}</a></h3>
                                     <div class="product-group">
                                         <div class="price uk-flex uk-flex-middle mt10">
@@ -50,8 +49,7 @@
             <div class="main-heading">
                 <div class="panel-head">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <h2 class="heading-1"><a href="https://laptop.themedemo.site/dien-thoai.html"
-                                title="Điện thoại">Điện thoại</a></h2>
+                        <h2 class="heading-1"><a href="{{ route('mobile') }}" title="Điện thoại">Điện thoại</a></h2>
                         <a href="{{ route('mobile') }}" class="readmore">Tất cả sản
                             phẩm</a>
                     </div>
@@ -63,14 +61,13 @@
                         <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                             <div class="product-item product">
 
-                                <a href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                <a href="{{ route('product.show', $dienthoai->id) }}"
                                     class="image img-scaledown img-zoomin"><img
                                         src="{{ asset('storage/' . $dienthoai->thumbnail->file_path) }}"
                                         alt="{{ $dienthoai->name }}"></a>
                                 <div class="info">
 
-                                    <h3 class="title"><a
-                                            href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                    <h3 class="title"><a href="{{ route('product.show', $dienthoai->id) }}"
                                             title="{{ $dienthoai->name }}">{{ $dienthoai->name }}</a></h3>
                                     <div class="product-group">
                                         <div class="price uk-flex uk-flex-middle mt10">
@@ -97,8 +94,8 @@
             <div class="main-heading">
                 <div class="panel-head">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <h2 class="heading-1"><a href="https://laptop.themedemo.site/laptop.html"
-                                title="Laptop - Máy tính">Laptop - Máy tính</a></h2>
+                        <h2 class="heading-1"><a href="{{ route('computer') }}" title="Laptop - Máy tính">Laptop - Máy
+                                tính</a></h2>
                         <a href="{{ route('computer') }}" class="readmore">Tất cả sản
                             phẩm</a>
                     </div>
@@ -110,14 +107,13 @@
                         <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                             <div class="product-item product">
 
-                                <a href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                <a href="{{ route('product.show', $laptop->id) }}"
                                     class="image img-scaledown img-zoomin"><img
                                         src="{{ asset('storage/' . $laptop->thumbnail->file_path) }}"
                                         alt="{{ $laptop->name }}"></a>
                                 <div class="info">
 
-                                    <h3 class="title"><a
-                                            href="https://laptop.themedemo.site/man-hinh-asus-vu249cfe-24-inch.html"
+                                    <h3 class="title"><a href="{{ route('product.show', $laptop->id) }}"
                                             title="{{ $laptop->name }}">{{ $laptop->name }}</a></h3>
                                     <div class="product-group">
                                         <div class="price uk-flex uk-flex-middle mt10">

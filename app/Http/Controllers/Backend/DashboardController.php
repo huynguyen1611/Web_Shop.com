@@ -27,7 +27,6 @@ class DashboardController extends Controller
                 'backend/js/plugins/flot/jquery.flot.time.js',
                 'backend/js/plugins/peity/jquery.peity.min.js',
                 'backend/js/demo/peity-demo.js',
-                'backend/js/inspinia.js',
                 'backend/js/plugins/pace/pace.min.js',
                 'backend/js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js',
                 'backend/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js',

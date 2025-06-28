@@ -211,7 +211,7 @@
     color: #ccc;
 }
 .review-popup-wrapper .rate:not(:checked) > label:before {
-    content: "â˜… ";
+    content: "★";
 }
 .review-popup-wrapper .rate > input:checked ~ label {
     color: #ffc700;

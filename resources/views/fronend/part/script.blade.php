@@ -3,7 +3,7 @@
 <script src="{{ asset('frontend/js/uikit.min.js') }}"></script>
 <script src="{{ asset('frontend/js/sticky.min.js') }}"></script>
 <script src="{{ asset('frontend/js/lightbox.min.js') }}"></script>
-<script src="{{ asset('frontend/css/nice-select.css') }}"></script>
+<script src="{{ asset('frontend/js/nice-select.min.js') }}"></script>
 <script src="{{ asset('frontend/js/function.js') }}"></script>
 <script src="{{ asset('frontend/js/owl.carousel.min.js') }}"></script>
 <script src="https://getuikit.com/v2/src/js/components/sticky.js"></script>
