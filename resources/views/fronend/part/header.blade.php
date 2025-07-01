@@ -42,8 +42,7 @@
                                         </defs>
                                     </svg>
                                     <a href="{{ route('pay') }}">
-                                        <img src="frontend/resources/img/shopping-cart.png" alt="cart image"
-                                            style="margin-bottom: 30px">
+                                        <img src="" alt="cart image" style="margin-bottom: 30px">
                                     </a>
                                 </a>
                             </div>

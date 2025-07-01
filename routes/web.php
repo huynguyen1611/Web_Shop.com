@@ -8,23 +8,26 @@ use App\Http\Controllers\Frontend\FooterController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\VoucherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthenticateMiddleware;
 use App\Http\Middleware\LoginMiddleware;
 
-//Frontend**
+/***************************************Frontend********************************************************/
+
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/san-pham', [FrontendController::class, 'product'])->name('product');
 Route::get('/dien-thoai', [FrontendController::class, 'mobile'])->name('mobile');
 Route::get('/may-tinh', [FrontendController::class, 'computer'])->name('computer');
 Route::get('/man-hinh', [FrontendController::class, 'screen'])->name('screen');
 Route::get('/san-pham/{id}', [FrontendController::class, 'show'])->name('product.show');
+
 // Xóa 1 sản phẩm đã xem
 Route::delete('/viewed-products/{id}', [FrontendController::class, 'removeViewedProduct'])->name('viewed.remove');
-// // Xóa tất cả đã xem
+// Xóa tất cả đã xem
 Route::delete('/viewed-products', [FrontendController::class, 'clearViewedProducts'])->name('viewed.clear');
 
-
+//Header
 Route::get('/tin-cong-nghe', [FrontendController::class, 'news_technology'])->name('news_technology');
 Route::get('/lien-he', [FrontendController::class, 'contact'])->name('contact');
 Route::get('/bai-viet', [FrontendController::class, 'article'])->name('article');
@@ -32,22 +35,23 @@ Route::get('/bai-viet/ho-tro-khach-hang', [FrontendController::class, 'support']
 Route::get('/bai-viet/chinh-sach', [FrontendController::class, 'policy'])->name('policy');
 Route::get('/bai-viet/ve-chung-toi', [FrontendController::class, 'news'])->name('news');
 
-
 //Login
 Route::get('/dang-nhap', [FrontendAuthController::class, 'login'])->name('login');
 Route::post('/dang-nhap', [FrontendAuthController::class, 'check_login'])->name('check_login');
 Route::get('/dang-ki', [FrontendAuthController::class, 'register'])->name('register');
 Route::post('/dang-ki', [FrontendAuthController::class, 'store'])->name('register_store');
 
-// Logout luôn truy cập được, không cần đăng nhập
+// Logout
 Route::get('/dang-xuat', [FrontendAuthController::class, 'logout'])->name('logout');
 
-// Các route cần khách hàng đăng nhập
+// Các route cần khách hàng đăng nhập **
 Route::middleware('check.customer')->group(function () {
     Route::get('/thong-tin', [FrontendAuthController::class, 'edit_customer'])->name('edit_customer');
     Route::post('/thong-tin', [FrontendAuthController::class, 'update_customer'])->name('update_customer');
-    // ... các route khác cần login
     Route::get('/gio-hang', [FrontendController::class, 'cart'])->name('cart');
+    Route::post('/gio-hang', [FrontendController::class, 'addToCart'])->name('cart');
+    Route::post('/cart/update-ajax', [FrontendController::class, 'updateAjax'])->name('cart.update.ajax');
+    Route::post('/cart/remove-item', [FrontendController::class, 'removeItem'])->name('cart.remove.item');
     Route::get('/thanh-toan', [FrontendController::class, 'pay'])->name('pay');
 });
 
@@ -67,9 +71,9 @@ Route::get('/chinh-sach-giao-hang', [FooterController::class, 'giaohang'])->name
 Route::get('/ve-chung-toi/nhung-cau-hoi-thuong-gap', [FrontendController::class, 'cauhoi'])->name('cauhoi');
 Route::get('/ve-chung-toi/lien-he-tu-van', [FrontendController::class, 'lienhetuvan'])->name('lienhetuvan');
 
-//**********************************************************************************************************************/
+/**************************************************Backend****************************************************************/
 
-// Backend**
+// Login
 Route::middleware('login')->group(function () {
     Route::get('admin', [AuthController::class, 'index'])->name('auth.admin');
     Route::post('login', [AuthController::class, 'login'])->name('auth.login');
@@ -80,7 +84,6 @@ Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout')->mi
 
 Route::middleware('role:admin')->group(
     function () {
-
         // User
         Route::get('user/index', [UserController::class, 'index'])->name('user.index');
         Route::get('register', [AuthController::class, 'register'])->name('auth.register');
@@ -118,8 +121,6 @@ Route::middleware(['role:sale,admin,marketing'])->group(function () {
     Route::get('product/edit/{id}', [ProductController::class, 'edit_product'])->name('edit_product');
     Route::post('product/update/{id}', [ProductController::class, 'update_product'])->name('update_product');
     Route::get('product/delete/{id}', [ProductController::class, 'delete_product'])->name('delete_product');
-    // Route::get('/get-sub-categories', [ProductController::class, 'getSubCategories'])->name('get_sub_categories');
-
 
     // Attribute
     Route::get('attribute/list', [ProductController::class, 'attribute'])->name('attribute');
@@ -136,4 +137,12 @@ Route::middleware(['role:sale,admin,marketing'])->group(function () {
     Route::get('attribute_value/edit/{id}', [ProductController::class, 'attri_value_edit'])->name('attri_value_edit');
     Route::post('attribute_value/update/{id}', [ProductController::class, 'attri_value_update'])->name('attri_value_update');
     Route::get('attribute_value/delete/{id}', [ProductController::class, 'attri_value_delete'])->name('attri_value_delete');
+
+    // Voucher
+    Route::get('voucher', [VoucherController::class, 'voucher'])->name('voucher');
+    Route::get('voucher/create', [VoucherController::class, 'voucher_create'])->name('voucher_create');
+    Route::post('voucher/store', [VoucherController::class, 'insert_voucher'])->name('insert_voucher');
+    Route::get('voucher/edit/{id}', [VoucherController::class, 'voucher_edit'])->name('voucher_edit');
+    Route::post('voucher/update/{id}', [VoucherController::class, 'voucher_update'])->name('voucher_update');
+    Route::get('voucher/delete/{id}', [VoucherController::class, 'voucher_delete'])->name('voucher_delete');
 });

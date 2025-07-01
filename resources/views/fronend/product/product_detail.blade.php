@@ -168,13 +168,32 @@
                                                 <div class="uk-flex uk-flex-middle">
                                                     <div class="quantitybox uk-flex uk-flex-middle">
                                                         <div class="minus quantity-button">-</div>
-                                                        <input type="text" name="" value="1"
-                                                            class="quantity-text">
+                                                        <input type="text" id="quantity" name="" value="1"
+                                                            class="quantity-text" min="1">
                                                         <div class="plus quantity-button">+</div>
                                                     </div>
                                                     <div class="btn-group uk-flex uk-flex-middle">
                                                         <div class="btn-item btn-1 addToCart mua-ngay" data-id="83">
-                                                            <a href="{{ route('pay') }}" title="">Mua ngay</a>
+                                                            <form action="{{ route('cart') }}" method="POST"
+                                                                id="buy-now-form">
+                                                                @csrf
+                                                                <input type="hidden" name="product_id"
+                                                                    id="input-product-id" value="{{ $product->id }}">
+                                                                <input type="hidden" name="variant_id"
+                                                                    id="input-variant-id">
+                                                                <input type="hidden" name="qty" id="input-qty"
+                                                                    value="1">
+                                                                <input type="hidden" name="price" id="input-price">
+                                                                <input type="hidden" name="product_name"
+                                                                    id="input-product-name" value="{{ $product->name }}">
+                                                                <input type="hidden" name="title" id="input-title">
+                                                                <input type="hidden" name="image" id="input-image">
+                                                                <input type="hidden" name="discount_percent"
+                                                                    id="input-discount"
+                                                                    value="{{ $product->discount_percent }}">
+
+                                                                <button class=" btn-cart" type="submit">Mua ngay</button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -254,7 +273,7 @@
         });
     @endphp
 
-
+    {{-- Xử lí khi chọn thuộc tính --}}
     <script>
         const variants = @json($variantData); // Biến Laravel chuyển sang JS
 
@@ -310,7 +329,20 @@
                     img.src = variant.image;
                 }
             }
+            if (variant) {
+                document.getElementById('input-variant-id').value = variant.id;
+                document.getElementById('input-price').value = variant.sale_price || variant.price;
+                document.getElementById('input-title').value = "{{ $product->name }}" + ' - ' + variant.title;
+                document.getElementById('input-image').value = variant.image || '';
+            }
         }
+        document.getElementById('buy-now-form').addEventListener('submit', function(e) {
+            const qtyInput = document.getElementById('quantity'); // input hiển thị
+            const hiddenQtyInput = document.getElementById('input-qty'); // input ẩn gửi về form
+            if (qtyInput && hiddenQtyInput) {
+                hiddenQtyInput.value = qtyInput.value;
+            }
+        });
     </script>
 
 

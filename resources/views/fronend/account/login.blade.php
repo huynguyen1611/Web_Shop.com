@@ -123,6 +123,12 @@
             /* loại bỏ outline mặc định */
             transition: border 0.3s ease;
         }
+
+        button.btn:hover {
+            background: white;
+            color: red;
+            border: 1px solid red;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 

@@ -1120,7 +1120,12 @@ body {
 button {
     font-family: Mulish;
 }
-
+.btn-cart {
+    background-color: #da2229;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
 ul {
     margin: 0;
 }
@@ -1558,7 +1563,7 @@ a.ui-button:active,
     top: 3px;
     width: 26px;
     height: 24px;
-    background: url("img/Sort.png");
+    background: url("/frontend/img/Sort.png");
 }
 
 .categories:hover .category-dropdown {
@@ -2001,7 +2006,7 @@ a.ui-button:active,
     top: 0;
     width: 90px;
     height: 53px;
-    background: url("img/bg-register.png");
+    background: url("/frontend/img/bg-register.png");
     background-size: 100% !important;
 }
 
@@ -2717,6 +2722,7 @@ a.ui-button:active,
     line-height: 40px;
     color: #fff;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .addToCart > * {

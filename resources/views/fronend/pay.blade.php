@@ -269,7 +269,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel-voucher uk-hidden">
+                                <div class="panel-voucher ">
                                     <div class="voucher-list">
                                         <div class="voucher-item active">
                                             <div class="voucher-left"></div>

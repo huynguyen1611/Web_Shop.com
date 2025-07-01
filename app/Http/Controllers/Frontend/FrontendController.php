@@ -44,6 +44,63 @@ class FrontendController extends Controller
         ]);
     }
 
+
+
+    // //Xóa từng sản phẩm đã xem **
+    public function removeViewedProduct($id)
+    {
+        $viewed = session('viewed_products', []);
+        $viewed = array_filter($viewed, fn($pid) => $pid != $id);
+        session(['viewed_products' => $viewed]);
+        return response()->json(['status' => 'ok']);
+    }
+    // //Xóa tất cả sản phẩm đã xem **
+    public function clearViewedProducts()
+    {
+        session()->forget('viewed_products');
+        return response()->json(['status' => 'ok']);
+    }
+    //Điện thoại **
+    public function mobile()
+    {
+        // lấy danh sách sản phẩm nổi bật
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $mobiles = Product::with('images')->where('category_id', 1)->get();
+        return view('fronend.product.didong', [
+            'mobiles' => $mobiles,
+            'products' => $products,
+        ]);
+    }
+    //Laptop **
+    public function computer()
+    {
+        // lấy danh sách sản phẩm nổi bật
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $computers = Product::with('images')->where('category_id', 6)->get();
+        return view('fronend.product.maytinh', [
+            'computers' => $computers,
+            'products' => $products,
+        ]);
+    }
+    //Màn hình **
+    public function screen()
+    {
+        $products = Product::with('thumbnail')
+            ->latest() // hoặc bất kỳ logic nào bạn muốn
+            ->limit(5)
+            ->get();
+        $screens = Product::with('images')->where('category_id', 9)->get();
+        return view('fronend.product.manhinh', [
+            'screens' => $screens,
+            'products' => $products,
+        ]);
+    }
     public function show($id)
     {
         // 1. Lấy sản phẩm và eager load
@@ -101,58 +158,97 @@ class FrontendController extends Controller
         );
     }
 
-    // //Xóa từng sản phẩm đã xem **
-    public function removeViewedProduct($id)
+    public function addToCart(Request $request)
     {
-        $viewed = session('viewed_products', []);
-        $viewed = array_filter($viewed, fn($pid) => $pid != $id);
-        session(['viewed_products' => $viewed]);
-        return response()->json(['status' => 'ok']);
+        $cart = session()->get('cart', []);
+
+        // $productName = $request->input('product_name'); // Lấy thêm tên sản phẩm
+        $title = $request->input('title');
+        // $fullTitle = $productName . ' - ' . $title;
+        $variantId = $request->input('variant_id');
+        $productId = $request->input('product_id');
+        $qty = $request->input('qty');
+        $price = $request->input('price');
+        $image = $request->input('image');
+        $discount = $request->input('discount_percent');
+
+        // Nếu sản phẩm đã có trong giỏ, cộng dồn số lượng
+        if (isset($cart[$variantId])) {
+            $cart[$variantId]['qty'] += $qty;
+        } else {
+            $cart[$variantId] = [
+                'product_id' => $productId,
+                'variant_id' => $variantId,
+                'title' => $title,
+                'qty' => $qty,
+                'price' => $price,
+                'image' => $image,
+                'discount_percent' => $discount,
+            ];
+        }
+
+        session()->put('cart', $cart);
+        return redirect()->route('cart')->with('success', 'Đã thêm vào giỏ hàng');
     }
-    // //Xóa tất cả sản phẩm đã xem **
-    public function clearViewedProducts()
+    public function cart()
     {
-        session()->forget('viewed_products');
-        return response()->json(['status' => 'ok']);
+        $cart = session('cart', []);
+        return view('fronend.cart', compact('cart'));
     }
-    public function mobile()
+    public function updateAjax(Request $request)
     {
-        // lấy danh sách sản phẩm nổi bật
-        $products = Product::with('thumbnail')
-            ->latest() // hoặc bất kỳ logic nào bạn muốn
-            ->limit(5)
-            ->get();
-        $mobiles = Product::with('images')->where('category_id', 1)->get();
-        return view('fronend.product.didong', [
-            'mobiles' => $mobiles,
-            'products' => $products,
-        ]);
+        $variantId = $request->input('product_id');
+        $qty = (int) $request->input('product_qty');
+
+        $cart = session('cart', []);
+        if (isset($cart[$variantId])) {
+            $cart[$variantId]['qty'] = $qty;
+            session(['cart' => $cart]);
+
+            $lineTotal = $cart[$variantId]['qty'] * $cart[$variantId]['price'];
+            $total = collect($cart)->sum(function ($item) {
+                return $item['qty'] * $item['price'];
+            });
+
+            return response()->json([
+                'price' => $lineTotal,
+                'total' => $total
+            ]);
+        }
+
+        return response()->json(['message' => 'Không tìm thấy sản phẩm'], 404);
     }
-    public function computer()
+
+    public function removeItem(Request $request)
     {
-        // lấy danh sách sản phẩm nổi bật
-        $products = Product::with('thumbnail')
-            ->latest() // hoặc bất kỳ logic nào bạn muốn
-            ->limit(5)
-            ->get();
-        $computers = Product::with('images')->where('category_id', 6)->get();
-        return view('fronend.product.maytinh', [
-            'computers' => $computers,
-            'products' => $products,
-        ]);
+        $variantId = $request->input('variant_id');
+        $cart = session('cart', []);
+        unset($cart[$variantId]);
+        session(['cart' => $cart]);
+
+        return response()->json(['success' => true]);
     }
-    public function screen()
+
+
+    public function pay()
     {
-        $products = Product::with('thumbnail')
-            ->latest() // hoặc bất kỳ logic nào bạn muốn
-            ->limit(5)
-            ->get();
-        $screens = Product::with('images')->where('category_id', 9)->get();
-        return view('fronend.product.manhinh', [
-            'screens' => $screens,
-            'products' => $products,
-        ]);
+        return view('fronend.pay');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function news_technology()
     {
         return view('fronend.header.tincongnghe');
@@ -177,14 +273,7 @@ class FrontendController extends Controller
     {
         return view('fronend.header.article.news');
     }
-    public function cart()
-    {
-        return view('fronend.cart');
-    }
-    public function pay()
-    {
-        return view('fronend.pay');
-    }
+
 
     public function lienhetuvan()
     {

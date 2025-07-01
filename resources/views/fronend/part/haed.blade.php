@@ -41,6 +41,7 @@
 <meta name="twitter:description"
     content="Hàng ngàn thương hiệu nổi tiếng uy tín chất lượng được lựa chọn kĩ càng để khách hàng yên tâm mua sắm. Chúng tôi có chương trình bảo hành cam kết và các chương trình khuyến mại đặc biệt" />
 <meta name="twitter:image" content="/userfiles/image/commit/logo%20website%2016x16-02.jpg" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <!-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> -->

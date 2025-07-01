@@ -57,6 +57,14 @@
                 </ul>
             </li>
             <li class="">
+                <a href="#"><i class="fa fa-user-o" aria-hidden="true"></i><span class="nav-label">QL
+                        Voucher</span>
+                    <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="{{ route('voucher') }}">Danh sách voucher</a></li>
+                </ul>
+            </li>
+            <li class="">
                 <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">QL Marketing</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">

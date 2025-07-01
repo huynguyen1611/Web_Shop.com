@@ -4,19 +4,19 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>QUẢN LÍ SẢN PHẨM</h2>
+            <h2>QUẢN LÍ VOUCHER</h2>
             <ol class="breadcrumb" style="margin-bottom: 10px">
                 <li>
                     <a href="{{ route('dashboard.index') }}">Dashboard</a>
                 </li>
-                <li class="active"><strong>Sản phẩm</strong></li>
+                <li class="active"><strong>Voucher</strong></li>
             </ol>
         </div>
     </div>
     <div class="col-lg-12 mb20">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Danh sách sản phẩm </h5>
+                <h5>Danh sách voucher </h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -46,27 +46,24 @@
                             </select>
                             <div class="action">
                                 <div class="uk-flex ul-flex-middle">
-                                    <form action="{{ route('list_product') }}" method="GET"
+                                    <form action="{{ route('voucher') }}" method="GET"
                                         class="uk-flex uk-flex-middle mb-3">
-                                        <select name="category_id" class="form-control mr-2" onchange="this.form.submit()">
-                                            <option value="0">-- Chọn danh mục phụ --</option>
-                                            @foreach ($categories as $cat)
-                                                <option value="{{ $cat->id }}"
-                                                    {{ $cat->id == $category_id ? 'selected' : '' }}>
-                                                    {{ $cat->name }}
-                                                </option>
-                                            @endforeach
+                                        <select name="type" class="form-control mr-2" onchange="this.form.submit()">
+                                            <option value="">-- Chọn loại voucher --</option>
+                                            <option value="percent" {{ request('type') == 'percent' ? 'selected' : '' }}>
+                                                Giảm theo %</option>
+                                            <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>Giảm
+                                                số tiền cố định</option>
                                         </select>
 
                                         <input type="text" name="keyword" class="form-control mr-2"
-                                            placeholder="Nhập tên sản phẩm..." value="{{ $keyword }}"
+                                            placeholder="Nhập tên voucher..." value="{{ request('keyword') }}"
                                             style="width: 250px">
 
                                         <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                     </form>
-                                    <a href="{{ route('add_product') }}" class="btn btn-danger"><i
-                                            class="fa fa-plus mr5"></i>Thêm mới sản
-                                        phẩm</a>
+                                    <a href="{{ route('voucher_create') }}" class="btn btn-danger"><i
+                                            class="fa fa-plus mr5"></i>Thêm mới voucher</a>
                                 </div>
                             </div>
                         </div>
@@ -76,40 +73,57 @@
                 <table class="table table-striped">
                     <thead>
                         <style>
-                            table {
-                                table-layout: auto !important;
-                            }
 
-                            th[colspan="6"] {
-                                width: 60%;
-                            }
                         </style>
                         <tr>
                             <th><input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
                             </th>
-                            <th colspan="6" style="width: 70%;">Tên sản phẩm</th>
+                            <th class="text-center">Mã voucher</th>
+                            <th class="text-center">Tên voucher</th>
+                            <th class="text-center">Loại giảm</th>
+                            <th class="text-center">Giá trị giảm</th>
+                            <th class="text-center">Số lượng còn lại</th>
                             <th class="text-center">Tình trạng</th>
                             <th class="text-center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($products as $product)
+                        @foreach ($vouchers as $voucher)
                             <tr>
                                 <td>
                                     <input type="checkbox" value="" name=""
                                         class="input-checkbox checkBoxItem ">
                                 </td>
 
-                                <td colspan="6">
-                                    <p>{{ $product->name }}</p>
+                                <td class="text-center">
+                                    <p style="">{{ $voucher->code }}</p>
                                 </td>
-
+                                <td class="text-center">
+                                    <p>{{ $voucher->name }}</p>
+                                </td>
+                                <td class="text-center">
+                                    @if ($voucher->type == 'percent')
+                                        <span>Giảm theo %</span>
+                                    @elseif ($voucher->type == 'fixed')
+                                        <span>Giảm số tiền cố định</span>
+                                    @else
+                                        <span>Không xác định</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <p>{{ $voucher->value }}</p>
+                                </td>
+                                <td class="text-center">
+                                    <p>{{ $voucher->quantity }}</p>
+                                </td>
                                 <td class="text-center">
                                     <input type="checkbox" class="js-switch" checked />
                                 </td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                                    <a href="" onclick="return confirm('Bạn có muốn xóa voucher này không?')"
+                                    <a href="{{ route('voucher_edit', $voucher->id) }}" class="btn btn-success"><i
+                                            class="fa fa-edit"></i></a>
+                                    <a href="{{ route('voucher_delete', $voucher->id) }}"
+                                        onclick="return confirm('Bạn có muốn xóa sản phẩm này không?')"
                                         class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>

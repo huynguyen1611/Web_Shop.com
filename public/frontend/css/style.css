@@ -335,3 +335,25 @@ label {
     color: #da0909;
     border: 1px solid #da0909;
 }
+
+/* Thông báo lỗi ------------------------------- */
+.swal-custom-toast {
+    background-color: #28a745 !important;
+    /* màu xanh lá kiểu Bootstrap */
+    color: white !important;
+}
+
+.swal-custom-toast .swal2-title,
+.swal-custom-toast .swal2-html-container,
+.swal-custom-toast .swal2-icon-content {
+    color: white !important;
+}
+
+.swal-custom-toast .swal2-success-ring {
+    border-color: white !important;
+}
+
+.swal-custom-toast .swal2-success-line-tip,
+.swal-custom-toast .swal2-success-line-long {
+    background-color: white !important;
+}

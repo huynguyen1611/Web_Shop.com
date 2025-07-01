@@ -2,7 +2,7 @@
     <div class="upper">
         <div class="uk-container uk-container-center">
             <div class="footer-information">
-                <div class="footer-logo"><img src="/userfiles/image/logo/logo-phone-store.png" alt="">
+                <div class="footer-logo"><img src="{{ asset('frontend/img/NQH Shop.png') }}" alt="">
                 </div>
                 <div class="uk-grid uk-grid-medium">
                     <div class="uk-width-large-1-4">
