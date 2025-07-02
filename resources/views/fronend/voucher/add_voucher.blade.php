@@ -47,8 +47,10 @@
                             <label for="type">Loại giảm giá <span style="color: red">*</span></label>
                             <select name="type" class="form-control" id="discount-type">
                                 <option value="percent" {{ old('type') == 'percent' ? 'selected' : '' }}>Giảm theo phần trăm
+                                    .(%)
                                 </option>
                                 <option value="fixed" {{ old('type') == 'fixed' ? 'selected' : '' }}>Giảm số tiền cố định
+                                    .(đ)
                                 </option>
                             </select>
                         </div>

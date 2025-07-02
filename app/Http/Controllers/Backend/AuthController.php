@@ -115,7 +115,7 @@ class AuthController extends Controller
             'address'       => $request->address,
             'birthday'      => $request->birthday,
             'description'   => $request->description,
-            'image'   => $avatarPath,
+            'image'         => $avatarPath,
             'ip'            => $request->ip(),
             'user_agent'    => $request->userAgent(),
             'role_id'       => $request->role_id, // bổ sung thêm role
@@ -139,8 +139,8 @@ class AuthController extends Controller
             'image.image'           => 'Tệp tải lên phải là hình ảnh.',
             'image.mimes'           => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
             'image.max'             => 'Kích thước ảnh không được vượt quá 2MB.',
-            'role_id.required' => 'Vui lòng chọn quyền.',
-            'role_id.exists'   => 'Quyền không hợp lệ.',
+            'role_id.required'      => 'Vui lòng chọn quyền.',
+            'role_id.exists'        => 'Quyền không hợp lệ.',
         ]);
 
         Auth::login($user); // Đăng nhập luôn sau khi tạo
@@ -159,18 +159,41 @@ class AuthController extends Controller
 
         $request->validate([
             'name'        => 'required|string|max:255',
-            // 'email'       => 'required|email|unique:users,email,' . $user->id,
-            'email' => 'required|email|unique:users,email,' . $user->id . ',id',
-            'password' => 'nullable|string|min:3|confirmed',
-            'phone'       => 'required|string|max:20',
-            'province_id' => 'required|string|max:10',
-            'district_id' => 'required|string|max:10',
-            'ward_id'     => 'required|string|max:10',
+            'email'       => 'required|email|unique:users,email,' . $user->id . ',id',
+            'password'    => 'nullable|string|min:3|confirmed',
+            'phone'       => 'required|string|min:9|max:11',
+            'province_id' => 'required|string',
+            'district_id' => 'required|string',
+            'ward_id'     => 'required|string',
             'address'     => 'required|string|max:500',
             'birthday'    => 'required|date',
             'description' => 'required|string',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'role_id'     => 'required|exists:roles,id',
+        ], [
+            'name.required' => 'Vui lòng nhập họ tên.',
+            'name.max' => 'Họ tên không được vượt quá 255 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email này đã tồn tại trong hệ thống.',
+            'password.min' => 'Mật khẩu phải có ít nhất 3 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.min' => 'Số điện thoại quá ngắn.',
+            'phone.max' => 'Số điện thoại quá dài.',
+            'province_id.required' => 'Vui lòng chọn Tỉnh/Thành phố.',
+            'district_id.required' => 'Vui lòng chọn Quận/Huyện.',
+            'ward_id.required' => 'Vui lòng chọn Phường/Xã.',
+            'address.required' => 'Vui lòng nhập địa chỉ.',
+            'address.max' => 'Địa chỉ không được vượt quá 500 ký tự.',
+            'birthday.required' => 'Vui lòng chọn ngày sinh.',
+            'birthday.date' => 'Ngày sinh không hợp lệ.',
+            'description.required' => 'Vui lòng nhập mô tả.',
+            'image.image' => 'Tệp tải lên phải là ảnh.',
+            'image.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif hoặc webp.',
+            'image.max' => 'Ảnh không được vượt quá 2MB.',
+            'role_id.required' => 'Vui lòng chọn quyền người dùng.',
+            'role_id.exists' => 'Quyền được chọn không hợp lệ.',
         ]);
 
         // Cập nhật ảnh nếu có
@@ -197,7 +220,6 @@ class AuthController extends Controller
 
         return redirect()->route('user.index')->with('success', 'Cập nhật thành viên thành công!');
     }
-
 
     //Xóa thành viên **
     public function delete_user($id)

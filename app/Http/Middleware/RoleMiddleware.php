@@ -19,7 +19,7 @@ class RoleMiddleware
         $user = Auth::user();
         // dd(Auth::user()->role->name);
         if (!$user) {
-            return redirect()->route('auth.admin'); // hoặc login route
+            return redirect()->route('auth.admin')->with('error', 'Bạn phải đăng nhập để truy cập vào trang này!'); // hoặc login route
         }
 
         $userRole = strtolower($user->role->name); // ép về chữ thường

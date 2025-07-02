@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Attribute as ModelsAttribute;
 use App\Models\Product;
 use App\Models\Attribute;
+use App\Models\Customer;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -101,6 +103,8 @@ class FrontendController extends Controller
             'products' => $products,
         ]);
     }
+
+    // Chi tiết sản phẩm **
     public function show($id)
     {
         // 1. Lấy sản phẩm và eager load
@@ -157,7 +161,7 @@ class FrontendController extends Controller
             )
         );
     }
-
+    // Xử lí thêm sản phẩm vào giỏ hàng **
     public function addToCart(Request $request)
     {
         $cart = session()->get('cart', []);
@@ -190,11 +194,77 @@ class FrontendController extends Controller
         session()->put('cart', $cart);
         return redirect()->route('cart')->with('success', 'Đã thêm vào giỏ hàng');
     }
+    // Hiển thị giỏ hàng **
     public function cart()
     {
+        // Lấy tất cả voucher còn hiệu lực
+        $vouchers = Voucher::where('status', 1)
+            ->where('quantity', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now());
+            })
+            ->get();
+
         $cart = session('cart', []);
-        return view('fronend.cart', compact('cart'));
+        return view('fronend.cart', compact('cart', 'vouchers'));
     }
+    //Xử lí thêm voucher **
+    public function applyVoucher(Request $request)
+    {
+        $code = $request->input('code');
+        $voucher = Voucher::where('code', $code)
+            ->where('status', 1)
+            ->where('quantity', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now());
+            })
+            ->first();
+
+        if (!$voucher) {
+            return response()->json(['success' => false, 'message' => 'Voucher không hợp lệ hoặc đã hết hạn']);
+        }
+        // Tính tổng giỏ hàng
+        $cart = session('cart', []);
+        $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+
+        // Tính giảm giá
+        $discount = $voucher->calculateDiscount($total);
+
+        // Lưu vào session
+        session([
+            'voucher_code' => $voucher->code,
+            'voucher_discount' => $discount
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'discount' => $discount,
+            'discount_format' => number_format($discount, 0, ',', '.') . 'đ',
+            'total_after' => $total - $discount,
+            'total_after_format' => number_format($total - $discount, 0, ',', '.') . '₫',
+        ]);
+    }
+    // Xủ lí xóa voucher **
+    public function removeVoucher(Request $request)
+    {
+        session()->forget(['voucher_code', 'voucher_discount']);
+
+        // Tính lại tổng
+        $cart = session('cart', []);
+        $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+
+        return response()->json([
+            'success' => true,
+            'total_after_format' => number_format($total, 0, ',', '.') . '₫',
+        ]);
+    }
+    // Xử lí cập nhật giỏ hàng bằng ajax **
     public function updateAjax(Request $request)
     {
         $variantId = $request->input('product_id');
@@ -206,19 +276,28 @@ class FrontendController extends Controller
             session(['cart' => $cart]);
 
             $lineTotal = $cart[$variantId]['qty'] * $cart[$variantId]['price'];
-            $total = collect($cart)->sum(function ($item) {
-                return $item['qty'] * $item['price'];
-            });
+            $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+
+            $discount = session('voucher_discount', 0);
+            $totalAfter = $total - $discount;
 
             return response()->json([
                 'price' => $lineTotal,
-                'total' => $total
+                'total' => $total,
+                'discount' => $discount,
+                'total_after' => $totalAfter,
+                'price_format' => number_format($lineTotal, 0, ',', '.') . '₫',
+                'total_format' => number_format($total, 0, ',', '.') . '₫',
+                'discount_format' => number_format($discount, 0, ',', '.') . '₫',
+                'total_after_format' => number_format($totalAfter, 0, ',', '.') . '₫',
             ]);
         }
 
         return response()->json(['message' => 'Không tìm thấy sản phẩm'], 404);
     }
 
+
+    // Xử lý xóa sản phẩm ra khỏi giỏ hàng bằng ajax **
     public function removeItem(Request $request)
     {
         $variantId = $request->input('variant_id');
@@ -230,9 +309,39 @@ class FrontendController extends Controller
     }
 
 
+    //Xử lý thanh toán **
     public function pay()
     {
-        return view('fronend.pay');
+        $customer = Customer::find(session('customer_id'));
+        if (!$customer) {
+            // Xử lý khi không tìm thấy, ví dụ:
+            return redirect()->route('login')->with('error', 'Bạn chưa đăng nhập');
+        }
+        $cart = session('cart', []);
+        $voucherCode = session('voucher_code');
+        $voucherDiscount = session('voucher_discount', 0);
+
+        $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+        $totalAfterDiscount = $total - $voucherDiscount;
+        $vouchers = Voucher::where('status', 1)
+            ->where('quantity', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now());
+            })
+            ->get();
+
+        return view('fronend.pay', compact(
+            'cart',
+            'voucherCode',
+            'voucherDiscount',
+            'total',
+            'totalAfterDiscount',
+            'vouchers',
+            'customer',
+        ));
     }
 
 
@@ -273,8 +382,6 @@ class FrontendController extends Controller
     {
         return view('fronend.header.article.news');
     }
-
-
     public function lienhetuvan()
     {
         return view('fronend.header.article.vechungtoi.lienhetuvan');

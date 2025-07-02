@@ -111,7 +111,8 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <p>{{ $voucher->value }}</p>
+                                    <p>{{ $voucher->type == 'fixed' ? number_format($voucher->value, 0, ',', '.') . 'đ' : $voucher->value . '%' }}
+                                    </p>
                                 </td>
                                 <td class="text-center">
                                     <p>{{ $voucher->quantity }}</p>

@@ -52,8 +52,8 @@
                         hàng</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="/admin">Nhóm khách hàng</a></li>
-                    <li><a href="/admin">Khách hàng</a></li>
+                    <li><a href="#">Nhóm khách hàng</a></li>
+                    <li><a href="{{ route('customer') }}">Khách hàng</a></li>
                 </ul>
             </li>
             <li class="">

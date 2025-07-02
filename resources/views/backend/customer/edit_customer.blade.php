@@ -159,7 +159,7 @@
 
 <body>
     <div class="container-fluid">
-        <form class="register-wrapper" action="{{ route('auth.update', $user->id) }}" method="POST"
+        <form class="register-wrapper" action="{{ route('customer_update', $customer->id) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             <!-- Header -->
@@ -167,7 +167,6 @@
                 <h1 class="logo-name">NQH Shop+</h1><br>
                 <h4 class="mb-4">Đăng ký tài khoản</h4>
             </div>
-
             <!-- 2 Columns -->
             <div class="register-container">
                 <!-- Left Column -->
@@ -178,7 +177,7 @@
 
                     <div class="form-group">
                         <label>Họ tên</label>
-                        <input type="text" name="name" value="{{ $user->name }}" class="form-control"
+                        <input type="text" name="name" value="{{ $customer->name }}" class="form-control"
                             placeholder="Nhập họ tên..." />
                     </div>
                     @error('name')
@@ -186,7 +185,7 @@
                     @enderror
                     <div class="form-group">
                         <label>Số điện thoại</label>
-                        <input type="text" name="phone" value="{{ $user->phone }}" class="form-control"
+                        <input type="text" name="phone" value="{{ $customer->phone }}" class="form-control"
                             placeholder="Nhập số điện thoại..." />
                     </div>
                     @error('phone')
@@ -195,63 +194,47 @@
                     <div class="form-group-city">
                         <div class="form-group">
                             <label>Tỉnh / Thành phố</label>
-                            <input type="text" name="province_id" value="{{ $user->province_id }}"
-                                class="form-control" placeholder="Nhập tỉnh/tp..." />
+                            <input type="text" name="city" value="{{ $customer->city }}" class="form-control"
+                                placeholder="Nhập tỉnh/tp..." />
                         </div>
 
                         <div class="form-group">
                             <label>Quận / Huyện</label>
-                            <input type="text" name="district_id" value="{{ $user->district_id }}"
-                                class="form-control" placeholder="Nhập quận/huyện..." />
+                            <input type="text" name="district" value="{{ $customer->district }}" class="form-control"
+                                placeholder="Nhập quận/huyện..." />
                         </div>
 
                         <div class="form-group">
                             <label>Phường / Xã</label>
-                            <input type="text" name="ward_id" value="{{ $user->ward_id }}" class="form-control"
+                            <input type="text" name="ward" value="{{ $customer->ward }}" class="form-control"
                                 placeholder="Nhập phường/xã..." />
                         </div>
 
                     </div>
-                    @error('province_id')
+                    @error('city')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
-                    @error('district_id')
+                    @error('district')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
-                    @error('ward_id')
+                    @error('ward')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group-address">
                         <label>Địa chỉ</label>
                         <textarea name="address" class="form-control" id="" cols="30" rows="10"
-                            placeholder="Nhập địa chỉ..."> {{ $user->address }}"</textarea>
+                            placeholder="Nhập địa chỉ..."> {{ $customer->address }}"</textarea>
                     </div>
                     @error('address')
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
-                    <div class="form-group">
-                        <label>Ngày sinh</label>
-                        <input type="date" name="birthday" class="form-control"
-                            value="{{ \Carbon\Carbon::parse($user->birthday)->format('Y-m-d') }}" />
-                    </div>
-                    @error('birthday')
-                        <div style="color: red" class="error-text">{{ $message }}</div>
-                    @enderror
-                    <div class="form-group">
-                        <label>Mô tả bản thân</label>
-                        <textarea name="description" class="form-control" rows="3" placeholder="Mô tả bạn thân...">{{ $user->description }}</textarea>
-                    </div>
-                    @error('description')
-                        <div style="color: red" class="error-text">{{ $message }}</div>
-                    @enderror
                 </div>
-
                 <!-- Right Column -->
                 <div class="register-right">
                     <P>THÔNG TIN TÀI KHOẢN</P>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" value="{{ $user->email }}" class="form-control"
+                        <input type="email" name="email" value="{{ $customer->email }}" class="form-control"
                             placeholder="Nhập email..." />
                     </div>
                     @error('email')
@@ -282,72 +265,16 @@
                         <div style="color: red" class="error-text">{{ $message }}</div>
                     @enderror
                     <div class="form-group">
-                        <label>Chọn quyền của thành viên <span style="color: red">* (quan trọng)</span></label>
-                        <select name="role_id" class="form-control" required>
-                            <option value="">-- Chọn quyền --</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->id }}"
-                                    {{ $user->role_id == $role->id ? 'selected' : '' }}>
-                                    {{ $role->display_name ?? $role->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('role_id')
-                            <div style="color: red" class="error-text">{{ $message }}</div>
-                        @enderror
-                        <div class="form-group text-center">
-                            <label>Ảnh đại diện</label><br>
-                            <img id="avatarPreview"
-                                src="{{ $user->image ? asset('storage/' . $user->image) : asset('frontend/img/nophoto.jpg') }}"
-                                alt="Ảnh đại diện"
-                                style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px; border: 1px solid #ccc; cursor: pointer;">
-                            <input type="file" id="avatarInput" name="image" accept="image/*"
-                                style="display: none;" />
-                        </div>
-                        @error('image')
-                            <div style="color: red" class="error-text">{{ $message }}</div>
-                        @enderror
                         <div class="register-footer">
-                            <div class="form-group form-check mt-4">
-                                <input type="checkbox" class="form-check-input" name="agree" id="agree"
-                                    required />
-                                <label class="form-check-label" for="agree">Tôi đồng ý với điều khoản</label>
-                            </div>
-                            @error('agree')
-                                <div style="color: red" class="error-text">{{ $message }}</div>
-                            @enderror
                             <button type="submit" class=" btn btn-outline-secondary btn-sm btn-block">Chỉnh sửa thành
                                 viên</button><br>
                             <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
                         </div>
                     </div>
                 </div>
-
-                <!-- Footer -->
-
         </form>
     </div>
 </body>
-{{-- Xử lí ảnh đại diện --}}
-<script>
-    const input = document.getElementById('avatarInput');
-    const preview = document.getElementById('avatarPreview');
-
-    preview.addEventListener('click', () => input.click());
-
-    input.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = '{{ asset('frontend/img/nophoto.jpg') }}';
-        }
-    });
-</script>
 {{-- Xử lí nhập lại mật khẩu --}}
 <script>
     // Lấy form và các input password

@@ -10,8 +10,8 @@
             </div>
         </div>
         <div class="uk-container uk-container-center">
-            <form action="https://laptop.themedemo.site/cart/create" class="uk-form form" method="post">
-                <input type="hidden" name="_token" value="yx70wi9X4uPjhxRMdWcuKLzKRtqfVqZQzzsd3im7">
+            <form action="" class="uk-form form" method="post">
+                @csrf
                 <h2 class="heading-1"><span>Giỏ hàng</span></h2>
                 <div class="cart-wrapper">
                     <div class="uk-grid uk-grid-medium">
@@ -69,39 +69,97 @@
 
                                     </div>
                                 </div>
-                                <div class="panel-voucher uk-hidden">
+                                {{-- <div class="panel-voucher">
                                     <div class="voucher-list">
-                                        <div class="voucher-item active">
-                                            <div class="voucher-left"></div>
-                                            <div class="voucher-right">
-                                                <div class="voucher-title">5AFDSFFD34 <span>(Còn 20)</span> </div>
-                                                <div class="voucher-description">
-                                                    <p>Khuyến mãi nhân dịp Noel 24/12, giảm giá đến 50% sản phẩm</p>
+                                        @foreach ($vouchers as $voucher)
+                                            @php
+                                                $isActive = session('voucher_code') == $voucher->code;
+                                            @endphp
+                                            <div class="voucher-item {{ $isActive ? 'active' : '' }}"
+                                                data-code="{{ $voucher->code }}">
+                                                <div class="voucher-left"></div>
+                                                <div class="voucher-right">
+                                                    <div class="voucher-title">
+                                                        {{ $voucher->code }} <span>(Còn {{ $voucher->quantity }})</span>
+                                                    </div>
+                                                    <div class="voucher-description">
+                                                        <p>{{ $voucher->name }}, giảm giá đến {{ $voucher->value }}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="voucher-item ">
-                                            <div class="voucher-left"></div>
-                                            <div class="voucher-right">
-                                                <div class="voucher-title">5AFDSFFD34 <span>(Còn 20)</span> </div>
-                                                <div class="voucher-description">
-                                                    <p>Khuyến mãi nhân dịp Noel 24/12, giảm giá đến 50% sản phẩm</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @endforeach
                                     </div>
                                     <div class="voucher-form">
-                                        <input type="text" placeholder="Chọn mã giảm giá" name="voucher" value=""
-                                            readonly>
-                                        <a href="" class="apply-voucher">Áp dụng</a>
+                                        <input type="text" placeholder="Chọn mã giảm giá" name="voucher_code"
+                                            value="{{ session('voucher_code') }}">
+                                        <a href="#" class="apply-voucher">Áp dụng</a>
+                                    </div><br>
+                                    <a href="#" class="remove-voucher"
+                                        style=" float: right; color: red; font-size: 20px">Bỏ
+                                        áp dụng voucher>></a><br>
+                                </div> --}}
+                                <div class="panel-voucher">
+                                    <!-- Nút chọn voucher -->
+                                    <button type="button" class="btn btn-primary toggle-voucher-list btn-voucher"
+                                        style="margin-bottom: 10px;">
+                                        Chọn voucher >>>
+                                    </button>
+                                    <!-- Danh sách voucher ẩn mặc định -->
+                                    <div class="voucher-list" style="display: none;">
+                                        @foreach ($vouchers as $voucher)
+                                            @php
+                                                $isActive = session('voucher_code') == $voucher->code;
+                                            @endphp
+                                            <div class="voucher-item {{ $isActive ? 'active' : '' }}"
+                                                data-code="{{ $voucher->code }}">
+                                                <div class="voucher-left"></div>
+                                                <div class="voucher-right">
+                                                    <div class="voucher-title">
+                                                        {{ $voucher->code }} <span>(Còn {{ $voucher->quantity }})</span>
+                                                    </div>
+                                                    <div class="voucher-description">
+                                                        <p>
+                                                            {{ $voucher->name }}, giảm giá đến
+                                                            {{ $voucher->type == 'fixed' ? number_format($voucher->value, 0, ',', '.') . '₫' : $voucher->value . '%' }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
+
+                                    <!-- Form áp dụng voucher -->
+                                    <div class="voucher-form" style="margin-top: 10px;">
+                                        <input type="text" placeholder="Chọn mã giảm giá" name="voucher_code"
+                                            value="{{ session('voucher_code') }}">
+                                        <a href="#" class="apply-voucher">Áp dụng</a>
+                                    </div>
+                                    <!-- Bỏ mã voucher -->
+                                    <a href="#" class="remove-voucher"
+                                        style="float: right; color: red; font-size: 16px; margin-top: 10px;">Bỏ áp dụng
+                                        voucher >></a>
                                 </div>
+
+                                @php
+                                    $discount = session('voucher_discount', 0);
+                                    $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+                                    $totalAfterDiscount = $total - $discount;
+                                @endphp
                                 <div class="panel-foot mt30 pay">
                                     <div class="cart-summary mb20">
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                                                <span class="summay-title">Tổng tiền hàng</span>
+                                                <div class="summary-value summary-total-before-discount">
+                                                    {{ number_format($total, 0, ',', '.') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="cart-summary-item">
+                                            <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                                 <span class="summay-title">Giảm giá</span>
-                                                <div class="summary-value discount-value">-0đ
+                                                <div class="summary-value discount-value">
+                                                    -{{ number_format($discount, 0, ',', '.') }}đ
                                                 </div>
                                             </div>
                                         </div>
@@ -111,15 +169,14 @@
                                                 <div class="summary-value">Miễn phí</div>
                                             </div>
                                         </div>
-                                        @php
-                                            $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
-                                        @endphp
+
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                                <span class="summay-title bold">Tổng tiền</span>
+                                                <span style="font-weight: bolder" class="summay-title bold">Tổng thanh
+                                                    toán</span>
                                                 <div class="summary-value cart-total" id="total-price"
                                                     data-price="{{ $total }}">
-                                                    {{ number_format($total, 0, ',', '.') }}₫
+                                                    {{ number_format($totalAfterDiscount, 0, ',', '.') }}₫
                                                 </div>
                                             </div>
                                         </div>
@@ -139,7 +196,33 @@
             </form>
         </div>
     </div>
+    {{-- Xử lí chọn voucher --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle hiển thị danh sách voucher
+            document.querySelector('.toggle-voucher-list').addEventListener('click', function() {
+                const list = document.querySelector('.voucher-list');
+                list.style.display = list.style.display === 'none' ? 'block' : 'none';
+            });
 
+            // Click chọn voucher từ danh sách
+            document.querySelectorAll('.voucher-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove(
+                        'active'));
+                    this.classList.add('active');
+
+                    const code = this.dataset.code;
+                    document.querySelector('input[name="voucher_code"]').value = code;
+
+                    // Ẩn danh sách sau khi chọn
+                    document.querySelector('.voucher-list').style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+    {{-- Xử lí tăng , giảm số lượng và tổng tiền  --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const formatCurrency = number =>
@@ -165,14 +248,12 @@
                             }
                         }
                     }
-
                     input.value = qty;
                     if (qty >= 1) {
                         updateCartQty(variantId, qty);
                     }
                 });
             });
-
             // Xóa sản phẩm
             document.querySelectorAll('.cart-item-remove').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -180,7 +261,6 @@
                     removeItemFromCart(variantId);
                 });
             });
-
             // Hàm update số lượng
             function updateCartQty(variantId, qty) {
                 fetch("{{ route('cart.update.ajax') }}", {
@@ -196,14 +276,38 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        // Cập nhật lại thành tiền cho sản phẩm
+                        // Cập nhật thành tiền của từng dòng
                         const lineTotalSpan = document.querySelector('.line-total_' + variantId);
-                        lineTotalSpan.innerHTML = formatCurrency(data.price);
+                        lineTotalSpan.innerHTML = data.price_format;
                         lineTotalSpan.dataset.price = data.price;
 
-                        // Cập nhật tổng tiền
-                        document.querySelector('#total-price').innerHTML = formatCurrency(data.total);
-                        //thông báo lỗi
+                        // Cập nhật các giá trị tổng
+                        document.querySelector('.summary-total-before-discount').innerHTML = data.total_format;
+
+                        const currentVoucher = document.querySelector('input[name="voucher_code"]').value;
+                        if (currentVoucher) {
+                            fetch("{{ route('cart.apply.voucher') }}", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                    },
+                                    body: JSON.stringify({
+                                        code: currentVoucher
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(voucherData => {
+                                    if (voucherData.success) {
+                                        document.querySelector('.discount-value').innerHTML = '-' +
+                                            voucherData.discount_format;
+                                        document.querySelector('#total-price').innerHTML = voucherData
+                                            .total_after_format;
+                                    }
+                                });
+                        }
+
+                        // Hiển thị thông báo
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
@@ -218,6 +322,7 @@
                             }
                         });
                     })
+
                     .catch(err => {
                         console.error('Lỗi khi cập nhật giỏ hàng:', err);
                     });
@@ -279,6 +384,103 @@
             }
         });
     </script>
+    {{-- Xử lí mã giảm giá  --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.apply-voucher').addEventListener('click', function(e) {
+                e.preventDefault();
+                const code = document.querySelector('input[name="voucher_code"]').value;
 
+                fetch("{{ route('cart.apply.voucher') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            code
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Cập nhật DOM
+                            document.querySelector('.discount-value').textContent =
+                                `-${data.discount_format}`;
+                            document.querySelector('#total-price').textContent = data
+                                .total_after_format;
+
+                            // Hiển thị thông báo
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Thông báo từ hệ thống !',
+                                text: 'Áp mã voucher thành công',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                customClass: {
+                                    popup: 'swal-toast-success'
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: 'Voucher hết hạn hoặc không chính xác',
+                                showConfirmButton: false,
+                                timer: 2500,
+                                customClass: {
+                                    popup: 'swal-toast-error2'
+                                }
+                            });
+                        }
+                    });
+            });
+
+            // Click chọn từ danh sách voucher
+            document.querySelectorAll('.voucher-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove(
+                        'active'));
+                    this.classList.add('active');
+                    const code = this.dataset.code;
+                    document.querySelector('input[name="voucher_code"]').value = code;
+                });
+            });
+        });
+        //Xóa voucher
+        document.querySelector('.remove-voucher').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            fetch("{{ route('cart.remove.voucher') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reset form
+                        document.querySelector('input[name="voucher_code"]').value = '';
+                        document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove('active'));
+                        document.querySelector('.discount-value').innerHTML = '-0đ';
+                        document.querySelector('#total-price').innerHTML = data.total_after_format;
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: 'Đã bỏ mã giảm giá !',
+                            showConfirmButton: false,
+                            timer: 1000,
+                            position: 'top-end'
+                        });
+                    }
+                });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

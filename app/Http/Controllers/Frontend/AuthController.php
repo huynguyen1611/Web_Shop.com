@@ -58,7 +58,11 @@ class AuthController extends Controller
     //Chỉnh sửa thông tin khách hàng **
     public function edit_customer()
     {
-        $customer = Customer::findOrFail(session('customer_id'));
+        $customer = Customer::find(session('customer_id'));
+        if (!$customer) {
+            // Xử lý khi không tìm thấy, ví dụ:
+            return redirect()->route('login')->with('error', 'Bạn chưa đăng nhập');
+        }
         return view('fronend.account.edit_user', [
             'customer' => $customer,
         ]);

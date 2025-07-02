@@ -357,3 +357,31 @@ label {
 .swal-custom-toast .swal2-success-line-long {
     background-color: white !important;
 }
+/*  */
+.swal-toast-success {
+    background-color: #38c172 !important;
+    color: white !important;
+}
+
+.swal-toast-error2 {
+    background-color: #e3342f !important;
+    color: white !important;
+}
+.cart-section-right-select2 input {
+    height: 45px;
+    padding: 5px 20px;
+    box-sizing: border-box;
+}
+/*  */
+.btn-voucher {
+    border: 1px solid rgb(14, 79, 221);
+    background-color: white;
+    font-size: 15px;
+    color: rgb(14, 79, 221);
+    cursor: pointer;
+}
+.btn-voucher:hover {
+    background-color: rgb(14, 79, 221);
+    color: white;
+    transition: all 0.3s ease-in-out;
+}

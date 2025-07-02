@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RoleController;
@@ -46,12 +47,20 @@ Route::get('/dang-xuat', [FrontendAuthController::class, 'logout'])->name('logou
 
 // Các route cần khách hàng đăng nhập **
 Route::middleware('check.customer')->group(function () {
+
+    //Thông tin khách hàng
     Route::get('/thong-tin', [FrontendAuthController::class, 'edit_customer'])->name('edit_customer');
     Route::post('/thong-tin', [FrontendAuthController::class, 'update_customer'])->name('update_customer');
+
+    //Giỏ hàng
     Route::get('/gio-hang', [FrontendController::class, 'cart'])->name('cart');
     Route::post('/gio-hang', [FrontendController::class, 'addToCart'])->name('cart');
     Route::post('/cart/update-ajax', [FrontendController::class, 'updateAjax'])->name('cart.update.ajax');
     Route::post('/cart/remove-item', [FrontendController::class, 'removeItem'])->name('cart.remove.item');
+    Route::post('cart/apply-voucher', [FrontendController::class, 'applyVoucher'])->name('cart.apply.voucher');
+    Route::post('cart/remove-voucher', [FrontendController::class, 'removeVoucher'])->name('cart.remove.voucher');
+
+    //Thanh toán
     Route::get('/thanh-toan', [FrontendController::class, 'pay'])->name('pay');
 });
 
@@ -145,4 +154,10 @@ Route::middleware(['role:sale,admin,marketing'])->group(function () {
     Route::get('voucher/edit/{id}', [VoucherController::class, 'voucher_edit'])->name('voucher_edit');
     Route::post('voucher/update/{id}', [VoucherController::class, 'voucher_update'])->name('voucher_update');
     Route::get('voucher/delete/{id}', [VoucherController::class, 'voucher_delete'])->name('voucher_delete');
+
+    // Customer
+    Route::get('customer', [CustomerController::class, 'customer'])->name('customer');
+    Route::get('customer/edit/{id}', [customerController::class, 'customer_edit'])->name('customer_edit');
+    Route::post('customer/update/{id}', [customerController::class, 'customer_update'])->name('customer_update');
+    Route::get('customer/delete/{id}', [customerController::class, 'customer_delete'])->name('customer_delete');
 });

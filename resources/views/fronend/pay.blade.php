@@ -5,13 +5,13 @@
             <div class="uk-container uk-container-center">
                 <ul class="uk-list uk-clearfix">
                     <li><a href="/"><i class="fa fa-home mr5"></i>Trang chủ</a></li>
-                    <li><a title="Hệ thống phân phối">Thanh toán</a></li>
+                    <li><a title="Trang thanh toán đơn hàng">Thanh toán</a></li>
                 </ul>
             </div>
         </div>
         <div class="uk-container uk-container-center">
-            <form action="https://laptop.themedemo.site/cart/create" class="uk-form form" method="post">
-                <input type="hidden" name="_token" value="yx70wi9X4uPjhxRMdWcuKLzKRtqfVqZQzzsd3im7">
+            <form action="" class="uk-form form" method="post">
+                @csrf
                 <h2 class="heading-1"><span>Thông tin đặt hàng</span></h2>
                 <div class="cart-wrapper">
                     <div class="uk-grid uk-grid-medium">
@@ -22,125 +22,49 @@
                                         <h2 class="cart-heading">
                                             <span>Thông tin giao hàng</span>
                                         </h2>
-
                                     </div>
-
                                 </div>
                                 <div class="panel-body mb30">
                                     <div class="cart-information">
                                         <div class="uk-grid uk-grid-medium mb20">
                                             <div class="uk-width-large-1-2">
                                                 <div class="form-row">
-                                                    <input type="text" name="fullname" value=""
+                                                    <input type="text" name="name" value="{{ $customer->name }}"
                                                         placeholder="Nhập vào Họ Tên" class="input-text">
                                                 </div>
                                             </div>
                                             <div class="uk-width-large-1-2">
                                                 <div class="form-row">
-                                                    <input type="text" name="phone" value=""
+                                                    <input type="text" name="phone" value="{{ $customer->phone }}"
                                                         placeholder="Nhập vào Số điện thoại" class="input-text">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-row mb20">
-                                            <input type="text" name="email" value="" placeholder="Nhập vào Email"
-                                                class="input-text">
+                                            <input type="text" name="email" value="{{ $customer->email }}"
+                                                placeholder="Nhập vào Email" class="input-text">
                                         </div>
 
-                                        <div class="uk-grid uk-grid-medium mb20">
-                                            <div class="uk-width-large-1-3">
-                                                <select required name="province_id" id=""
-                                                    class="province location setupSelect2" data-target="districts">
-                                                    <option value="0">[Chọn Thành Phố]</option>
-                                                    <option value="01">Hà Nội</option>
-                                                    <option value="02">Hà Giang</option>
-                                                    <option value="04">Cao Bằng</option>
-                                                    <option value="06">Bắc Kạn</option>
-                                                    <option value="08">Tuyên Quang</option>
-                                                    <option value="10">Lào Cai</option>
-                                                    <option value="11">Điện Biên</option>
-                                                    <option value="12">Lai Châu</option>
-                                                    <option value="14">Sơn La</option>
-                                                    <option value="15">Yên Bái</option>
-                                                    <option value="17">Hoà Bình</option>
-                                                    <option value="19">Thái Nguyên</option>
-                                                    <option value="20">Lạng Sơn</option>
-                                                    <option value="22">Quảng Ninh</option>
-                                                    <option value="24">Bắc Giang</option>
-                                                    <option value="25">Phú Thọ</option>
-                                                    <option value="26">Vĩnh Phúc</option>
-                                                    <option value="27">Bắc Ninh</option>
-                                                    <option value="30">Hải Dương</option>
-                                                    <option value="31">Hải Phòng</option>
-                                                    <option value="33">Hưng Yên</option>
-                                                    <option value="34">Thái Bình</option>
-                                                    <option value="35">Hà Nam</option>
-                                                    <option value="36">Nam Định</option>
-                                                    <option value="37">Ninh Bình</option>
-                                                    <option value="38">Thanh Hóa</option>
-                                                    <option value="40">Nghệ An</option>
-                                                    <option value="42">Hà Tĩnh</option>
-                                                    <option value="44">Quảng Bình</option>
-                                                    <option value="45">Quảng Trị</option>
-                                                    <option value="46">Thừa Thiên Huế</option>
-                                                    <option value="48">Đà Nẵng</option>
-                                                    <option value="49">Quảng Nam</option>
-                                                    <option value="51">Quảng Ngãi</option>
-                                                    <option value="52">Bình Định</option>
-                                                    <option value="54">Phú Yên</option>
-                                                    <option value="56">Khánh Hòa</option>
-                                                    <option value="58">Ninh Thuận</option>
-                                                    <option value="60">Bình Thuận</option>
-                                                    <option value="62">Kon Tum</option>
-                                                    <option value="64">Gia Lai</option>
-                                                    <option value="66">Đắk Lắk</option>
-                                                    <option value="67">Đắk Nông</option>
-                                                    <option value="68">Lâm Đồng</option>
-                                                    <option value="70">Bình Phước</option>
-                                                    <option value="72">Tây Ninh</option>
-                                                    <option value="74">Bình Dương</option>
-                                                    <option value="75">Đồng Nai</option>
-                                                    <option value="77">Bà Rịa - Vũng Tàu</option>
-                                                    <option value="79">Hồ Chí Minh</option>
-                                                    <option value="80">Long An</option>
-                                                    <option value="82">Tiền Giang</option>
-                                                    <option value="83">Bến Tre</option>
-                                                    <option value="84">Trà Vinh</option>
-                                                    <option value="86">Vĩnh Long</option>
-                                                    <option value="87">Đồng Tháp</option>
-                                                    <option value="89">An Giang</option>
-                                                    <option value="91">Kiên Giang</option>
-                                                    <option value="92">Cần Thơ</option>
-                                                    <option value="93">Hậu Giang</option>
-                                                    <option value="94">Sóc Trăng</option>
-                                                    <option value="95">Bạc Liêu</option>
-                                                    <option value="96">Cà Mau</option>
-                                                </select>
+                                        <div class="uk-grid uk-grid-medium mb20 cart-section-right-select2">
+                                            <div class="uk-width-1-3">
+                                                <input type="text" name="city" value="{{ $customer->city }}">
                                             </div>
-                                            <div class="uk-width-large-1-3">
-                                                <select required name="district_id" id=""
-                                                    class="setupSelect2 districts location" data-target="wards">
-                                                    <option value="0">Chọn Quận Huyện</option>
-                                                </select>
+                                            <div class="uk-width-1-3">
+                                                <input type="text" name="district" value="{{ $customer->district }}">
                                             </div>
-                                            <div class="uk-width-large-1-3">
-                                                <select required name="ward_id" id=""
-                                                    class="setupSelect2 wards">
-                                                    <option value="0">Chọn Phường Xã</option>
-                                                </select>
+                                            <div class="uk-width-1-3">
+                                                <input type="text" name="ward" value="{{ $customer->ward }}">
                                             </div>
                                         </div>
-
-
 
                                         <div class="form-row mb20">
-                                            <input type="text" name="address" value=""
+                                            <input type="text" name="address" value="{{ $customer->address }}"
                                                 placeholder="Địa chỉ chi tiết (Số nhà, ấp...)" class="input-text">
                                         </div>
 
                                         <div class="form-row">
-                                            <input type="text" name="description" value=""
-                                                placeholder="Ghi chú " class="input-text">
+                                            <input type="text" name="description" value="" placeholder="Ghi chú "
+                                                class="input-text">
                                         </div>
                                     </div>
 
@@ -151,25 +75,27 @@
                                     <div class="cart-method mb30">
                                         <label for="cod" class="uk-flex uk-flex-middle method-item">
                                             <input type="radio" name="method" value="cod" checked id="cod">
-                                            <span class="image"><img src="frontend/resources/core/img/COD.svg"
+                                            <span class="image"><img src="{{ asset('frontend/img/icon_pay/COD.svg') }}"
                                                     alt=""></span>
                                             <span class="title">Thanh toán khi nhận hàng (COD)</span>
                                         </label>
                                         <label for="momo" class="uk-flex uk-flex-middle method-item">
                                             <input type="radio" name="method" value="momo" id="momo">
-                                            <span class="image"><img src="frontend/resources/core/img/momo-icon.webp"
+                                            <span class="image"><img
+                                                    src="{{ asset('frontend/img/icon_pay/momo-icon.webp') }}"
                                                     alt=""></span>
                                             <span class="title">Thanh toán qua Ví Momo</span>
                                         </label>
                                         <label for="vnpay" class="uk-flex uk-flex-middle method-item">
                                             <input type="radio" name="method" value="vnpay" id="vnpay">
-                                            <span class="image"><img src="frontend/resources/core/img/vnpay.webp"
+                                            <span class="image"><img src="{{ asset('frontend/img/icon_pay/vnpay.webp') }}"
                                                     alt=""></span>
                                             <span class="title">Thanh toán ví điện tử VNPAY</span>
                                         </label>
                                         <label for="paypal" class="uk-flex uk-flex-middle method-item">
                                             <input type="radio" name="method" value="paypal" id="paypal">
-                                            <span class="image"><img src="frontend/resources/core/img/paypal.ico"
+                                            <span class="image"><img
+                                                    src="{{ asset('frontend/img/icon_pay/paypal.ico') }}"
                                                     alt=""></span>
                                             <span class="title">Thanh toán qua Paypal</span>
                                         </label>
@@ -189,119 +115,114 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="cart-list">
-                                        <div class="cart-item">
-                                            <div class="uk-grid uk-grid-medium">
-                                                <div class="uk-width-small-1-1 uk-width-medium-1-5">
-
-                                                    <div class="cart-item-image">
-                                                        <img class="image img-scaledown"
-                                                            src="/userfiles/image/phone/oppo-reno10-pro-plus-xam.jpg"
-                                                            alt="">
-                                                        <span class="cart-item-number">5</span>
+                                        @foreach ($cart as $item)
+                                            <div class="cart-item cart-item_{{ $item['variant_id'] }}">
+                                                <div class="uk-grid uk-grid-medium">
+                                                    <div class="uk-width-small-1-1 uk-width-medium-1-5">
+                                                        <div class="cart-item-image">
+                                                            <img class="image img-scaledown"
+                                                                src="{{ asset($item['image']) }}" alt="">
+                                                        </div>
                                                     </div>
-
-                                                </div>
-                                                <div class="uk-width-small-1-1 uk-width-medium-4-5">
-                                                    <div class="cart-item-info">
-                                                        <h3 class="title"><span>OPPO Reno10 Pro+ 5G 512GB</span></h3>
-                                                        <div
-                                                            class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
-                                                            <div class="cart-item-qty">
-                                                                <button type="button" class="btn-qty minus">-</button>
-                                                                <input type="text" class="input-qty" value="5">
-                                                                <input type="hidden" class="rowId"
-                                                                    value="7b883de15a6ad42d968e465cf6f0ad93">
-                                                                <button type="button" class="btn-qty plus">+</button>
-                                                            </div>
-                                                            <div class="cart-item-price">
-                                                                <div class="uk-flex uk-flex-bottom">
-
-                                                                    <span class="cart-price-sale">2.375.000đ</span>
+                                                    <div class="uk-width-small-1-1 uk-width-medium-4-5">
+                                                        <div class="cart-item-info">
+                                                            <h3 class="title"><span>{{ $item['title'] }}</span></h3>
+                                                            <div
+                                                                class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
+                                                                <div class="cart-item-qty">
+                                                                    <button type="button" class="btn-qty minus"
+                                                                        data-id="{{ $item['variant_id'] }}">-</button>
+                                                                    <input type="text"
+                                                                        class="input-qty quantity-input_{{ $item['variant_id'] }}"
+                                                                        value="{{ $item['qty'] }}">
+                                                                    <input type="hidden" class="rowId"
+                                                                        value="{{ $item['variant_id'] }}">
+                                                                    <button type="button" class="btn-qty plus"
+                                                                        data-id="{{ $item['variant_id'] }}">+</button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="cart-item-remove"
-                                                                data-row-id="7b883de15a6ad42d968e465cf6f0ad93">
-                                                                <span>X</span>
+                                                                <div class="cart-item-price">
+                                                                    <div class="uk-flex uk-flex-bottom">
+                                                                        <span
+                                                                            class="cart-price-sale line-total line-total_{{ $item['variant_id'] }}"
+                                                                            data-price="{{ $item['qty'] * $item['price'] }}">
+                                                                            {{ number_format($item['qty'] * $item['price'], 0, ',', '.') }}<sup>đ</sup>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="cart-item-remove"
+                                                                    data-row-id="{{ $item['variant_id'] }}">
+                                                                    <span>X</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="cart-item">
-                                            <div class="uk-grid uk-grid-medium">
-                                                <div class="uk-width-small-1-1 uk-width-medium-1-5">
-
-                                                    <div class="cart-item-image">
-                                                        <img class="image img-scaledown"
-                                                            src="/userfiles/image/phone/oppo-reno10-pro-plus-tim.png"
-                                                            alt="">
-                                                        <span class="cart-item-number">1</span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="panel-voucher">
+                                    <!-- Nút chọn voucher -->
+                                    <button type="button" class="btn btn-primary toggle-voucher-list btn-voucher"
+                                        style="margin-bottom: 10px;">
+                                        Chọn voucher >>>
+                                    </button>
+                                    <!-- Danh sách voucher ẩn mặc định -->
+                                    <div class="voucher-list" style="display: none;">
+                                        @foreach ($vouchers as $voucher)
+                                            @php
+                                                $isActive = session('voucher_code') == $voucher->code;
+                                            @endphp
+                                            <div class="voucher-item {{ $isActive ? 'active' : '' }}"
+                                                data-code="{{ $voucher->code }}">
+                                                <div class="voucher-left"></div>
+                                                <div class="voucher-right">
+                                                    <div class="voucher-title">
+                                                        {{ $voucher->code }} <span>(Còn {{ $voucher->quantity }})</span>
                                                     </div>
-
-                                                </div>
-                                                <div class="uk-width-small-1-1 uk-width-medium-4-5">
-                                                    <div class="cart-item-info">
-                                                        <h3 class="title"><span>OPPO Reno10 Pro+ 5G 256GB</span></h3>
-                                                        <div
-                                                            class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
-                                                            <div class="cart-item-qty">
-                                                                <button type="button" class="btn-qty minus">-</button>
-                                                                <input type="text" class="input-qty" value="1">
-                                                                <input type="hidden" class="rowId"
-                                                                    value="59b598c7381995bba549d767e75f3d16">
-                                                                <button type="button" class="btn-qty plus">+</button>
-                                                            </div>
-                                                            <div class="cart-item-price">
-                                                                <div class="uk-flex uk-flex-bottom">
-
-                                                                    <span class="cart-price-sale">337.500đ</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="cart-item-remove"
-                                                                data-row-id="59b598c7381995bba549d767e75f3d16">
-                                                                <span>X</span>
-                                                            </div>
-                                                        </div>
+                                                    <div class="voucher-description">
+                                                        <p>
+                                                            {{ $voucher->name }}, giảm giá đến
+                                                            {{ $voucher->type == 'fixed' ? number_format($voucher->value, 0, ',', '.') . '₫' : $voucher->value . '%' }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endforeach
                                     </div>
+
+                                    <!-- Form áp dụng voucher -->
+                                    <div class="voucher-form" style="margin-top: 10px;">
+                                        <input type="text" placeholder="Chọn mã giảm giá" name="voucher_code"
+                                            value="{{ session('voucher_code') }}">
+                                        <a href="#" class="apply-voucher">Áp dụng</a>
+                                    </div>
+                                    <!-- Bỏ mã voucher -->
+                                    <a href="#" class="remove-voucher"
+                                        style="float: right; color: red; font-size: 16px; margin-top: 10px;">Bỏ áp dụng
+                                        voucher >></a>
                                 </div>
-                                <div class="panel-voucher ">
-                                    <div class="voucher-list">
-                                        <div class="voucher-item active">
-                                            <div class="voucher-left"></div>
-                                            <div class="voucher-right">
-                                                <div class="voucher-title">5AFDSFFD34 <span>(Còn 20)</span> </div>
-                                                <div class="voucher-description">
-                                                    <p>Khuyến mãi nhân dịp Noel 24/12, giảm giá đến 50% sản phẩm</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="voucher-item ">
-                                            <div class="voucher-left"></div>
-                                            <div class="voucher-right">
-                                                <div class="voucher-title">5AFDSFFD34 <span>(Còn 20)</span> </div>
-                                                <div class="voucher-description">
-                                                    <p>Khuyến mãi nhân dịp Noel 24/12, giảm giá đến 50% sản phẩm</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="voucher-form">
-                                        <input type="text" placeholder="Chọn mã giảm giá" name="voucher"
-                                            value="" readonly>
-                                        <a href="" class="apply-voucher">Áp dụng</a>
-                                    </div>
-                                </div>
+
+                                @php
+                                    $discount = session('voucher_discount', 0);
+                                    $total = collect($cart)->sum(fn($item) => $item['qty'] * $item['price']);
+                                    $totalAfterDiscount = $total - $discount;
+                                @endphp
                                 <div class="panel-foot mt30 pay">
                                     <div class="cart-summary mb20">
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                                                <span class="summay-title">Tổng tiền hàng</span>
+                                                <div class="summary-value summary-total-before-discount">
+                                                    {{ number_format($total, 0, ',', '.') }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="cart-summary-item">
+                                            <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                                 <span class="summay-title">Giảm giá</span>
-                                                <div class="summary-value discount-value">-0đ</div>
+                                                <div class="summary-value discount-value">
+                                                    -{{ number_format($discount, 0, ',', '.') }}đ
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="cart-summary-item">
@@ -310,19 +231,26 @@
                                                 <div class="summary-value">Miễn phí</div>
                                             </div>
                                         </div>
+
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                                <span class="summay-title bold">Tổng tiền</span>
-                                                <div class="summary-value cart-total">2.712.500đ</div>
+                                                <span style="font-weight: bolder" class="summay-title bold">Tổng thanh
+                                                    toán</span>
+                                                <div class="summary-value cart-total" id="total-price"
+                                                    data-price="{{ $total }}">
+                                                    {{ number_format($totalAfterDiscount, 0, ',', '.') }}₫
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="buy-more">
-                                            <a href="https://laptop.themedemo.site/san-pham.html" class="btn-buymore">Chọn
+                                        <div class="buy-more" style="display: flex">
+                                            <a href="{{ route('product') }}" class="btn-buymore">Chọn
                                                 thêm sản phẩm khác</a>
                                         </div>
                                     </div>
-                                </div> <button type="submit" class="cart-checkout" value="create" name="create">Thanh
-                                    toán đơn hàng</button>
+                                </div>
+                                <button type="submit" class="cart-checkout" value="create" name="create">Thanh
+                                    toán đơn hàng
+                                </button>
                                 <div class="box-info mt-3">
                                     <div class="box-title">Thông tin bổ sung</div>
                                     <div class="info">
@@ -340,4 +268,293 @@
             </form>
         </div>
     </div>
+    {{-- Xử lí chọn voucher --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle hiển thị danh sách voucher
+            document.querySelector('.toggle-voucher-list').addEventListener('click', function() {
+                const list = document.querySelector('.voucher-list');
+                list.style.display = list.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Click chọn voucher từ danh sách
+            document.querySelectorAll('.voucher-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove(
+                        'active'));
+                    this.classList.add('active');
+
+                    const code = this.dataset.code;
+                    document.querySelector('input[name="voucher_code"]').value = code;
+
+                    // Ẩn danh sách sau khi chọn
+                    document.querySelector('.voucher-list').style.display = 'none';
+                });
+            });
+        });
+    </script>
+    {{-- Xử lí tăng , giảm số lượng và tổng tiền  --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formatCurrency = number =>
+                new Intl.NumberFormat('vi-VN').format(number) + '₫';
+
+            // Cập nhật số lượng
+            document.querySelectorAll('.btn-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const variantId = this.dataset.id;
+                    const input = document.querySelector('.quantity-input_' + variantId);
+                    let qty = parseInt(input.value);
+
+                    if (this.classList.contains('plus')) {
+                        qty++;
+                    } else if (this.classList.contains('minus')) {
+                        qty--;
+                        if (qty < 1) {
+                            // Hiện confirm hỏi có muốn xóa không
+                            if (confirm("Bạn có muốn xóa sản phẩm này không?")) {
+                                removeItemFromCart(variantId);
+                            } else {
+                                qty = 1;
+                            }
+                        }
+                    }
+                    input.value = qty;
+                    if (qty >= 1) {
+                        updateCartQty(variantId, qty);
+                    }
+                });
+            });
+            // Xóa sản phẩm
+            document.querySelectorAll('.cart-item-remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const variantId = this.dataset.rowId;
+                    removeItemFromCart(variantId);
+                });
+            });
+            // Hàm update số lượng
+            function updateCartQty(variantId, qty) {
+                fetch("{{ route('cart.update.ajax') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            product_id: variantId,
+                            product_qty: qty
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Cập nhật thành tiền của từng dòng
+                        const lineTotalSpan = document.querySelector('.line-total_' + variantId);
+                        lineTotalSpan.innerHTML = data.price_format;
+                        lineTotalSpan.dataset.price = data.price;
+
+                        // Cập nhật các giá trị tổng
+                        // document.querySelector('.summary-total-before-discount').innerHTML = data.total_format;
+                        // document.querySelector('.discount-value').innerHTML = '-' + data.discount_format;
+                        // document.querySelector('#total-price').innerHTML = data.total_after_format;
+                        document.querySelector('.summary-total-before-discount').innerHTML = data.total_format;
+
+                        const currentVoucher = document.querySelector('input[name="voucher_code"]').value;
+                        if (currentVoucher) {
+                            fetch("{{ route('cart.apply.voucher') }}", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                    },
+                                    body: JSON.stringify({
+                                        code: currentVoucher
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(voucherData => {
+                                    if (voucherData.success) {
+                                        document.querySelector('.discount-value').innerHTML = '-' +
+                                            voucherData.discount_format;
+                                        document.querySelector('#total-price').innerHTML = voucherData
+                                            .total_after_format;
+                                    }
+                                });
+                        }
+
+                        // Hiển thị thông báo
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Thông báo từ hệ thống!',
+                            text: 'Cập nhật số lượng thành công',
+                            showConfirmButton: false,
+                            timer: 700,
+                            timerProgressBar: true,
+                            customClass: {
+                                popup: 'swal-custom-toast'
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Lỗi khi cập nhật giỏ hàng:', err);
+                    });
+            }
+
+            // Hàm xóa sản phẩm
+            function removeItemFromCart(variantId) {
+                // Hỏi trước khi gọi API
+                Swal.fire({
+                    title: 'Bạn muốn xóa sản phẩm khỏi giỏ hàng?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Gửi request xoá nếu người dùng xác nhận
+                        fetch("{{ route('cart.remove.item') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    variant_id: variantId
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    const item = document.querySelector('.cart-item_' + variantId);
+                                    if (item) item.remove();
+
+                                    updateTotalPriceAfterRemove();
+
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Đã xóa sản phẩm khỏi giỏ hàng',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                }
+                            });
+                    }
+                });
+            }
+
+            function updateTotalPriceAfterRemove() {
+                // Tính lại tổng
+                let total = 0;
+                document.querySelectorAll('.cart-price-sale').forEach(span => {
+                    total += parseInt(span.dataset.price);
+                });
+                document.querySelector('#total-price').innerHTML = formatCurrency(total);
+            }
+        });
+    </script>
+    {{-- Xử lí mã giảm giá  --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.apply-voucher').addEventListener('click', function(e) {
+                e.preventDefault();
+                const code = document.querySelector('input[name="voucher_code"]').value;
+
+                fetch("{{ route('cart.apply.voucher') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            code
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Cập nhật DOM
+                            document.querySelector('.discount-value').textContent =
+                                `-${data.discount_format}`;
+                            document.querySelector('#total-price').textContent = data
+                                .total_after_format;
+
+                            // Hiển thị thông báo
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Thông báo từ hệ thống !',
+                                text: 'Áp mã voucher thành công',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                customClass: {
+                                    popup: 'swal-toast-success'
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: 'Voucher hết hạn hoặc không chính xác !',
+                                showConfirmButton: false,
+                                timer: 2500,
+                                customClass: {
+                                    popup: 'swal-toast-error2'
+                                }
+                            });
+                        }
+                    });
+            });
+
+            // Click chọn từ danh sách voucher
+            document.querySelectorAll('.voucher-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove(
+                        'active'));
+                    this.classList.add('active');
+                    const code = this.dataset.code;
+
+                    document.querySelector('input[name="voucher_code"]').value = code;
+                });
+            });
+        });
+        //Xóa voucher
+        document.querySelector('.remove-voucher').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            fetch("{{ route('cart.remove.voucher') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reset form
+                        document.querySelector('input[name="voucher_code"]').value = '';
+                        document.querySelectorAll('.voucher-item').forEach(i => i.classList.remove('active'));
+                        document.querySelector('.discount-value').innerHTML = '-0đ';
+                        document.querySelector('#total-price').innerHTML = data.total_after_format;
+                        Swal.fire({
+                            toast: true,
+                            icon: 'success',
+                            title: 'Đã bỏ mã giảm giá !',
+                            showConfirmButton: false,
+                            timer: 1000,
+                            position: 'top-end'
+                        });
+                    }
+                });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
